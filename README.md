@@ -16,6 +16,18 @@ npm install
 npm run start
 ```
 
+3. Create executables:
+
+Macbook
+```powershell
+npm run package-mac
+```
+
+Windows
+```powershell
+npm run package-win
+```
+
 ## Notes
 - Entry point: `main.js`.
 - Renderer: `script.js` and `index.html`.

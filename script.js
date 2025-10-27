@@ -3,13 +3,15 @@ const path = require("path");
 const { shell } = require("electron");
 
 // ===== CONFIG =====
-const vaultFilePath = path.join(
-	process.env.HOME || process.env.USERPROFILE,
-	"Library/CloudStorage/GoogleDrive-b.morosan94@gmail.com",
-	"My Drive",
-	"POE",
-	"vaultData.json"
-);
+const vaultFilePath = process.platform === 'darwin' 
+	? path.join(
+		process.env.HOME,
+		"Library/CloudStorage/GoogleDrive-b.morosan94@gmail.com",
+		"My Drive",
+		"POE",
+		"vaultData.json"
+	)
+	: path.join("G:", "My Drive", "POE", "vaultData.json");
 
 // ===== DOM ELEMENTS =====
 let allItems = [];
@@ -73,31 +75,57 @@ document.addEventListener("DOMContentLoaded", () => {
 			else filtered = filtered.filter((i) => i.league === leagueFilter);
 		}
 
-		// Filter out owned items if checkbox is checked
+		// Create groups before hiding owned items
+		const groupedItems = {};
+		// Create a separate filtered list for display
+		let displayFiltered = [...filtered];
+
+		// Filter out owned items from display list if checkbox is checked
 		if (hideOwnedCheckbox.checked) {
-			filtered = filtered.filter((i) => !i.owned);
+			displayFiltered = displayFiltered.filter((i) => !i.owned);
 		}
 
-		// Group items by category
-		const itemsByCategory = {};
+		// Group all items (for statistics)
 		filtered.forEach((item) => {
-			if (!itemsByCategory[item.category]) {
-				itemsByCategory[item.category] = [];
+			let groupKey;
+			if (leagueFilter === "Bosses") {
+				// Extract boss name from obtain method for grouping
+				groupKey = item.obtainMethod.split(" drops")[0]; // Assumes format "BossName drops this"
+			} else {
+				groupKey = item.category;
 			}
-			itemsByCategory[item.category].push(item);
+			
+			if (!groupedItems[groupKey]) {
+				groupedItems[groupKey] = {
+					all: [],    // All items for statistics
+					display: [] // Items to display (might exclude owned)
+				};
+			}
+			groupedItems[groupKey].all.push(item);
+			if (!hideOwnedCheckbox.checked || !item.owned) {
+				groupedItems[groupKey].display.push(item);
+			}
 		});
 
-		// Sort categories alphabetically
-		const sortedCategories = Object.keys(itemsByCategory).sort();
+		// Sort group keys alphabetically
+		const sortedGroups = Object.keys(groupedItems).sort();
 
-		// Build HTML with category sections
+		// Build HTML with category/boss sections and statistics
 		let html = "";
-		sortedCategories.forEach((category) => {
+		sortedGroups.forEach((group) => {
+			// Calculate statistics using all items in the group
+			const totalInGroup = groupedItems[group].all.length;
+			const ownedInGroup = groupedItems[group].all.filter(item => item.owned).length;
+			const completionPercentage = Math.round((ownedInGroup / totalInGroup) * 100);
+			
 			html += `<div class="category-section">
-        <h3 class="category-title">${category}</h3>
+        <div style="text-align: center; margin-bottom: 20px; padding-bottom: 10px;">
+          <h3 class="category-title">${group} ${ownedInGroup}/${totalInGroup} - ${completionPercentage}%</h3>
+        </div>
         <div class="category-items">`;
 
-			itemsByCategory[category].forEach((item) => {
+			// Use display array for showing items
+			groupedItems[group].display.forEach((item) => {
 				const idx = allItems.indexOf(item);
 				// Determine background color
 				let bgColor;
@@ -135,9 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
             </div>
             <div class="item-image" style="flex-shrink:0; margin-left:1rem;">
-              <img src="${item.imageLink}" alt="${
-					item.name
-				}" style="border-radius:6px;">
+              <img src="${item.imageLink.startsWith('http') ? item.imageLink : `./Images/${item.imageLink}`}" 
+                   alt="${item.name}" 
+                   style="border-radius:6px;">
             </div>
           </div>`;
 			});
@@ -338,9 +366,9 @@ document.addEventListener("DOMContentLoaded", () => {
           <p><strong>Special:</strong> ${item.special ? "Yes" : "No"}</p>
         </div>
         <div class="item-image" style="flex-shrink:0; margin-left:1rem;">
-          <img src="${item.imageLink}" alt="${
-					item.name
-				}" style="border-radius:6px;">
+          <img src="${item.imageLink.startsWith('http') ? item.imageLink : `./Images/${item.imageLink}`}" 
+               alt="${item.name}" 
+               style="border-radius:6px;">
         </div>
       </div>`
 			)
