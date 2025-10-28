@@ -66,7 +66,7 @@ function renderItems(
 				bgColor = "rgba(153,27,27,0.4)";
 			}
 			html += `
-          <div class="item-card" style="background-color: ${bgColor}; display:flex; align-items:flex-start;">
+          <div class="item-card${item.disabled ? ' disabled' : ''}" style="background-color: ${bgColor}; display:flex; align-items:flex-start;">
             <div class="item-info" style="flex:1;">
               <h4 class="item-name" data-wiki="${
 								item.wikiLink

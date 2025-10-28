@@ -23,6 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	allItems = loadVaultData();
 
+	// Get obtain method elements
+	const obtainMethodSelect = document.getElementById("obtainMethod");
+	const customObtainMethod = document.getElementById("customObtainMethod");
+	
 	setupEventListeners({
 		mainButtons,
 		sections,
@@ -43,6 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		closeEditModal,
 		saveVaultData,
 		updateHomeMetrics,
+		obtainMethodSelect,
+		customObtainMethod,
 	});
 
 	renderItems(

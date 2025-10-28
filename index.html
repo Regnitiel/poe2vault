@@ -128,9 +128,22 @@
 							>Category: <input type="text" name="category" required
 						/></label>
 						<label>League: <input type="text" name="league" required /></label>
-						<label
-							>Obtain Method: <input type="text" name="obtainMethod" required
-						/></label>
+						<label>
+							Obtain Method:
+							<div class="obtain-method-container">
+								<select id="obtainMethod" name="obtainMethod" required>
+									<option value="">Select obtain method...</option>
+									<option value="custom">+ Add new obtain method</option>
+								</select>
+								<input 
+									type="text" 
+									id="customObtainMethod" 
+									name="customObtainMethod" 
+									placeholder="Enter new obtain method" 
+									style="display: none;"
+								>
+							</div>
+						</label>
 						<label
 							>Owned:
 							<select name="owned" required>
@@ -162,6 +175,13 @@
 						<label
 							>Foil:
 							<select name="foil" required>
+								<option value="false">No</option>
+								<option value="true">Yes</option>
+							</select>
+						</label>
+						<label
+							>Disabled:
+							<select name="disabled" required>
 								<option value="false">No</option>
 								<option value="true">Yes</option>
 							</select>
@@ -202,9 +222,22 @@
 						>Category: <input type="text" id="editCategory" required
 					/></label>
 					<label>League: <input type="text" id="editLeague" required /></label>
-					<label
-						>Obtain Method: <input type="text" id="editObtainMethod" required
-					/></label>
+					<label>
+						Obtain Method:
+						<div class="obtain-method-container">
+							<select id="editObtainMethod" name="editObtainMethod" required>
+								<option value="">Select obtain method...</option>
+								<option value="custom">+ Add new obtain method</option>
+							</select>
+							<input 
+								type="text" 
+								id="editCustomObtainMethod" 
+								name="editCustomObtainMethod" 
+								placeholder="Enter new obtain method" 
+								style="display: none;"
+							/>
+						</div>
+					</label>
 					<label
 						>Owned:
 						<select id="editOwned" required>
@@ -236,6 +269,13 @@
 					<label
 						>Foil:
 						<select id="editFoil" required>
+							<option value="false">No</option>
+							<option value="true">Yes</option>
+						</select>
+					</label>
+					<label
+						>Disabled:
+						<select id="editDisabled" required>
 							<option value="false">No</option>
 							<option value="true">Yes</option>
 						</select>

@@ -478,3 +478,77 @@ item-info button.edit-btn:hover {
 #editItemForm .delete-btn:hover {
 	background-color: #f87171;
 }
+
+/* ======================
+     DISABLED ITEM
+  ====================== */
+.item-card.disabled {
+	position: relative;
+	opacity: 0.6;
+}
+
+.item-card.disabled::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: repeating-linear-gradient(
+		45deg,
+		rgba(0, 0, 0, 0.1),
+		rgba(0, 0, 0, 0.1) 10px,
+		rgba(0, 0, 0, 0.2) 10px,
+		rgba(0, 0, 0, 0.2) 20px
+	);
+	z-index: 1;
+	pointer-events: none;
+}
+
+.item-card.disabled::after {
+	content: "✕";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 48px;
+	color: rgba(239, 68, 68, 0.8);
+	z-index: 2;
+	pointer-events: none;
+}
+
+.item-card.disabled .item-info,
+.item-card.disabled .item-image {
+	position: relative;
+	z-index: 3;
+}
+
+/* ======================
+     OBTAIN METHOD
+  ====================== */
+.obtain-method-container {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+#obtainMethod,
+#editObtainMethod {
+	padding: 0.3rem 0.5rem;
+	border-radius: 4px;
+	border: 1px solid #334155;
+	background-color: #1e293b;
+	color: #f1f5f9;
+	width: 100%;
+}
+
+#customObtainMethod,
+#editCustomObtainMethod {
+	padding: 0.3rem 0.5rem;
+	border-radius: 4px;
+	border: 1px solid #334155;
+	background-color: #1e293b;
+	color: #f1f5f9;
+	margin-top: 0.2rem;
+	width: 100%;
+}
