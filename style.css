@@ -26,6 +26,9 @@ header {
 	background-color: #1e293b;
 	padding: 1rem;
 	gap: 1rem;
+	position: sticky;
+	top: 0;
+	z-index: 100;
 }
 
 header button.tab-btn {
@@ -229,7 +232,7 @@ main > section.active {
 .item-info button.obtained-btn,
 .item-info button.owned-btn,
 .item-info button.foil-btn,
-.item-info button.edit-btn {
+item-info button.edit-btn {
 	padding: 0.3rem 0.5rem;
 	border: none;
 	border-radius: 4px;
@@ -253,7 +256,7 @@ main > section.active {
 .item-info button.obtained-btn:hover,
 .item-info button.owned-btn:hover,
 .item-info button.foil-btn:hover,
-.item-info button.edit-btn:hover {
+item-info button.edit-btn:hover {
 	transform: scale(1.05);
 }
 
