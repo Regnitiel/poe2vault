@@ -1,0 +1,157 @@
+/* ======================
+   GLOBAL STYLES
+====================== */
+@import "./theme.css";
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+	line-height: 1.5;
+}
+
+a {
+	color: var(--color-primary);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+/* ======================
+   UTILITY CLASSES
+====================== */
+.flex {
+	display: flex;
+}
+
+.flex-col {
+	flex-direction: column;
+}
+
+.items-center {
+	align-items: center;
+}
+
+.justify-center {
+	justify-content: center;
+}
+
+.gap-sm {
+	gap: var(--spacing-sm);
+}
+
+.gap-md {
+	gap: var(--spacing-md);
+}
+
+.gap-lg {
+	gap: var(--spacing-lg);
+}
+
+.text-center {
+	text-align: center;
+}
+
+.w-full {
+	width: 100%;
+}
+
+.transition {
+	transition: var(--transition-normal);
+}
+
+/* ======================
+   COMMON BUTTON STYLES
+====================== */
+.btn {
+	padding: var(--spacing-sm) var(--spacing-md);
+	border: none;
+	border-radius: var(--radius-sm);
+	cursor: pointer;
+	font-weight: bold;
+	transition: var(--transition-normal);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.btn:hover {
+	transform: scale(1.05);
+}
+
+.btn-primary {
+	background-color: var(--color-primary);
+	color: var(--bg-primary);
+}
+
+.btn-primary:hover {
+	background-color: var(--color-primary-hover);
+}
+
+.btn-secondary {
+	background-color: var(--color-secondary);
+	color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+	background-color: var(--color-secondary-hover);
+}
+
+.btn-success {
+	background-color: var(--color-success);
+	color: var(--text-primary);
+}
+
+.btn-success:hover {
+	background-color: var(--color-success-hover);
+}
+
+.btn-danger {
+	background-color: var(--color-danger);
+	color: var(--text-primary);
+}
+
+.btn-danger:hover {
+	background-color: var(--color-danger-hover);
+}
+
+.btn-warning {
+	background-color: var(--color-warning);
+	color: var(--bg-primary);
+}
+
+.btn-warning:hover {
+	background-color: var(--color-warning-hover);
+}
+
+/* ======================
+   FORM ELEMENTS
+====================== */
+.form-input {
+	padding: var(--spacing-sm);
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--bg-tertiary);
+	background-color: var(--bg-secondary);
+	color: var(--text-primary);
+	transition: var(--transition-fast);
+}
+
+.form-input:focus {
+	outline: none;
+	border-color: var(--color-primary);
+}
+
+.form-label {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: var(--spacing-sm);
+	color: var(--text-primary);
+	font-weight: 500;
+}

@@ -1,0 +1,27 @@
+import { contextBridge, ipcRenderer } from "electron";
+
+interface VaultItem {
+	name: string;
+	base: string;
+	category: string;
+	league: string;
+	obtainMethod: string;
+	owned: boolean;
+	obtainedDuringLeague: boolean;
+	bosses: boolean;
+	special: boolean;
+	foil: boolean;
+	disabled: boolean;
+	imageLink: string;
+	wikiLink: string;
+}
+
+contextBridge.exposeInMainWorld("electronAPI", {
+	loadVaultData: (): Promise<VaultItem[]> =>
+		ipcRenderer.invoke("load-vault-data"),
+	saveVaultData: (data: VaultItem[]): Promise<void> =>
+		ipcRenderer.invoke("save-vault-data", data),
+	openExternal: (url: string): void => {
+		ipcRenderer.invoke("open-external", url);
+	},
+});
