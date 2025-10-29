@@ -1,0 +1,27 @@
+.header {
+	display: flex;
+	justify-content: center;
+	background-color: var(--bg-secondary);
+	padding: var(--spacing-md);
+	gap: var(--spacing-md);
+	position: sticky;
+	top: 0;
+	z-index: var(--z-sticky);
+}
+
+.tabButton {
+	background: none;
+	border: none;
+	color: var(--text-primary);
+	padding: 0.6rem 1.2rem;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 1.2rem;
+	border-radius: var(--radius-md);
+	transition: var(--transition-normal);
+}
+
+.tabButton.active,
+.tabButton:hover {
+	background-color: var(--bg-tertiary);
+}

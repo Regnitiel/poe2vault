@@ -1,0 +1,30 @@
+.utils {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: var(--spacing-md);
+}
+
+.section {
+	margin-top: var(--spacing-md);
+	padding: var(--spacing-sm);
+	border: 1px solid var(--bg-tertiary);
+	border-radius: var(--radius-lg);
+	max-width: 700px;
+	width: 100%;
+	text-align: left;
+}
+
+.section h2 {
+	margin-top: 0;
+	text-align: center;
+}
+
+.searchResults {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--spacing-md);
+	margin-top: var(--spacing-md);
+	width: 100%;
+}
