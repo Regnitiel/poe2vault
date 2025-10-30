@@ -1,4 +1,4 @@
-.modal {
+.editContainer {
 	display: none;
 	position: fixed;
 	z-index: var(--z-modal);
@@ -10,16 +10,16 @@
 	background-color: rgba(0, 0, 0, 0.7);
 }
 
-.modal.open {
+.editContainer.open {
 	display: block;
 }
 
-.content {
-	background-color: var(--bg-secondary);
+.editContainerContent {
+	background-color: #1e293b;
 	margin: 5% auto;
-	padding: var(--spacing-xl);
-	border: 1px solid var(--bg-tertiary);
-	border-radius: var(--radius-lg);
+	padding: 2rem;
+	border: 1px solid #334155;
+	border-radius: 8px;
 	width: 90%;
 	max-width: 600px;
 	position: relative;
@@ -46,12 +46,25 @@
 	margin-top: var(--spacing-lg);
 }
 
-.submitButton {
+.deleteButton {
 	flex: 1;
+	padding: 0.6rem 1rem;
+	border-radius: 4px;
+	border: none;
+	background-color: var(--color-danger);
+	color: #f1f5f9;
+	font-weight: bold;
+	cursor: pointer;
+	gap: 1rem;
+	margin-top: 1.5rem;
 }
 
-.form {
+.deleteButton:hover {
+	background-color: var(--color-danger-hover);
+}
+
+.modalButtons {
 	display: flex;
-	flex-direction: column;
-	gap: var(--spacing-sm);
+	gap: 1rem;
+	margin-top: 1.5rem;
 }

@@ -21,12 +21,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
 
 	return (
 		<div
-			className={styles.modal}
+			className={styles.editContainer}
 			style={{ display: "block" }}
 			onClick={handleBackdropClick}
 		>
-			<div className={styles.modalContent}>
-				<span className={styles.modalClose} onClick={onClose}>
+			<div className={styles.editContainerContent}>
+				<span className={styles.closeButton} onClick={onClose}>
 					&times;
 				</span>
 				<h2>{title}</h2>
@@ -85,8 +85,8 @@ export const EditModal: React.FC<EditModalProps> = ({
 					/>
 					<div className={styles.modalButtons}>
 						<button
+							className={styles.deleteButton}
 							type="button"
-							className={styles.deleteBtn}
 							onClick={handleDelete}
 						>
 							Delete Item

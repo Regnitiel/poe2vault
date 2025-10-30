@@ -3,6 +3,119 @@ import { VaultItem } from "../../types";
 import { getUniqueObtainMethods } from "../../utils/helpers";
 import styles from "./styles.module.css";
 
+interface FormField {
+	name: keyof VaultItem;
+	label: string;
+	type: "text" | "url" | "select" | "custom-select";
+	required?: boolean;
+	options?: { value: string; label: string }[];
+}
+
+const itemFormFields: FormField[] = [
+	{
+		name: "name",
+		label: "Name",
+		type: "text",
+		required: true,
+	},
+	{
+		name: "base",
+		label: "Base",
+		type: "text",
+		required: true,
+	},
+	{
+		name: "category",
+		label: "Category",
+		type: "text",
+		required: true,
+	},
+	{
+		name: "league",
+		label: "League",
+		type: "text",
+		required: true,
+	},
+	{
+		name: "obtainMethod",
+		label: "Obtain Method",
+		type: "custom-select",
+		required: true,
+	},
+	{
+		name: "owned",
+		label: "Owned",
+		type: "select",
+		required: true,
+		options: [
+			{ value: "false", label: "No" },
+			{ value: "true", label: "Yes" },
+		],
+	},
+	{
+		name: "obtainedDuringLeague",
+		label: "Obtained During League",
+		type: "select",
+		required: true,
+		options: [
+			{ value: "false", label: "No" },
+			{ value: "true", label: "Yes" },
+		],
+	},
+	{
+		name: "bosses",
+		label: "Bosses",
+		type: "select",
+		required: true,
+		options: [
+			{ value: "false", label: "No" },
+			{ value: "true", label: "Yes" },
+		],
+	},
+	{
+		name: "special",
+		label: "Special",
+		type: "select",
+		required: true,
+		options: [
+			{ value: "false", label: "No" },
+			{ value: "true", label: "Yes" },
+		],
+	},
+	{
+		name: "foil",
+		label: "Foil",
+		type: "select",
+		required: true,
+		options: [
+			{ value: "false", label: "No" },
+			{ value: "true", label: "Yes" },
+		],
+	},
+	{
+		name: "disabled",
+		label: "Disabled",
+		type: "select",
+		required: true,
+		options: [
+			{ value: "false", label: "No" },
+			{ value: "true", label: "Yes" },
+		],
+	},
+	{
+		name: "imageLink",
+		label: "Image URL",
+		type: "url",
+		required: true,
+	},
+	{
+		name: "wikiLink",
+		label: "Wiki URL",
+		type: "url",
+		required: true,
+	},
+];
+
 interface ItemFormProps {
 	allItems: VaultItem[];
 	editingItem?: VaultItem | null;
@@ -113,182 +226,91 @@ const ItemForm: React.FC<ItemFormProps> = ({
 		}
 	};
 
-	return (
-		<form onSubmit={handleSubmit}>
-			<label>
-				Name:
-				<input
-					type="text"
-					name="name"
-					value={formData.name}
-					onChange={handleChange}
-					required
-				/>
-			</label>
+	const renderFormField = (field: FormField) => {
+		const { name, label, type, required, options } = field;
 
-			<label>
-				Base:
-				<input
-					type="text"
-					name="base"
-					value={formData.base}
-					onChange={handleChange}
-					required
-				/>
-			</label>
+		if (type === "custom-select" && name === "obtainMethod") {
+			return (
+				<label className={styles.label} key={name}>
+					{label}:
+					<div className={styles.obtainMethodContainer}>
+						<select
+							className={styles.select}
+							value={showCustomInput ? "custom" : formData.obtainMethod}
+							onChange={handleObtainMethodChange}
+							required={required}
+						>
+							<option value="">Select obtain method...</option>
+							{obtainMethods.map((method) => (
+								<option key={method} value={method}>
+									{method}
+								</option>
+							))}
+							<option value="custom">+ Add new obtain method</option>
+						</select>
+						{showCustomInput && (
+							<input
+								className={styles.input}
+								type="text"
+								value={customObtainMethod}
+								onChange={(e) => setCustomObtainMethod(e.target.value)}
+								placeholder="Enter new obtain method"
+							/>
+						)}
+					</div>
+				</label>
+			);
+		}
 
-			<label>
-				Category:
-				<input
-					type="text"
-					name="category"
-					value={formData.category}
-					onChange={handleChange}
-					required
-				/>
-			</label>
-
-			<label>
-				League:
-				<input
-					type="text"
-					name="league"
-					value={formData.league}
-					onChange={handleChange}
-					required
-				/>
-			</label>
-
-			<label>
-				Obtain Method:
-				<div className={styles.obtainMethodContainer}>
+		if (type === "select" && options) {
+			return (
+				<label className={styles.label} key={name}>
+					{label}:
 					<select
-						value={showCustomInput ? "custom" : formData.obtainMethod}
-						onChange={handleObtainMethodChange}
-						required
+						className={styles.select}
+						name={name}
+						value={(formData[name] as boolean).toString()}
+						onChange={handleChange}
+						required={required}
 					>
-						<option value="">Select obtain method...</option>
-						{obtainMethods.map((method) => (
-							<option key={method} value={method}>
-								{method}
+						{options.map((option) => (
+							<option key={option.value} value={option.value}>
+								{option.label}
 							</option>
 						))}
-						<option value="custom">+ Add new obtain method</option>
 					</select>
-					{showCustomInput && (
-						<input
-							type="text"
-							value={customObtainMethod}
-							onChange={(e) => setCustomObtainMethod(e.target.value)}
-							placeholder="Enter new obtain method"
-						/>
-					)}
-				</div>
-			</label>
+				</label>
+			);
+		}
 
-			<label>
-				Owned:
-				<select
-					name="owned"
-					value={formData.owned.toString()}
-					onChange={handleChange}
-					required
-				>
-					<option value="false">No</option>
-					<option value="true">Yes</option>
-				</select>
-			</label>
-
-			<label>
-				Obtained During League:
-				<select
-					name="obtainedDuringLeague"
-					value={formData.obtainedDuringLeague.toString()}
-					onChange={handleChange}
-					required
-				>
-					<option value="false">No</option>
-					<option value="true">Yes</option>
-				</select>
-			</label>
-
-			<label>
-				Bosses:
-				<select
-					name="bosses"
-					value={formData.bosses.toString()}
-					onChange={handleChange}
-					required
-				>
-					<option value="false">No</option>
-					<option value="true">Yes</option>
-				</select>
-			</label>
-
-			<label>
-				Special:
-				<select
-					name="special"
-					value={formData.special.toString()}
-					onChange={handleChange}
-					required
-				>
-					<option value="false">No</option>
-					<option value="true">Yes</option>
-				</select>
-			</label>
-
-			<label>
-				Foil:
-				<select
-					name="foil"
-					value={formData.foil.toString()}
-					onChange={handleChange}
-					required
-				>
-					<option value="false">No</option>
-					<option value="true">Yes</option>
-				</select>
-			</label>
-
-			<label>
-				Disabled:
-				<select
-					name="disabled"
-					value={(formData.disabled || false).toString()}
-					onChange={handleChange}
-					required
-				>
-					<option value="false">No</option>
-					<option value="true">Yes</option>
-				</select>
-			</label>
-
-			<label>
-				Image URL:
+		return (
+			<label key={name} className={styles.label}>
+				{label}:
 				<input
-					type="url"
-					name="imageLink"
-					value={formData.imageLink}
+					className={styles.input}
+					type={type}
+					name={name}
+					value={formData[name] as string}
 					onChange={handleChange}
-					required
+					required={required}
 				/>
 			</label>
+		);
+	};
 
-			<label>
-				Wiki URL:
-				<input
-					type="url"
-					name="wikiLink"
-					value={formData.wikiLink}
-					onChange={handleChange}
-					required
-				/>
-			</label>
+	return (
+		<form className={styles.form} onSubmit={handleSubmit}>
+			{itemFormFields.map(renderFormField)}
 
-			<button type="submit">{submitLabel}</button>
+			<button className={styles.submitButton} type="submit">
+				{submitLabel}
+			</button>
 			{onCancel && (
-				<button type="button" onClick={onCancel}>
+				<button
+					className={styles.cancelButton}
+					type="button"
+					onClick={onCancel}
+				>
 					Cancel
 				</button>
 			)}

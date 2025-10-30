@@ -122,15 +122,6 @@ a:hover {
 	background-color: var(--color-danger-hover);
 }
 
-.btn-warning {
-	background-color: var(--color-warning);
-	color: var(--bg-primary);
-}
-
-.btn-warning:hover {
-	background-color: var(--color-warning-hover);
-}
-
 /* ======================
    FORM ELEMENTS
 ====================== */

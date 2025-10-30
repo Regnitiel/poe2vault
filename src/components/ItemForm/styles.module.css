@@ -1,0 +1,68 @@
+.buttons {
+	display: flex;
+	gap: var(--spacing-md);
+	margin-top: var(--spacing-lg);
+}
+
+.cancelButton {
+	flex: 1;
+	padding: 0.6rem 1rem;
+	border-radius: 4px;
+	border: none;
+	background-color: var(--color-secondary);
+	color: #f1f5f9;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.cancelButton:hover {
+	background-color: var(--color-secondary-hover);
+}
+
+.submitButton {
+	flex: 1;
+	padding: 0.6rem 1rem;
+	border-radius: 4px;
+	border: none;
+	background-color: var(--color-success);
+	color: #f1f5f9;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.submitButton:hover {
+	background-color: var(--color-success-hover);
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+}
+
+.select,
+.input {
+	padding: 0.4rem 0.6rem;
+	border-radius: 4px;
+	border: 1px solid #334155;
+	background-color: #0f172a;
+	color: #f1f5f9;
+	margin-top: 0.2rem;
+}
+
+.label {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 0.8rem;
+	color: #f1f5f9;
+}
+
+.obtainMethodContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.obtainMethodContainer select {
+	margin-top: 0.2rem;
+}
