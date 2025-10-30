@@ -12,7 +12,6 @@ function renderItems(
 	updateHomeMetrics
 ) {
 	let filtered = allItems;
-	let isCategoryFilter = false;
 	
 	if (currentFilter !== "all") {
 		if (currentFilter === "Bosses") {
@@ -25,7 +24,6 @@ function renderItems(
 		} else {
 			// Category filter
 			filtered = filtered.filter((i) => i.category === currentFilter);
-			isCategoryFilter = true;
 		}
 	}
 	const groupedItems = {};
