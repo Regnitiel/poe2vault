@@ -119,31 +119,36 @@ export const calculateCategoryMetrics = (
 	return result;
 };
 
-export const searchItems = (items: VaultItem[], query: string): VaultItem[] => {
+export const searchItems = (
+	items: VaultItem[],
+	query: string
+): Array<{ item: VaultItem; originalIndex: number }> => {
 	if (!query.trim()) return [];
 
 	const lowerQuery = query.toLowerCase().trim();
 
-	return items.filter((item) => {
-		const searchableProperties = [
-			item.name,
-			item.league,
-			item.base,
-			item.category,
-			item.obtainMethod,
-		].map((prop) => (prop || "").toLowerCase());
+	return items
+		.map((item, originalIndex) => ({ item, originalIndex }))
+		.filter(({ item }) => {
+			const searchableProperties = [
+				item.name,
+				item.league,
+				item.base,
+				item.category,
+				item.obtainMethod,
+			].map((prop) => (prop || "").toLowerCase());
 
-		// Check if query matches any of the basic properties
-		const basicMatch = searchableProperties.some((prop) =>
-			prop.includes(lowerQuery)
-		);
+			// Check if query matches any of the basic properties
+			const basicMatch = searchableProperties.some((prop) =>
+				prop.includes(lowerQuery)
+			);
 
-		// Special handling for "disabled" search
-		const isDisabledSearch = lowerQuery === "disabled";
-		const matchesDisabled = isDisabledSearch && item.disabled;
+			// Special handling for "disabled" search
+			const isDisabledSearch = lowerQuery === "disabled";
+			const matchesDisabled = isDisabledSearch && item.disabled;
 
-		return basicMatch || matchesDisabled;
-	});
+			return basicMatch || matchesDisabled;
+		});
 };
 
 export const getUniqueObtainMethods = (items: VaultItem[]): string[] => {

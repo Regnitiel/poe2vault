@@ -4,13 +4,25 @@ import { searchItems } from "../../utils/helpers";
 import { openExternalLink, getImagePath } from "../../utils/data";
 import ItemForm from "../ItemForm/ItemForm";
 import styles from "./styles.module.css";
+import ItemCard from "../ItemCard/ItemCard";
 
 interface UtilsProps {
 	allItems: VaultItem[];
 	onAddItem: (item: VaultItem) => void;
+	onToggleOwned: (index: number) => void;
+	onToggleObtainedDuringLeague: (index: number) => void;
+	onToggleFoil: (index: number) => void;
+	onEdit: (index: number) => void;
 }
 
-const Utils: React.FC<UtilsProps> = ({ allItems, onAddItem }) => {
+const Utils: React.FC<UtilsProps> = ({
+	allItems,
+	onAddItem,
+	onToggleOwned,
+	onToggleObtainedDuringLeague,
+	onToggleFoil,
+	onEdit,
+}) => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const searchResults = searchItems(allItems, searchQuery);
 
@@ -47,63 +59,16 @@ const Utils: React.FC<UtilsProps> = ({ allItems, onAddItem }) => {
 
 			{/* SEARCH RESULTS */}
 			<div id="searchResults" className={styles.searchResults}>
-				{searchResults.map((item, index) => (
-					<div
-						key={`search-${item.name}-${index}`}
-						className={`item-card${item.disabled ? " disabled" : ""}`}
-						style={{
-							backgroundColor: item.owned
-								? "rgba(21,128,61,0.4)"
-								: "rgba(153,27,27,0.4)",
-							display: "flex",
-							alignItems: "flex-start",
-						}}
-					>
-						<div className="item-info" style={{ flex: 1 }}>
-							<h4
-								className="item-name"
-								onClick={() => handleNameClick(item.wikiLink)}
-								style={{
-									cursor: "pointer",
-									textDecoration: "underline",
-									color: "#fbbf24",
-								}}
-							>
-								{item.name}
-							</h4>
-							<p>
-								<strong>Base:</strong> {item.base}
-							</p>
-							<p>
-								<strong>Category:</strong> {item.category}
-							</p>
-							<p>
-								<strong>League:</strong> {item.league}
-							</p>
-							<p>
-								<strong>Obtain:</strong> {item.obtainMethod}
-							</p>
-							<p>
-								<strong>Boss:</strong> {item.bosses ? "Yes" : "No"}
-							</p>
-							<p>
-								<strong>Special:</strong> {item.special ? "Yes" : "No"}
-							</p>
-							<p>
-								<strong>Disabled:</strong> {item.disabled ? "Yes" : "No"}
-							</p>
-						</div>
-						<div
-							className="item-image"
-							style={{ flexShrink: 0, marginLeft: "1rem" }}
-						>
-							<img
-								src={getImagePath(item.imageLink)}
-								alt={item.name}
-								style={{ borderRadius: "6px" }}
-							/>
-						</div>
-					</div>
+				{searchResults.map(({ item, originalIndex }) => (
+					<ItemCard
+						key={`search-${item.name}-${originalIndex}`}
+						item={item}
+						index={originalIndex}
+						onToggleOwned={onToggleOwned}
+						onToggleObtainedDuringLeague={onToggleObtainedDuringLeague}
+						onToggleFoil={onToggleFoil}
+						onEdit={onEdit}
+					></ItemCard>
 				))}
 			</div>
 		</section>
