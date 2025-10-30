@@ -14,7 +14,7 @@
 	background-color: var(--item-owned);
 }
 
-.card.obtained {
+.card.obtainedDuringLeague {
 	background-color: var(--item-obtained);
 }
 
