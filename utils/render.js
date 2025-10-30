@@ -386,7 +386,7 @@ function updateProgressBars(allItems) {
 			if (isCategory) {
 				// For categories, we need to trigger a custom filter
 				// This will be handled by updating the filter and re-rendering
-				const event = new CustomEvent('filterChange', { detail: { filter, isCategory: true } });
+				const event = new CustomEvent('filterChange', { detail: { filter } });
 				document.dispatchEvent(event);
 			} else {
 				// For standard filters (all, leagues, bosses, special)

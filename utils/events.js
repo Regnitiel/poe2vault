@@ -107,25 +107,6 @@ function setupEventListeners(params) {
 		);
 	});
 
-	function populateObtainMethods() {
-		const existingMethods = new Set(allItems.map(item => item.obtainMethod));
-		const methodOptions = [...existingMethods]
-			.filter(method => method) // Remove empty methods
-			.sort() // Sort alphabetically
-			.map(method => `<option value="${method}">${method}</option>`)
-			.join('');
-		
-		// Clear and repopulate the select
-		obtainMethodSelect.innerHTML = `
-			<option value="">Select obtain method...</option>
-			${methodOptions}
-			<option value="custom">+ Add new obtain method</option>
-		`;
-	}
-
-	// Initial population of obtain methods
-	populateObtainMethods();
-
 	// Toggle custom input based on selection
 	obtainMethodSelect.addEventListener("change", () => {
 		const isCustom = obtainMethodSelect.value === "custom";
