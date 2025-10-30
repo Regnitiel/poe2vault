@@ -75,6 +75,26 @@ function setupEventListeners(params) {
 		});
 	});
 
+	// Handle custom filter changes (for categories)
+	document.addEventListener('filterChange', (e) => {
+		const { filter, isCategory } = e.detail;
+		if (isCategory) {
+			params.currentFilter = filter;
+			params.isCategoryFilter = true;
+			renderItems(
+				allItems,
+				params.currentFilter,
+				hideOwnedCheckbox,
+				itemList,
+				vaultBtns,
+				renderItems,
+				openEditModal,
+				saveVaultData,
+				updateHomeMetrics
+			);
+		}
+	});
+
 	// Hide owned checkbox
 	hideOwnedCheckbox.addEventListener("change", () => {
 		renderItems(

@@ -97,6 +97,79 @@ main > section.active {
 }
 
 /* ======================
+   PROGRESS BARS
+====================== */
+.progress-bar-item {
+	margin-bottom: 1.5rem;
+}
+
+.progress-bar-label {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.5rem;
+	font-size: 1.1rem;
+	font-weight: bold;
+	color: #f1f5f9;
+}
+
+.progress-bar-name {
+	cursor: pointer;
+	transition: color 0.2s;
+}
+
+.progress-bar-name:hover {
+	color: #fbbf24;
+}
+
+.progress-bar-stats {
+	color: #cbd5e1;
+	font-size: 0.95rem;
+}
+
+.progress-bar-container {
+	width: 100%;
+	height: 30px;
+	background-color: #1e293b;
+	border-radius: 8px;
+	overflow: hidden;
+	position: relative;
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.progress-bar-fill {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size: 0.9rem;
+	color: #0f172a;
+	transition: width 0.3s ease;
+	position: relative;
+}
+
+.progress-bar-fill::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(
+		to bottom,
+		rgba(255, 255, 255, 0.2),
+		rgba(255, 255, 255, 0) 50%,
+		rgba(0, 0, 0, 0.1)
+	);
+}
+
+.progress-bar-text {
+	position: relative;
+	z-index: 1;
+}
+
+/* ======================
      VAULT LAYOUT
   ====================== */
 .vault-controls {

@@ -12,11 +12,21 @@ function renderItems(
 	updateHomeMetrics
 ) {
 	let filtered = allItems;
+	let isCategoryFilter = false;
+	
 	if (currentFilter !== "all") {
-		if (currentFilter === "Bosses") filtered = filtered.filter((i) => i.bosses);
-		else if (currentFilter === "Special")
+		if (currentFilter === "Bosses") {
+			filtered = filtered.filter((i) => i.bosses);
+		} else if (currentFilter === "Special") {
 			filtered = filtered.filter((i) => i.special);
-		else filtered = filtered.filter((i) => i.league === currentFilter);
+		} else if (currentFilter === "0.1" || currentFilter === "0.2" || currentFilter === "0.3") {
+			// League filter
+			filtered = filtered.filter((i) => i.league === currentFilter);
+		} else {
+			// Category filter
+			filtered = filtered.filter((i) => i.category === currentFilter);
+			isCategoryFilter = true;
+		}
 	}
 	const groupedItems = {};
 	let displayFiltered = [...filtered];
@@ -227,6 +237,169 @@ function updateHomeMetrics(allItems) {
 		obtainedDuringLeagueSpecial;
 	document.getElementById("remainingSpecial").textContent =
 		totalSpecial - ownedSpecial;
+	
+	// Update progress bars
+	updateProgressBars(allItems);
+}
+
+function getProgressBarColor(percentage) {
+	if (percentage <= 25) {
+		return '#ef4444'; // red
+	} else if (percentage <= 50) {
+		return '#f97316'; // orange
+	} else if (percentage <= 75) {
+		return '#eab308'; // yellow
+	} else {
+		return '#22c55e'; // green
+	}
+}
+
+function updateProgressBars(allItems) {
+	const container = document.getElementById('progressBarsContainer');
+	if (!container) return;
+	
+	const progressData = [];
+	
+	// Total progress
+	const totalUniques = allItems.length;
+	const ownedUniques = allItems.filter((i) => i.owned).length;
+	const totalPercentage = totalUniques > 0 ? Math.round((ownedUniques / totalUniques) * 100) : 0;
+	progressData.push({
+		name: 'Total',
+		owned: ownedUniques,
+		total: totalUniques,
+		percentage: totalPercentage,
+		filter: 'all'
+	});
+	
+	// By league
+	const leagues = ["0.1", "0.2", "0.3"];
+	leagues.forEach((league) => {
+		const leagueItems = allItems.filter((i) => i.league === league && !i.bosses && !i.special);
+		const total = leagueItems.length;
+		const owned = leagueItems.filter((i) => i.owned).length;
+		const percentage = total > 0 ? Math.round((owned / total) * 100) : 0;
+		progressData.push({
+			name: `League ${league}`,
+			owned,
+			total,
+			percentage,
+			filter: league
+		});
+	});
+	
+	// Bosses
+	const bossItems = allItems.filter((i) => i.bosses);
+	const totalBosses = bossItems.length;
+	const ownedBosses = bossItems.filter((i) => i.owned).length;
+	const bossPercentage = totalBosses > 0 ? Math.round((ownedBosses / totalBosses) * 100) : 0;
+	progressData.push({
+		name: 'Bosses',
+		owned: ownedBosses,
+		total: totalBosses,
+		percentage: bossPercentage,
+		filter: 'Bosses'
+	});
+	
+	// Special
+	const specialItems = allItems.filter((i) => i.special);
+	const totalSpecial = specialItems.length;
+	const ownedSpecial = specialItems.filter((i) => i.owned).length;
+	const specialPercentage = totalSpecial > 0 ? Math.round((ownedSpecial / totalSpecial) * 100) : 0;
+	progressData.push({
+		name: 'Special',
+		owned: ownedSpecial,
+		total: totalSpecial,
+		percentage: specialPercentage,
+		filter: 'Special'
+	});
+	
+	// By category
+	const categories = {};
+	allItems.forEach((item) => {
+		if (!categories[item.category]) {
+			categories[item.category] = { total: 0, owned: 0 };
+		}
+		categories[item.category].total++;
+		if (item.owned) {
+			categories[item.category].owned++;
+		}
+	});
+	
+	Object.keys(categories).sort().forEach((category) => {
+		const { total, owned } = categories[category];
+		const percentage = total > 0 ? Math.round((owned / total) * 100) : 0;
+		progressData.push({
+			name: category,
+			owned,
+			total,
+			percentage,
+			filter: category,
+			isCategory: true
+		});
+	});
+	
+	// Render progress bars
+	let html = '';
+	progressData.forEach((data) => {
+		const color = getProgressBarColor(data.percentage);
+		html += `
+			<div class="progress-bar-item">
+				<div class="progress-bar-label">
+					<span class="progress-bar-name" data-filter="${data.filter}" data-is-category="${data.isCategory || false}">
+						${data.name}
+					</span>
+					<span class="progress-bar-stats">${data.owned}/${data.total}</span>
+				</div>
+				<div class="progress-bar-container">
+					<div class="progress-bar-fill" style="width: ${data.percentage}%; background-color: ${color};">
+						<span class="progress-bar-text">${data.percentage}%</span>
+					</div>
+				</div>
+			</div>
+		`;
+	});
+	
+	container.innerHTML = html;
+	
+	// Add click handlers for navigation
+	container.querySelectorAll('.progress-bar-name').forEach((el) => {
+		el.addEventListener('click', () => {
+			const filter = el.dataset.filter;
+			const isCategory = el.dataset.isCategory === 'true';
+			
+			// Switch to vault tab
+			const vaultTab = document.querySelector('.tab-btn[data-tab="vault"]');
+			const homeTab = document.querySelector('.tab-btn[data-tab="home"]');
+			const vaultSection = document.getElementById('vault');
+			const homeSection = document.getElementById('home');
+			
+			if (vaultTab && homeTab && vaultSection && homeSection) {
+				homeTab.classList.remove('active');
+				vaultTab.classList.add('active');
+				homeSection.classList.remove('active');
+				vaultSection.classList.add('active');
+			}
+			
+			// Set the filter
+			const vaultBtns = document.querySelectorAll('.vault-btn');
+			vaultBtns.forEach((btn) => btn.classList.remove('active'));
+			
+			if (isCategory) {
+				// For categories, we need to trigger a custom filter
+				// This will be handled by updating the filter and re-rendering
+				const event = new CustomEvent('filterChange', { detail: { filter, isCategory: true } });
+				document.dispatchEvent(event);
+			} else {
+				// For standard filters (all, leagues, bosses, special)
+				const targetBtn = Array.from(vaultBtns).find((btn) => btn.dataset.filter === filter);
+				if (targetBtn) {
+					targetBtn.classList.add('active');
+					targetBtn.click();
+				}
+			}
+		});
+	});
 }
 
 module.exports = { renderItems, updateHomeMetrics };
