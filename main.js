@@ -25,12 +25,21 @@ function createWindow() {
 		},
 	});
 
-	// Always load from webpack dev server for live development
-	console.log("Loading URL: http://localhost:3000");
+	// Load from dist files in production, webpack dev server in development
+	const isDev = process.env.NODE_ENV === "development";
 
-	win.loadURL("http://localhost:3000").catch((err) => {
-		console.error("Failed to load URL:", err);
-	});
+	if (isDev) {
+		console.log("Loading URL: http://localhost:3000");
+		win.loadURL("http://localhost:3000").catch((err) => {
+			console.error("Failed to load URL:", err);
+		});
+	} else {
+		const distPath = path.join(__dirname, "dist", "index.html");
+		console.log("Loading file:", distPath);
+		win.loadFile(distPath).catch((err) => {
+			console.error("Failed to load file:", err);
+		});
+	}
 
 	// Add event listeners for debugging
 	win.webContents.on(

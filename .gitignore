@@ -1,10 +1,5 @@
 node_modules/
 dist/
-VaultApp-darwin-x64/
-*.log
-.vscode/
-vaultData.json
+builds/
+releases/
 .DS_Store
-npm-debug.log*
-coverage/
-.env
