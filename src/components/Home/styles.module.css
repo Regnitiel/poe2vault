@@ -23,3 +23,10 @@
 .table td {
 	background-color: var(--bg-primary);
 }
+
+.categoryGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 12px;
+	margin-top: 16px;
+}

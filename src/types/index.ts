@@ -43,7 +43,38 @@ export interface CategoryMetrics {
 	Special: LeagueMetrics;
 }
 
-export type FilterType = "all" | "0.1" | "0.2" | "0.3" | "Bosses" | "Special";
+export type FilterType =
+	| "all"
+	| "0.1"
+	| "0.2"
+	| "0.3"
+	| "Bosses"
+	| "Special"
+	| "Amulet"
+	| "Belt"
+	| "Body"
+	| "Boots"
+	| "Bow"
+	| "Buckler"
+	| "Charm"
+	| "Crossbow"
+	| "Flask"
+	| "Focus"
+	| "Gloves"
+	| "Helm"
+	| "Jewel"
+	| "One Hand Mace"
+	| "Quartertaff"
+	| "Quiver"
+	| "Relic"
+	| "Ring"
+	| "Sceptre"
+	| "Shield"
+	| "Spear"
+	| "Staff"
+	| "Tablet"
+	| "Two Hand Mace"
+	| "Wand";
 
 export type TabType = "home" | "vault" | "utils";
 

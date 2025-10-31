@@ -1,99 +1,99 @@
 import React from "react";
-import { VaultItem } from "../../types";
+import { VaultItem, TabType, FilterType } from "../../types";
 import {
 	calculateHomeMetrics,
 	calculateCategoryMetrics,
+	calculateItemCategoryMetrics,
 } from "../../utils/helpers";
+import ProgressBar from "../ProgressBar/ProgressBar";
 import styles from "./styles.module.css";
 
 interface HomeProps {
 	allItems: VaultItem[];
+	onTabChange?: (tab: TabType) => void;
+	onFilterChange?: (filter: FilterType) => void;
 }
 
-const Home: React.FC<HomeProps> = ({ allItems }) => {
+const Home: React.FC<HomeProps> = ({
+	allItems,
+	onTabChange,
+	onFilterChange,
+}) => {
 	const homeMetrics = calculateHomeMetrics(allItems);
 	const categoryMetrics = calculateCategoryMetrics(allItems);
+	const itemCategoryMetrics = calculateItemCategoryMetrics(allItems);
+
+	const handleProgressBarClick = (tab: TabType, filter: FilterType) => {
+		if (onTabChange && onFilterChange) {
+			onTabChange(tab);
+			onFilterChange(filter);
+		}
+	};
+
+	const handleCategoryClick = (category: string) => {
+		if (onTabChange && onFilterChange) {
+			onTabChange("vault");
+			onFilterChange(category as FilterType);
+		}
+	};
 
 	return (
 		<section id="home" className="active">
-			{/* General Metrics Table */}
+			{/* Progress Bar */}
 			<div className={styles.metrics}>
-				<h2 style={{ color: "#ff6b6b" }}>
-					📊 General Metrics (App is Working!) 📊
-				</h2>
-				<table id="generalMetrics" className={styles.table}>
-					<tbody>
-						<tr>
-							<th>Metrics</th>
-							<th>Value</th>
-						</tr>
-						<tr>
-							<td>Total uniques in game</td>
-							<td>{homeMetrics.totalUniques}</td>
-						</tr>
-						<tr>
-							<td>Collected during current league</td>
-							<td>{homeMetrics.collectedCurrentLeague}</td>
-						</tr>
-						<tr>
-							<td>Owned uniques</td>
-							<td>{homeMetrics.ownedUniques}</td>
-						</tr>
-						<tr>
-							<td>Remaining uniques</td>
-							<td>{homeMetrics.remainingUniques}</td>
-						</tr>
-					</tbody>
-				</table>
+				<h2 style={{ color: "#f1f5f9" }}>🎯 Collection Progress 🎯</h2>
+				<ProgressBar
+					owned={homeMetrics.ownedUniques}
+					total={homeMetrics.totalUniques}
+					label="Total Uniques"
+					onClick={() => handleProgressBarClick("vault", "all")}
+				/>
+				<ProgressBar
+					owned={categoryMetrics["0.1"].owned}
+					total={categoryMetrics["0.1"].total}
+					label="0.1 Uniques"
+					onClick={() => handleProgressBarClick("vault", "0.1")}
+				/>
+				<ProgressBar
+					owned={categoryMetrics["0.2"].owned}
+					total={categoryMetrics["0.2"].total}
+					label="0.2 Uniques"
+					onClick={() => handleProgressBarClick("vault", "0.2")}
+				/>
+				<ProgressBar
+					owned={categoryMetrics["0.3"].owned}
+					total={categoryMetrics["0.3"].total}
+					label="0.3 Uniques"
+					onClick={() => handleProgressBarClick("vault", "0.3")}
+				/>
+				<ProgressBar
+					owned={categoryMetrics["Bosses"].owned}
+					total={categoryMetrics["Bosses"].total}
+					label="Bosses Uniques"
+					onClick={() => handleProgressBarClick("vault", "Bosses")}
+				/>
+				<ProgressBar
+					owned={categoryMetrics["Special"].owned}
+					total={categoryMetrics["Special"].total}
+					label="Special Uniques"
+					onClick={() => handleProgressBarClick("vault", "Special")}
+				/>
 			</div>
 
-			{/* League/Special/Bosses Metrics Table */}
+			{/* Category Progress Bars */}
 			<div className={styles.metrics}>
-				<h2>By League / Special / Bosses</h2>
-				<table id="leagueMetrics" className={styles.table}>
-					<tbody>
-						<tr>
-							<th>Metrics</th>
-							<th>0.1</th>
-							<th>0.2</th>
-							<th>0.3</th>
-							<th>Bosses</th>
-							<th>Special</th>
-						</tr>
-						<tr>
-							<td>Total</td>
-							<td>{categoryMetrics["0.1"].total}</td>
-							<td>{categoryMetrics["0.2"].total}</td>
-							<td>{categoryMetrics["0.3"].total}</td>
-							<td>{categoryMetrics.Bosses.total}</td>
-							<td>{categoryMetrics.Special.total}</td>
-						</tr>
-						<tr>
-							<td>Owned</td>
-							<td>{categoryMetrics["0.1"].owned}</td>
-							<td>{categoryMetrics["0.2"].owned}</td>
-							<td>{categoryMetrics["0.3"].owned}</td>
-							<td>{categoryMetrics.Bosses.owned}</td>
-							<td>{categoryMetrics.Special.owned}</td>
-						</tr>
-						<tr>
-							<td>League</td>
-							<td>{categoryMetrics["0.1"].league}</td>
-							<td>{categoryMetrics["0.2"].league}</td>
-							<td>{categoryMetrics["0.3"].league}</td>
-							<td>{categoryMetrics.Bosses.league}</td>
-							<td>{categoryMetrics.Special.league}</td>
-						</tr>
-						<tr>
-							<td>Remaining</td>
-							<td>{categoryMetrics["0.1"].remaining}</td>
-							<td>{categoryMetrics["0.2"].remaining}</td>
-							<td>{categoryMetrics["0.3"].remaining}</td>
-							<td>{categoryMetrics.Bosses.remaining}</td>
-							<td>{categoryMetrics.Special.remaining}</td>
-						</tr>
-					</tbody>
-				</table>
+				<h2 style={{ color: "#f1f5f9" }}>📋 Progress by Category 📋</h2>
+				<div className={styles.categoryGrid}>
+					{Object.entries(itemCategoryMetrics).map(([category, metrics]) => (
+						<ProgressBar
+							key={category}
+							owned={metrics.owned}
+							total={metrics.total}
+							label={category}
+							onClick={() => handleCategoryClick(category)}
+						/>
+					))}
+				</div>
 			</div>
 		</section>
 	);

@@ -14,7 +14,14 @@ export const filterItems = (
 	if (filter === "all") return items;
 	if (filter === "Bosses") return items.filter((item) => item.bosses);
 	if (filter === "Special") return items.filter((item) => item.special);
-	return items.filter((item) => item.league === filter);
+
+	// Check if filter is a league
+	if (filter === "0.1" || filter === "0.2" || filter === "0.3") {
+		return items.filter((item) => item.league === filter);
+	}
+
+	// Otherwise, filter by category
+	return items.filter((item) => item.category === filter);
 };
 
 export const groupItemsByCategory = (
@@ -117,6 +124,33 @@ export const calculateCategoryMetrics = (
 	};
 
 	return result;
+};
+
+export const calculateItemCategoryMetrics = (
+	items: VaultItem[]
+): Record<string, { total: number; owned: number }> => {
+	const categoryMetrics: Record<string, { total: number; owned: number }> = {};
+
+	items.forEach((item) => {
+		const category = item.category;
+		if (!categoryMetrics[category]) {
+			categoryMetrics[category] = { total: 0, owned: 0 };
+		}
+		categoryMetrics[category].total++;
+		if (item.owned) {
+			categoryMetrics[category].owned++;
+		}
+	});
+
+	// Sort categories by name for consistent display
+	const sortedCategories: Record<string, { total: number; owned: number }> = {};
+	Object.keys(categoryMetrics)
+		.sort()
+		.forEach((category) => {
+			sortedCategories[category] = categoryMetrics[category];
+		});
+
+	return sortedCategories;
 };
 
 export const searchItems = (

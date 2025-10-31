@@ -5,12 +5,29 @@
 	padding: var(--spacing-md);
 }
 
+.tableLayout {
+	display: flex;
+	gap: var(--spacing-lg);
+	width: 100%;
+	max-width: 1400px;
+	align-items: flex-start;
+}
+
+.leftColumn {
+	flex: 0 0 500px;
+	min-width: 400px;
+}
+
+.rightColumn {
+	flex: 1;
+	min-width: 600px;
+}
+
 .section {
 	margin-top: var(--spacing-md);
 	padding: var(--spacing-sm);
 	border: 1px solid var(--bg-tertiary);
 	border-radius: var(--radius-lg);
-	max-width: 700px;
 	width: 100%;
 	text-align: left;
 }
@@ -27,4 +44,24 @@
 	gap: var(--spacing-md);
 	margin-top: var(--spacing-md);
 	width: 100%;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 1200px) {
+	.tableLayout {
+		flex-direction: column;
+		gap: var(--spacing-md);
+	}
+
+	.leftColumn,
+	.rightColumn {
+		flex: none;
+		min-width: unset;
+		width: 100%;
+	}
+
+	.leftColumn {
+		max-width: 700px;
+		margin: 0 auto;
+	}
 }

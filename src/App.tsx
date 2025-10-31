@@ -47,7 +47,13 @@ const App: React.FC = () => {
 	const renderCurrentTab = () => {
 		switch (currentTab) {
 			case "home":
-				return <Home allItems={allItems} />;
+				return (
+					<Home
+						allItems={allItems}
+						onTabChange={setCurrentTab}
+						onFilterChange={setCurrentFilter}
+					/>
+				);
 			case "vault":
 				return (
 					<Vault
