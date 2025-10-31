@@ -1,0 +1,56 @@
+/* ======================
+   CSS CUSTOM PROPERTIES (VARIABLES)
+====================== */
+:root {
+	/* Colors */
+	--color-primary: #fbbf24;
+	--color-primary-hover: #fcd34d;
+	--color-secondary: #3b82f6;
+	--color-secondary-hover: #60a5fa;
+	--color-success: #10b981;
+	--color-success-hover: #34d399;
+	--color-danger: #ef4444;
+	--color-danger-hover: #f87171;
+
+	/* Background Colors */
+	--bg-primary: #0f172a;
+	--bg-secondary: #1e293b;
+	--bg-tertiary: #334155;
+
+	/* Item Status Colors */
+	--item-owned: rgba(21, 128, 61, 0.4);
+	--item-obtained: rgba(59, 130, 246, 0.4);
+	--item-foil: rgba(251, 191, 36, 0.3);
+	--item-not-owned: rgba(205, 18, 18, 0.4);
+
+	/* Text Colors */
+	--text-primary: #f1f5f9;
+	--text-secondary: #cbd5e1;
+	--text-muted: #94a3b8;
+
+	/* Spacing */
+	--spacing-xs: 0.25rem;
+	--spacing-sm: 0.5rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+
+	/* Border Radius */
+	--radius-sm: 4px;
+	--radius-md: 6px;
+	--radius-lg: 8px;
+
+	/* Shadows */
+	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+	/* Transitions */
+	--transition-fast: 0.15s ease;
+	--transition-normal: 0.2s ease;
+	--transition-slow: 0.3s ease;
+
+	/* Z-index layers */
+	--z-sticky: 100;
+	--z-modal: 1000;
+}

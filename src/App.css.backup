@@ -55,16 +55,11 @@ main {
 	padding: 1rem;
 }
 
-/* Hide all sections by default */
+/* React components are conditionally rendered, no need for CSS hiding */
 main > section {
-	display: none;
+	display: flex;
 	flex-direction: column;
 	/* align-items: center; optional, for centering content */
-}
-
-/* Show only the active section */
-main > section.active {
-	display: flex;
 }
 
 /* ======================
@@ -232,7 +227,7 @@ main > section.active {
 .item-info button.obtained-btn,
 .item-info button.owned-btn,
 .item-info button.foil-btn,
-item-info button.edit-btn {
+.item-info button.edit-btn {
 	padding: 0.3rem 0.5rem;
 	border: none;
 	border-radius: 4px;
@@ -256,7 +251,7 @@ item-info button.edit-btn {
 .item-info button.obtained-btn:hover,
 .item-info button.owned-btn:hover,
 .item-info button.foil-btn:hover,
-item-info button.edit-btn:hover {
+.item-info button.edit-btn:hover {
 	transform: scale(1.05);
 }
 
@@ -319,15 +314,10 @@ item-info button.edit-btn:hover {
    UTILS SECTION
 ====================== */
 #utils {
-	display: none; /* hide by default */
+	display: flex;
 	flex-direction: column;
 	align-items: center; /* center all children horizontally */
 	padding: 1rem;
-}
-
-/* Only show when active */
-#utils.active {
-	display: flex;
 }
 
 .utils-section {

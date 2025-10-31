@@ -1,0 +1,69 @@
+.controls {
+	margin-bottom: var(--spacing-md);
+	display: flex;
+	justify-content: center;
+	padding: var(--spacing-sm);
+}
+
+.checkboxLabel {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	font-size: 1.1rem;
+	font-weight: bold;
+	color: var(--text-primary);
+	cursor: pointer;
+	user-select: none;
+}
+
+.checkboxLabel input[type="checkbox"] {
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	accent-color: var(--color-primary);
+}
+
+.container {
+	display: flex;
+	gap: var(--spacing-md);
+	flex-wrap: wrap;
+}
+
+.sidebar {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+	min-width: 140px;
+}
+
+.sidebarButton {
+	background-color: var(--bg-secondary);
+	color: var(--text-primary);
+	border: none;
+	padding: 0.4rem 0.8rem;
+	cursor: pointer;
+	border-radius: var(--radius-sm);
+	font-weight: bold;
+	font-size: 20px;
+	transition: var(--transition-normal);
+}
+
+.sidebarButton.active,
+.sidebarButton:hover {
+	background-color: var(--bg-tertiary);
+}
+
+.items {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-md);
+	flex: 1;
+	align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+	.container {
+		flex-direction: column;
+	}
+}

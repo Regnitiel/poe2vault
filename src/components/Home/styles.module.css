@@ -1,0 +1,25 @@
+.metrics {
+	margin: var(--spacing-md) auto;
+	max-width: 800px;
+	text-align: center;
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: var(--spacing-sm);
+}
+
+.table th,
+.table td {
+	border: 1px solid var(--bg-tertiary);
+	padding: var(--spacing-sm);
+}
+
+.table th {
+	background-color: var(--bg-secondary);
+}
+
+.table td {
+	background-color: var(--bg-primary);
+}
