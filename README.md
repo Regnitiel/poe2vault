@@ -4,7 +4,7 @@
 
 An offline desktop application built with Electron that helps you track your unique item collection progress in Path of Exile 2. Never lose track of which items you've found, which ones you're still hunting, and monitor your collection completion across different leagues and content categories.
 
-![Grip of Kulemak](./public/Images/Grip%20of%20Kulemak%201.png)
+![POE2 Vault Home Page](./public/Images/Home%20Page.png)
 
 ## 🚀 Download & Installation
 
@@ -16,9 +16,11 @@ An offline desktop application built with Electron that helps you track your uni
 
 ### 📈 **Comprehensive Progress Tracking**
 
-- **Collection Dashboard**: Visual overview of your unique items collection with real-time completion statistics
+- **Interactive Progress Bars**: Visual collection progress with color-coded completion rates (red/orange/yellow/green)
+- **Click-to-Navigate**: Click any progress bar to jump directly to filtered vault view
+- **Collection Dashboard**: Real-time completion statistics with category-specific breakdowns
 - **League-Specific Tracking**: Monitor progress across POE2 leagues (0.1, 0.2, 0.3) separately
-- **Category Organization**: Items organized by type with completion percentages
+- **Category Organization**: Items organized by type (Amulets, Belts, Boots, etc.) with individual progress tracking
 - **Advanced Metrics**: Track total uniques, owned items, league-specific finds, and remaining targets
 
 ### 🔍 **Powerful Search & Filtering**
@@ -32,8 +34,9 @@ An offline desktop application built with Electron that helps you track your uni
 
 - **Complete Item Database**: Full catalog of POE2 unique items with detailed information
 - **Easy Status Updates**: One-click toggles for owned, obtained during league, and foil variants
-- **Rich Item Details**: Each item includes base type, obtain method, wiki links, and images
+- **Rich Item Details**: Each item includes base type, obtain method, wiki links, and high-quality images
 - **Add Custom Items**: Create entries for newly discovered or upcoming unique items
+- **Side-by-Side Interface**: Efficient item creation and search layout for power users
 
 ### 💾 **Data Management**
 
@@ -42,23 +45,33 @@ An offline desktop application built with Electron that helps you track your uni
 - **Import/Export**: Easy data portability and backup options
 - **Persistent Storage**: Your progress is automatically saved and restored
 
-![Item Examples](./public/Images/Grip%20of%20Kulemak%202.png)
+## 📱 Screenshots & Interface
+
+The app features three main sections:
+
+### 📊 **Dashboard (Home)**:
+
+Visual progress tracking with interactive progress bars and collection metrics
+![Home Dashboard](./public/Images/Home%20Page.png)
+
+### 🗃️ **Vault**:
+
+Complete item database with advanced filtering and search capabilities
+![Vault Page](./public/Images/Vault%20Page.png)
+
+**Hide Owned Items** - Focus on what you're still hunting:
+![Vault Page - Hide Owned](./public/Images/Vault%20Page%20Hide%20Owned.png)
+
+### ⚙️ **Utils**:
+
+Data management tools with side-by-side item creation and search
+![Utils Page](./public/Images/Utils%20Page.png)
 
 ## 🎮 Perfect For
 
 - **Completionist Players** who want to collect every unique item
 - **League Players** tracking progress across different PoE2 seasons
 - **Content Creators** showcasing collection progress to audiences
-
-## 📱 Screenshots & Interface
-
-The app features three main sections:
-
-1. **📊 Dashboard (Home)**: Overview of your collection metrics and progress
-2. **🗃️ Vault**: Complete item database with filtering and search capabilities
-3. **⚙️ Utils**: Data management, import/export, and sync utilities
-
-_More screenshots coming soon..._
 
 ---
 
