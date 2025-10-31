@@ -1,16 +1,5 @@
 import { VaultItem } from "../types";
 
-// Electron API bridge
-declare global {
-	interface Window {
-		electronAPI: {
-			loadVaultData: () => Promise<VaultItem[]>;
-			saveVaultData: (data: VaultItem[]) => Promise<void>;
-			openExternal: (url: string) => void;
-		};
-	}
-}
-
 export const loadVaultData = async (): Promise<VaultItem[]> => {
 	try {
 		// Always use Electron API for file access

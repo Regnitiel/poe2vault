@@ -24,4 +24,25 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	openExternal: (url: string): void => {
 		ipcRenderer.invoke("open-external", url);
 	},
+	// Update-related APIs
+	checkForUpdates: (): Promise<boolean> =>
+		ipcRenderer.invoke("check-for-updates"),
+	downloadUpdate: (): Promise<void> => ipcRenderer.invoke("download-update"),
+	getCurrentVersion: (): Promise<string> =>
+		ipcRenderer.invoke("get-current-version"),
+	// Update event listeners
+	onUpdateStatus: (callback: (status: any) => void) => {
+		ipcRenderer.on("update-status", (_event, status) => callback(status));
+	},
+	onUpdateAvailable: (callback: (updateInfo: any) => void) => {
+		ipcRenderer.on("update-available", (_event, updateInfo) =>
+			callback(updateInfo)
+		);
+	},
+	onUpdateProgress: (callback: (progress: any) => void) => {
+		ipcRenderer.on("update-progress", (_event, progress) => callback(progress));
+	},
+	onUpdateError: (callback: (error: string) => void) => {
+		ipcRenderer.on("update-error", (_event, error) => callback(error));
+	},
 });

@@ -2,6 +2,14 @@ const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 const fs = require("fs");
 
+// Try to load UpdateService, but don't fail if it doesn't exist
+let UpdateService;
+try {
+	UpdateService = require("./electron/updateService");
+} catch (error) {
+	console.warn("UpdateService not available:", error.message);
+}
+
 const vaultFilePath =
 	process.platform === "darwin"
 		? path.join(
@@ -12,6 +20,8 @@ const vaultFilePath =
 				"vaultData.json"
 		  )
 		: path.join("G:", "My Drive", "POE", "vaultData.json");
+
+let updateService;
 
 function createWindow() {
 	const win = new BrowserWindow({
@@ -58,7 +68,17 @@ function createWindow() {
 		console.log("Page loaded successfully");
 	});
 
-	win.webContents.openDevTools();
+	// Only open dev tools if explicitly requested via environment variable
+	if (process.env.OPEN_DEVTOOLS === "true") {
+		win.webContents.openDevTools();
+	}
+
+	// Initialize update service
+	if (UpdateService) {
+		updateService = new UpdateService(win);
+	}
+
+	return win;
 }
 
 // IPC handlers for vault data operations
@@ -86,8 +106,31 @@ ipcMain.handle("open-external", async (event, url) => {
 	shell.openExternal(url);
 });
 
+// Update-related IPC handlers
+ipcMain.handle("check-for-updates", async () => {
+	if (updateService) {
+		return await updateService.checkForUpdates();
+	}
+	return false;
+});
+
+ipcMain.handle("download-update", async () => {
+	if (updateService && updateService.updateInfo) {
+		await updateService.downloadAndInstallUpdate();
+	}
+});
+
+ipcMain.handle("get-current-version", async () => {
+	return require("./package.json").version;
+});
+
 app.whenReady().then(() => {
 	createWindow();
+
+	// Start checking for updates after window is ready
+	if (updateService) {
+		updateService.startUpdateCheck();
+	}
 
 	app.on("activate", () => {
 		if (BrowserWindow.getAllWindows().length === 0) createWindow();

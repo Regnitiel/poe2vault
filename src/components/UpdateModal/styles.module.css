@@ -1,0 +1,161 @@
+.updateModalOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.8);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10000;
+	backdrop-filter: blur(4px);
+}
+
+.updateModal {
+	background: white;
+	border-radius: 12px;
+	padding: 0;
+	max-width: 500px;
+	width: 90%;
+	max-height: 80vh;
+	overflow: hidden;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+	animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+	from {
+		opacity: 0;
+		transform: translateY(-20px) scale(0.95);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+.updateModalHeader {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	padding: 24px;
+	text-align: center;
+}
+
+.updateModalHeader h2 {
+	margin: 0 0 8px 0;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.updateVersion {
+	margin: 0;
+	opacity: 0.9;
+	font-size: 14px;
+}
+
+.updateModalContent {
+	padding: 24px;
+}
+
+.releaseNotesSection h3 {
+	margin: 0 0 12px 0;
+	color: #333;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.releaseNotes {
+	background: #f8f9fa;
+	border: 1px solid #e9ecef;
+	border-radius: 6px;
+	padding: 16px;
+	max-height: 200px;
+	overflow-y: auto;
+	margin-bottom: 20px;
+}
+
+.releaseNotes p {
+	margin: 0 0 8px 0;
+	color: #555;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.releaseNotes p:last-child {
+	margin-bottom: 0;
+}
+
+.downloadProgress {
+	margin-top: 20px;
+}
+
+.progressLabel {
+	font-size: 14px;
+	color: #666;
+	margin-bottom: 8px;
+	text-align: center;
+}
+
+.progressBar {
+	width: 100%;
+	height: 8px;
+	background: #e9ecef;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.progressFill {
+	height: 100%;
+	background: linear-gradient(90deg, #667eea, #764ba2);
+	border-radius: 4px;
+	transition: width 0.3s ease;
+}
+
+.updateModalActions {
+	padding: 20px 24px 24px;
+	display: flex;
+	gap: 12px;
+	justify-content: flex-end;
+	border-top: 1px solid #e9ecef;
+}
+
+.updateButton {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 6px;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	min-width: 100px;
+}
+
+.updateButton.decline {
+	background: #f8f9fa;
+	color: #666;
+	border: 1px solid #dee2e6;
+}
+
+.updateButton.decline:hover {
+	background: #e9ecef;
+	color: #555;
+}
+
+.updateButton.accept {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+}
+
+.updateButton.accept:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.downloadingText {
+	color: #666;
+	font-size: 14px;
+	margin: 0;
+	text-align: center;
+	flex: 1;
+}

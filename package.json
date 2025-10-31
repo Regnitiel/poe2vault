@@ -1,23 +1,35 @@
 {
 	"name": "vault-app",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"description": "Offline Vault App with Google Drive JSON sync",
 	"main": "main.js",
 	"homepage": "./",
 	"scripts": {
 		"start": "concurrently \"cross-env NODE_ENV=development webpack serve --mode development\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\"",
 		"electron-dev": "concurrently \"cross-env NODE_ENV=development webpack serve --mode development\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\"",
+		"electron-dev-debug": "concurrently \"cross-env NODE_ENV=development webpack serve --mode development\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development OPEN_DEVTOOLS=true electron .\"",
 		"build": "NODE_ENV=production webpack --mode production",
 		"electron": "electron .",
 		"dev": "webpack serve --mode development --open",
 		"package-mac": "npm run build && npx electron-packager . VaultApp --platform=darwin --arch=x64 --overwrite --out=builds --no-prune --ignore=\"/(builds|node_modules/.cache|src|__tests__|scripts)/\"",
 		"package-win": "npm run build && npx electron-packager . VaultApp --platform=win32 --arch=x64 --overwrite --out=builds --no-prune --ignore=\"/(builds|node_modules/.cache|src|__tests__|scripts)/\"",
-		"package-all": "npm run package-mac && npm run package-win",
+		"package-all": "npm run package-all-platforms",
+		"package-all-platforms": "npm run package-mac && npm run package-win",
 		"create-release": "./scripts/create-release.sh",
-		"release": "npm run package-all && npm run create-release",
+		"release": "npm run package-all-platforms && npm run create-release",
 		"prepare-github-release": "./scripts/prepare-github-release.sh",
 		"setup-wine": "./scripts/setup-wine.sh",
 		"test": "jest"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Regnitiel/poe2vault.git"
+	},
+	"author": "Regnitiel",
+	"publish": {
+		"provider": "github",
+		"owner": "Regnitiel",
+		"repo": "poe2vault"
 	},
 	"dependencies": {
 		"react": "18.2.0",

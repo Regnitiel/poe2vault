@@ -18,10 +18,10 @@
 	--bg-tertiary: #334155;
 
 	/* Item Status Colors */
-	--item-owned: rgba(21, 128, 61, 0.4);
-	--item-obtained: rgba(59, 130, 246, 0.4);
-	--item-foil: rgba(251, 191, 36, 0.3);
-	--item-not-owned: rgba(205, 18, 18, 0.4);
+	--item-owned: rgba(21, 128, 61, 0.25);
+	--item-obtained: rgba(59, 130, 246, 0.25);
+	--item-foil: rgba(251, 191, 36, 0.25);
+	--item-not-owned: rgba(205, 18, 18, 0.25);
 
 	/* Text Colors */
 	--text-primary: #f1f5f9;

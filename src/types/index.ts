@@ -87,3 +87,31 @@ export interface AppState {
 	editingItem: VaultItem | null;
 	editingIndex: number | null;
 }
+
+export interface UpdateInfo {
+	version: string;
+	releaseNotes: string;
+	downloadUrl: string;
+}
+
+export interface UpdateStatus {
+	status:
+		| "checking"
+		| "up-to-date"
+		| "downloading"
+		| "installing"
+		| "downloaded"
+		| "error";
+}
+
+export interface UpdateProgress {
+	progress: number;
+}
+
+export type UpdateStatusType =
+	| "idle"
+	| "checking"
+	| "available"
+	| "downloading"
+	| "downloaded"
+	| "error";
