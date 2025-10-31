@@ -47,10 +47,8 @@ An offline desktop application built with Electron that helps you track your uni
 ## 🎮 Perfect For
 
 - **Completionist Players** who want to collect every unique item
-- **League Players** tracking progress across different POE2 seasons
-- **Trading Communities** managing inventory and knowing what items are valuable
+- **League Players** tracking progress across different PoE2 seasons
 - **Content Creators** showcasing collection progress to audiences
-- **Theory Crafters** organizing items by build potential and accessibility
 
 ## 📱 Screenshots & Interface
 
@@ -61,23 +59,6 @@ The app features three main sections:
 3. **⚙️ Utils**: Data management, import/export, and sync utilities
 
 _More screenshots coming soon..._
-
-## 🛠️ Technical Highlights
-
-- **Modern Architecture**: Built with React 18 + TypeScript for reliability and type safety
-- **Cross-Platform**: Native desktop app for both macOS and Windows
-- **Offline-First**: Works completely offline with optional cloud sync
-- **Fast Performance**: Efficient filtering and search across large item databases
-- **Responsive Design**: Clean, modern interface optimized for desktop use
-
-## 🤝 Contributing & Development
-
-This project uses modern web technologies:
-
-- **Frontend**: React 18 + TypeScript
-- **Desktop**: Electron 25
-- **Build**: Webpack 5 + Babel
-- **Testing**: Jest + React Testing Library
 
 ---
 
