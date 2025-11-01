@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const { exec } = require("child_process");
 const { promisify } = require("util");
+const https = require("https");
 
 const execAsync = promisify(exec);
 
@@ -20,7 +21,14 @@ class UpdateService {
 			console.log("Checking for updates...");
 			this.mainWindow.webContents.send("update-status", { status: "checking" });
 
-			const latestRelease = await this.getLatestRelease();
+			// Try Electron net module first, fallback to Node.js https
+			let latestRelease;
+			try {
+				latestRelease = await this.getLatestRelease();
+			} catch (electronError) {
+				console.log("Electron net module failed, trying Node.js fallback:", electronError.message);
+				latestRelease = await this.getLatestReleaseNodejs();
+			}
 
 			if (!latestRelease || !latestRelease.tag_name) {
 				console.log("No release information found");
@@ -68,7 +76,14 @@ class UpdateService {
 			console.log("Manual update check requested...");
 			this.mainWindow.webContents.send("update-status", { status: "checking" });
 
-			const latestRelease = await this.getLatestRelease();
+			// Try Electron net module first, fallback to Node.js https
+			let latestRelease;
+			try {
+				latestRelease = await this.getLatestRelease();
+			} catch (electronError) {
+				console.log("Electron net module failed, trying Node.js fallback:", electronError.message);
+				latestRelease = await this.getLatestReleaseNodejs();
+			}
 
 			if (!latestRelease || !latestRelease.tag_name) {
 				console.log("No release information found");
@@ -112,19 +127,30 @@ class UpdateService {
 			const url = `https://api.github.com/repos/${this.githubRepo}/releases/latest`;
 			console.log("Fetching latest release from:", url);
 
-			const request = net.request(url);
+			const request = net.request({
+				url: url,
+				method: 'GET',
+				// Add headers that might help with Windows networking
+				headers: {
+					'User-Agent': 'VaultApp/1.0.2 (Electron)',
+					'Accept': 'application/vnd.github.v3+json',
+					'Cache-Control': 'no-cache'
+				}
+			});
 
 			// Set a timeout for the request
 			const timeout = setTimeout(() => {
+				console.log("Request timeout - destroying request");
 				request.destroy();
 				reject(new Error("Request timeout - check your internet connection"));
-			}, 10000); // 10 second timeout
+			}, 15000); // Increased to 15 second timeout for Windows
 
 			request.on("response", (response) => {
 				clearTimeout(timeout);
 				let data = "";
 
 				console.log(`GitHub API response status: ${response.statusCode}`);
+				console.log(`Response headers:`, response.headers);
 
 				if (response.statusCode === 404) {
 					reject(new Error("Repository not found or no releases available"));
@@ -155,18 +181,137 @@ class UpdateService {
 						console.log("Successfully fetched release data");
 						resolve(release);
 					} catch (error) {
+						console.error("Failed to parse JSON:", error);
 						reject(new Error("Failed to parse release data"));
 					}
+				});
+
+				response.on("error", (error) => {
+					console.error("Response error:", error);
+					reject(new Error(`Response error: ${error.message}`));
 				});
 			});
 
 			request.on("error", (error) => {
 				clearTimeout(timeout);
 				console.error("Network error:", error);
-				reject(new Error(`Network error: ${error.message}`));
+				console.error("Error details:", {
+					code: error.code,
+					errno: error.errno,
+					syscall: error.syscall,
+					hostname: error.hostname,
+					port: error.port
+				});
+				
+				// Provide more helpful error messages for common Windows issues
+				let errorMessage = `Network error: ${error.message}`;
+				if (error.code === 'ENOTFOUND') {
+					errorMessage = "DNS resolution failed. Check your internet connection and DNS settings.";
+				} else if (error.code === 'ECONNREFUSED') {
+					errorMessage = "Connection refused. This might be due to firewall or proxy settings.";
+				} else if (error.code === 'ETIMEDOUT') {
+					errorMessage = "Connection timed out. Check your internet connection.";
+				} else if (error.code === 'ECONNRESET') {
+					errorMessage = "Connection was reset. This might be due to network or proxy issues.";
+				}
+				
+				reject(new Error(errorMessage));
 			});
 
-			request.end();
+			request.on("abort", () => {
+				clearTimeout(timeout);
+				console.log("Request was aborted");
+				reject(new Error("Request was aborted"));
+			});
+
+			try {
+				request.end();
+			} catch (error) {
+				clearTimeout(timeout);
+				console.error("Failed to send request:", error);
+				reject(new Error(`Failed to send request: ${error.message}`));
+			}
+		});
+	}
+
+	// Fallback method using Node.js https module for Windows compatibility
+	async getLatestReleaseNodejs() {
+		return new Promise((resolve, reject) => {
+			const url = `https://api.github.com/repos/${this.githubRepo}/releases/latest`;
+			console.log("Using Node.js fallback to fetch:", url);
+
+			const options = {
+				hostname: 'api.github.com',
+				path: `/repos/${this.githubRepo}/releases/latest`,
+				method: 'GET',
+				headers: {
+					'User-Agent': 'VaultApp/1.0.2 (Electron)',
+					'Accept': 'application/vnd.github.v3+json',
+					'Cache-Control': 'no-cache'
+				},
+				timeout: 15000
+			};
+
+			const req = https.request(options, (res) => {
+				let data = '';
+
+				console.log(`Node.js GitHub API response status: ${res.statusCode}`);
+
+				if (res.statusCode === 404) {
+					reject(new Error("Repository not found or no releases available"));
+					return;
+				}
+
+				if (res.statusCode === 403) {
+					reject(new Error("GitHub API rate limit exceeded. Please try again later."));
+					return;
+				}
+
+				if (res.statusCode !== 200) {
+					reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`));
+					return;
+				}
+
+				res.on('data', (chunk) => {
+					data += chunk;
+				});
+
+				res.on('end', () => {
+					try {
+						const release = JSON.parse(data);
+						console.log("Successfully fetched release data using Node.js fallback");
+						resolve(release);
+					} catch (error) {
+						console.error("Failed to parse JSON:", error);
+						reject(new Error("Failed to parse release data"));
+					}
+				});
+
+				res.on('error', (error) => {
+					console.error("Response error:", error);
+					reject(new Error(`Response error: ${error.message}`));
+				});
+			});
+
+			req.on('error', (error) => {
+				console.error("Node.js HTTPS request error:", error);
+				let errorMessage = `Network error: ${error.message}`;
+				if (error.code === 'ENOTFOUND') {
+					errorMessage = "DNS resolution failed. Check your internet connection and DNS settings.";
+				} else if (error.code === 'ECONNREFUSED') {
+					errorMessage = "Connection refused. This might be due to firewall or proxy settings.";
+				} else if (error.code === 'ETIMEDOUT') {
+					errorMessage = "Connection timed out. Check your internet connection.";
+				}
+				reject(new Error(errorMessage));
+			});
+
+			req.on('timeout', () => {
+				req.destroy();
+				reject(new Error("Request timeout - check your internet connection"));
+			});
+
+			req.end();
 		});
 	}
 
