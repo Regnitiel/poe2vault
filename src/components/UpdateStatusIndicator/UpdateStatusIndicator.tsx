@@ -8,6 +8,7 @@ interface UpdateStatusIndicatorProps {
 		| "available"
 		| "downloading"
 		| "downloaded"
+		| "up-to-date"
 		| "error";
 	onUpdateClick?: () => void;
 }
@@ -26,6 +27,8 @@ const UpdateStatusIndicator: React.FC<UpdateStatusIndicatorProps> = ({
 				return "Downloading update...";
 			case "downloaded":
 				return "Update ready";
+			case "up-to-date":
+				return "Up to date";
 			case "error":
 				return "Update check failed";
 			default:
@@ -43,6 +46,8 @@ const UpdateStatusIndicator: React.FC<UpdateStatusIndicatorProps> = ({
 				return "⬇️";
 			case "downloaded":
 				return "✅";
+			case "up-to-date":
+				return "☑️";
 			case "error":
 				return "❌";
 			default:

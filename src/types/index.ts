@@ -114,4 +114,5 @@ export type UpdateStatusType =
 	| "available"
 	| "downloading"
 	| "downloaded"
+	| "up-to-date"
 	| "error";

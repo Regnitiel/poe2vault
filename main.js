@@ -2,12 +2,18 @@ const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 const fs = require("fs");
 
-// Try to load AutoUpdaterService, but don't fail if it doesn't exist
+// Try to load AutoUpdaterService, else fall back to manual UpdateService
 let AutoUpdaterService;
+let ManualUpdateService;
 try {
 	AutoUpdaterService = require("./electron/autoUpdater");
 } catch (error) {
 	console.warn("AutoUpdaterService not available:", error.message);
+}
+try {
+	ManualUpdateService = require("./electron/updateService");
+} catch (error) {
+	console.warn("Manual UpdateService not available:", error.message);
 }
 
 const vaultFilePath =
@@ -21,7 +27,7 @@ const vaultFilePath =
 		  )
 		: path.join("G:", "My Drive", "POE", "vaultData.json");
 
-let autoUpdaterService;
+let autoUpdaterService; // may be auto or manual under the hood
 
 function createWindow() {
 	const win = new BrowserWindow({
@@ -73,9 +79,12 @@ function createWindow() {
 		win.webContents.openDevTools();
 	}
 
-	// Initialize auto-updater service
+	// Initialize update service (prefer auto-updater, else manual fallback)
 	if (AutoUpdaterService) {
 		autoUpdaterService = new AutoUpdaterService(win);
+	} else if (ManualUpdateService) {
+		console.log("Using manual UpdateService fallback");
+		autoUpdaterService = new ManualUpdateService(win);
 	}
 
 	return win;
@@ -108,21 +117,33 @@ ipcMain.handle("open-external", async (event, url) => {
 
 // Update-related IPC handlers
 ipcMain.handle("check-for-updates", async () => {
-	if (autoUpdaterService) {
+	if (autoUpdaterService && autoUpdaterService.checkForUpdatesManual) {
 		return await autoUpdaterService.checkForUpdatesManual();
+	}
+	// Proactively notify renderer to avoid stuck "Checking..."
+	const win = BrowserWindow.getAllWindows()[0];
+	if (win) {
+		win.webContents.send(
+			"update-error",
+			"Update service is not available in this build. Ensure dependencies are included."
+		);
 	}
 	return false;
 });
 
 ipcMain.handle("check-for-updates-silent", async () => {
-	if (autoUpdaterService) {
+	if (autoUpdaterService && autoUpdaterService.checkForUpdates) {
 		return await autoUpdaterService.checkForUpdates();
 	}
 	return false;
 });
 
 ipcMain.handle("download-update", async () => {
-	if (autoUpdaterService && autoUpdaterService.updateInfo) {
+	if (
+		autoUpdaterService &&
+		autoUpdaterService.updateInfo &&
+		autoUpdaterService.downloadAndInstallUpdate
+	) {
 		await autoUpdaterService.downloadAndInstallUpdate();
 	}
 });
@@ -135,7 +156,7 @@ app.whenReady().then(() => {
 	createWindow();
 
 	// Start checking for updates after window is ready
-	if (autoUpdaterService) {
+	if (autoUpdaterService && autoUpdaterService.startUpdateCheck) {
 		autoUpdaterService.startUpdateCheck();
 	}
 

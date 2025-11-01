@@ -19,6 +19,16 @@ try {
 
 const { app, dialog } = require("electron");
 
+// Safe logger setup (electron-log optional)
+let logger = console;
+try {
+	const electronLog = require("electron-log");
+	electronLog.transports.file.level = "info";
+	logger = electronLog;
+} catch (e) {
+	console.warn("electron-log not available, using console for logging");
+}
+
 class AutoUpdaterService {
 	constructor(mainWindow) {
 		this.mainWindow = mainWindow;
@@ -42,24 +52,23 @@ class AutoUpdaterService {
 		autoUpdater.autoInstallOnAppQuit = true;
 
 		// Enable logging for debugging
-		autoUpdater.logger = require("electron-log");
-		autoUpdater.logger.transports.file.level = "info";
+		autoUpdater.logger = logger;
 
-		console.log("AutoUpdater configured for GitHub releases");
-		console.log("App version:", app.getVersion());
-		console.log("App is packaged:", app.isPackaged);
+		logger.info("AutoUpdater configured for GitHub releases");
+		logger.info("App version:", app.getVersion());
+		logger.info("App is packaged:", app.isPackaged);
 	}
 
 	setupEventListeners() {
 		// When checking for updates
 		autoUpdater.on("checking-for-update", () => {
-			console.log("📡 Event: checking-for-update");
+			logger.info("📡 Event: checking-for-update");
 			this.mainWindow.webContents.send("update-status", { status: "checking" });
 		});
 
 		// When update available
 		autoUpdater.on("update-available", (info) => {
-			console.log("✅ Event: update-available - Version:", info.version);
+			logger.info("✅ Event: update-available - Version:", info.version);
 			this.isChecking = false;
 			if (this.checkTimeout) {
 				clearTimeout(this.checkTimeout);
@@ -75,7 +84,7 @@ class AutoUpdaterService {
 
 		// When no update available
 		autoUpdater.on("update-not-available", (info) => {
-			console.log("✅ Event: update-not-available - App is up to date");
+			logger.info("✅ Event: update-not-available - App is up to date");
 			this.isChecking = false;
 			if (this.checkTimeout) {
 				clearTimeout(this.checkTimeout);
@@ -89,13 +98,13 @@ class AutoUpdaterService {
 		// Download progress
 		autoUpdater.on("download-progress", (progressObj) => {
 			const progress = Math.round(progressObj.percent);
-			console.log(`⬇️  Download progress: ${progress}%`);
+			logger.info(`⬇️  Download progress: ${progress}%`);
 			this.mainWindow.webContents.send("update-progress", { progress });
 		});
 
 		// When update downloaded
 		autoUpdater.on("update-downloaded", (info) => {
-			console.log("✅ Event: update-downloaded - Version:", info.version);
+			logger.info("✅ Event: update-downloaded - Version:", info.version);
 			this.isChecking = false;
 			if (this.checkTimeout) {
 				clearTimeout(this.checkTimeout);
@@ -111,11 +120,11 @@ class AutoUpdaterService {
 
 		// Error handling
 		autoUpdater.on("error", (error) => {
-			console.error("❌ Event: error");
-			console.error("AutoUpdater error:", error);
-			console.error("Error details:", error.message);
+			logger.error("❌ Event: error");
+			logger.error("AutoUpdater error:", error);
+			logger.error("Error details:", error.message);
 			if (error.stack) {
-				console.error("Error stack:", error.stack);
+				logger.error("Error stack:", error.stack);
 			}
 			this.isChecking = false;
 			if (this.checkTimeout) {
@@ -125,14 +134,14 @@ class AutoUpdaterService {
 
 			// For automatic checks, just log the error silently
 			if (!this.isManualCheck) {
-				console.log("Auto check failed, setting status to up-to-date");
+				logger.info("Auto check failed, setting status to up-to-date");
 				this.mainWindow.webContents.send("update-status", {
 					status: "up-to-date",
 				});
 			} else {
 				// For manual checks, show the error to user
 				const errorMessage = error.message || "Unknown error occurred";
-				console.log(
+				logger.info(
 					"Manual check failed, sending error to renderer:",
 					errorMessage
 				);
@@ -148,7 +157,7 @@ class AutoUpdaterService {
 		try {
 			// Skip if not packaged (development mode)
 			if (!app.isPackaged) {
-				console.log(
+				logger.info(
 					"Skipping update check - app is not packaged (development mode)"
 				);
 				this.mainWindow.webContents.send("update-status", {
@@ -159,18 +168,18 @@ class AutoUpdaterService {
 
 			// Prevent concurrent checks
 			if (this.isChecking) {
-				console.log("Update check already in progress, skipping...");
+				logger.info("Update check already in progress, skipping...");
 				return;
 			}
 
 			this.isChecking = true;
 			this.isManualCheck = false; // This is an automatic check
-			console.log("🔄 Auto update check started");
-			console.log("Current app version:", app.getVersion());
+			logger.info("🔄 Auto update check started");
+			logger.info("Current app version:", app.getVersion());
 
 			// Set a timeout to prevent hanging (30 seconds)
 			this.checkTimeout = setTimeout(() => {
-				console.log("⚠️ TIMEOUT: Auto update check timed out after 30 seconds");
+				logger.warn("⚠️ TIMEOUT: Auto update check timed out after 30 seconds");
 				this.isChecking = false;
 				if (this.checkTimeout) {
 					clearTimeout(this.checkTimeout);
@@ -181,12 +190,12 @@ class AutoUpdaterService {
 				});
 			}, 30000);
 
-			console.log("Calling autoUpdater.checkForUpdates()...");
+			logger.info("Calling autoUpdater.checkForUpdates()...");
 			const result = await autoUpdater.checkForUpdates();
-			console.log("Auto checkForUpdates() result:", result);
+			logger.info("Auto checkForUpdates() result:", result);
 		} catch (error) {
-			console.error("❌ Error in checkForUpdates:", error);
-			console.error("Error stack:", error.stack);
+			logger.error("❌ Error in checkForUpdates:", error);
+			logger.error("Error stack:", error.stack);
 			this.isChecking = false;
 			if (this.checkTimeout) {
 				clearTimeout(this.checkTimeout);
@@ -202,7 +211,7 @@ class AutoUpdaterService {
 		try {
 			// Allow manual checks even in dev mode for testing
 			if (!app.isPackaged) {
-				console.log("Manual update check in development mode");
+				logger.info("Manual update check in development mode");
 				this.mainWindow.webContents.send(
 					"update-error",
 					"Updates are only available for packaged applications. You're running in development mode."
@@ -212,15 +221,15 @@ class AutoUpdaterService {
 
 			// Prevent concurrent checks
 			if (this.isChecking) {
-				console.log("Update check already in progress, please wait...");
+				logger.info("Update check already in progress, please wait...");
 				return;
 			}
 
 			this.isChecking = true;
 			this.isManualCheck = true; // This is a manual check
-			console.log("Manual update check requested...");
-			console.log("Current app version:", app.getVersion());
-			console.log("Feed URL:", {
+			logger.info("Manual update check requested...");
+			logger.info("Current app version:", app.getVersion());
+			logger.info("Feed URL:", {
 				provider: "github",
 				owner: "Regnitiel",
 				repo: "poe2vault",
@@ -228,7 +237,7 @@ class AutoUpdaterService {
 
 			// Set a timeout to prevent hanging (45 seconds for manual checks)
 			this.checkTimeout = setTimeout(() => {
-				console.log(
+				logger.warn(
 					"⚠️ TIMEOUT: Manual update check timed out after 45 seconds"
 				);
 				this.isChecking = false;
@@ -242,12 +251,12 @@ class AutoUpdaterService {
 				);
 			}, 45000);
 
-			console.log("Calling autoUpdater.checkForUpdates()...");
+			logger.info("Calling autoUpdater.checkForUpdates()...");
 			const result = await autoUpdater.checkForUpdates();
-			console.log("checkForUpdates() result:", result);
+			logger.info("checkForUpdates() result:", result);
 		} catch (error) {
-			console.error("❌ Error in checkForUpdatesManual:", error);
-			console.error("Error stack:", error.stack);
+			logger.error("❌ Error in checkForUpdatesManual:", error);
+			logger.error("Error stack:", error.stack);
 			this.isChecking = false;
 			if (this.checkTimeout) {
 				clearTimeout(this.checkTimeout);
@@ -262,7 +271,7 @@ class AutoUpdaterService {
 
 	async downloadAndInstallUpdate() {
 		try {
-			console.log("Starting update download...");
+			logger.info("Starting update download...");
 			this.mainWindow.webContents.send("update-status", {
 				status: "downloading",
 			});
@@ -270,7 +279,7 @@ class AutoUpdaterService {
 			// Download the update
 			await autoUpdater.downloadUpdate();
 		} catch (error) {
-			console.error("Error downloading update:", error);
+			logger.error("Error downloading update:", error);
 			this.mainWindow.webContents.send("update-error", error.message);
 		}
 	}
