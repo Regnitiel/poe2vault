@@ -1,0 +1,31 @@
+# Development files
+src/
+__tests__/
+scripts/
+builds/
+releases/
+node_modules/
+.git/
+.gitignore
+
+# Config files
+webpack.config.js
+tsconfig.json
+babel.config.json
+jest.config.js
+
+# Documentation
+README.md
+RELEASE_GUIDE.md
+*.md
+
+# Images (if they're just for documentation)
+public/Images/
+
+# Cache and temp files
+.cache/
+.tmp/
+*.log
+
+# Source maps and dev builds
+*.map

@@ -29,6 +29,7 @@ const App: React.FC = () => {
 		downloadProgress,
 		showUpdateModal,
 		currentVersion,
+		checkForUpdates,
 		acceptUpdate,
 		declineUpdate,
 		openUpdateModal,
@@ -92,6 +93,9 @@ const App: React.FC = () => {
 						onToggleObtainedDuringLeague={toggleObtainedDuringLeague}
 						onToggleFoil={toggleFoil}
 						onEdit={handleEdit}
+						onCheckForUpdates={checkForUpdates}
+						currentVersion={currentVersion}
+						updateStatus={updateStatus}
 					/>
 				);
 			default:

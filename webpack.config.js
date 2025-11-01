@@ -17,8 +17,9 @@ module.exports = (env, argv) => {
 		mode: argv.mode || "development",
 		output: {
 			path: path.resolve(__dirname, "dist"),
-			filename: "bundle.js",
+			filename: isProduction ? "bundle.[contenthash].js" : "bundle.js",
 			publicPath: isProduction ? "./" : "/",
+			clean: true, // Clean the output directory before emit
 		},
 		resolve: {
 			extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
@@ -120,5 +121,21 @@ module.exports = (env, argv) => {
 			},
 		},
 		devtool: isProduction ? false : "source-map", // Only show source maps in development
+		optimization: isProduction
+			? {
+					minimize: true,
+					sideEffects: false,
+					splitChunks: {
+						chunks: "all",
+						cacheGroups: {
+							vendor: {
+								test: /[\\/]node_modules[\\/]/,
+								name: "vendors",
+								chunks: "all",
+							},
+						},
+					},
+			  }
+			: undefined,
 	};
 };

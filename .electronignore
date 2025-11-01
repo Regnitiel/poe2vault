@@ -1,0 +1,43 @@
+# Source files
+src/
+__tests__/
+scripts/
+
+# Build outputs (keep dist/)
+builds/
+releases/
+
+# Development dependencies and configs
+node_modules/
+webpack.config.js
+tsconfig.json
+babel.config.json
+jest.config.js
+
+# Documentation
+README.md
+RELEASE_GUIDE.md
+*.md
+
+# Git and IDE files
+.git/
+.gitignore
+.vscode/
+
+# Cache and temp files
+.cache/
+.tmp/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Source maps
+*.map
+
+# Documentation images (comment out if needed for app)
+public/Images/
+
+# OS files
+.DS_Store
+Thumbs.db

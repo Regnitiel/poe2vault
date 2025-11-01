@@ -30,6 +30,10 @@ class UpdateService {
 				return false;
 			}
 
+			console.log(
+				`Current version: ${this.currentVersion}, Latest version: ${latestRelease.tag_name}`
+			);
+
 			if (this.isNewerVersion(latestRelease.tag_name, this.currentVersion)) {
 				this.updateInfo = {
 					version: latestRelease.tag_name,
@@ -37,9 +41,11 @@ class UpdateService {
 					downloadUrl: this.getDownloadUrl(latestRelease),
 				};
 
+				console.log("Update available:", this.updateInfo.version);
 				this.mainWindow.webContents.send("update-available", this.updateInfo);
 				return true;
 			} else {
+				console.log("App is up to date");
 				this.mainWindow.webContents.send("update-status", {
 					status: "up-to-date",
 				});
@@ -47,6 +53,55 @@ class UpdateService {
 			}
 		} catch (error) {
 			console.error("Error checking for updates:", error);
+			// Don't send error to UI for automatic checks to avoid annoying users
+			// Only log the error and mark as up-to-date
+			this.mainWindow.webContents.send("update-status", {
+				status: "up-to-date",
+			});
+			return false;
+		}
+	}
+
+	// Manual update check that shows errors to user
+	async checkForUpdatesManual() {
+		try {
+			console.log("Manual update check requested...");
+			this.mainWindow.webContents.send("update-status", { status: "checking" });
+
+			const latestRelease = await this.getLatestRelease();
+
+			if (!latestRelease || !latestRelease.tag_name) {
+				console.log("No release information found");
+				this.mainWindow.webContents.send("update-status", {
+					status: "up-to-date",
+				});
+				return false;
+			}
+
+			console.log(
+				`Current version: ${this.currentVersion}, Latest version: ${latestRelease.tag_name}`
+			);
+
+			if (this.isNewerVersion(latestRelease.tag_name, this.currentVersion)) {
+				this.updateInfo = {
+					version: latestRelease.tag_name,
+					releaseNotes: latestRelease.body || "No release notes available",
+					downloadUrl: this.getDownloadUrl(latestRelease),
+				};
+
+				console.log("Update available:", this.updateInfo.version);
+				this.mainWindow.webContents.send("update-available", this.updateInfo);
+				return true;
+			} else {
+				console.log("App is up to date");
+				this.mainWindow.webContents.send("update-status", {
+					status: "up-to-date",
+				});
+				return false;
+			}
+		} catch (error) {
+			console.error("Error checking for updates:", error);
+			// For manual checks, show the error to the user
 			this.mainWindow.webContents.send("update-error", error.message);
 			return false;
 		}
@@ -54,15 +109,32 @@ class UpdateService {
 
 	async getLatestRelease() {
 		return new Promise((resolve, reject) => {
-			const request = net.request(
-				`https://api.github.com/repos/${this.githubRepo}/releases/latest`
-			);
+			const url = `https://api.github.com/repos/${this.githubRepo}/releases/latest`;
+			console.log("Fetching latest release from:", url);
+
+			const request = net.request(url);
+
+			// Set a timeout for the request
+			const timeout = setTimeout(() => {
+				request.destroy();
+				reject(new Error("Request timeout - check your internet connection"));
+			}, 10000); // 10 second timeout
 
 			request.on("response", (response) => {
+				clearTimeout(timeout);
 				let data = "";
+
+				console.log(`GitHub API response status: ${response.statusCode}`);
 
 				if (response.statusCode === 404) {
 					reject(new Error("Repository not found or no releases available"));
+					return;
+				}
+
+				if (response.statusCode === 403) {
+					reject(
+						new Error("GitHub API rate limit exceeded. Please try again later.")
+					);
 					return;
 				}
 
@@ -80,6 +152,7 @@ class UpdateService {
 				response.on("end", () => {
 					try {
 						const release = JSON.parse(data);
+						console.log("Successfully fetched release data");
 						resolve(release);
 					} catch (error) {
 						reject(new Error("Failed to parse release data"));
@@ -88,7 +161,9 @@ class UpdateService {
 			});
 
 			request.on("error", (error) => {
-				reject(error);
+				clearTimeout(timeout);
+				console.error("Network error:", error);
+				reject(new Error(`Network error: ${error.message}`));
 			});
 
 			request.end();

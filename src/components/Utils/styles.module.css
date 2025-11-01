@@ -67,6 +67,24 @@
 	width: 100%;
 }
 
+.updateSection {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+}
+
+.updateMessage {
+	color: var(--emerald);
+	font-size: 14px;
+	margin: 0;
+}
+
+.updateError {
+	color: var(--crimson);
+	font-size: 14px;
+	margin: 0;
+}
+
 /* Responsive design for smaller screens */
 @media (max-width: 1200px) {
 	.tableLayout {

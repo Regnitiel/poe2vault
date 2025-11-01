@@ -109,6 +109,13 @@ ipcMain.handle("open-external", async (event, url) => {
 // Update-related IPC handlers
 ipcMain.handle("check-for-updates", async () => {
 	if (updateService) {
+		return await updateService.checkForUpdatesManual();
+	}
+	return false;
+});
+
+ipcMain.handle("check-for-updates-silent", async () => {
+	if (updateService) {
 		return await updateService.checkForUpdates();
 	}
 	return false;

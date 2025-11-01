@@ -1,6 +1,6 @@
 {
 	"name": "vault-app",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Offline Vault App with Google Drive JSON sync",
 	"main": "main.js",
 	"homepage": "./",
@@ -11,8 +11,8 @@
 		"build": "NODE_ENV=production webpack --mode production",
 		"electron": "electron .",
 		"dev": "webpack serve --mode development --open",
-		"package-mac": "npm run build && npx electron-packager . VaultApp --platform=darwin --arch=x64 --overwrite --out=builds --no-prune --ignore=\"/(builds|node_modules/.cache|src|__tests__|scripts)/\"",
-		"package-win": "npm run build && npx electron-packager . VaultApp --platform=win32 --arch=x64 --overwrite --out=builds --no-prune --ignore=\"/(builds|node_modules/.cache|src|__tests__|scripts)/\"",
+		"package-mac": "npm run build && npx electron-packager . VaultApp --platform=darwin --arch=x64 --overwrite --out=builds --prune=true --ignore=\"/(builds|releases|node_modules|src|__tests__|scripts|webpack\\.config\\.js|tsconfig\\.json|babel\\.config\\.json|\\.git|\\.gitignore|README\\.md|RELEASE_GUIDE\\.md|.*\\.md|public/Images)/\"",
+		"package-win": "npm run build && npx electron-packager . VaultApp --platform=win32 --arch=x64 --overwrite --out=builds --prune=true --ignore=\"/(builds|releases|node_modules|src|__tests__|scripts|webpack\\.config\\.js|tsconfig\\.json|babel\\.config\\.json|\\.git|\\.gitignore|README\\.md|RELEASE_GUIDE\\.md|.*\\.md|public/Images)/\"",
 		"package-all": "npm run package-all-platforms",
 		"package-all-platforms": "npm run package-mac && npm run package-win",
 		"create-release": "./scripts/create-release.sh",

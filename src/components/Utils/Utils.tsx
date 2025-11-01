@@ -12,6 +12,9 @@ interface UtilsProps {
 	onToggleObtainedDuringLeague: (index: number) => void;
 	onToggleFoil: (index: number) => void;
 	onEdit: (index: number) => void;
+	onCheckForUpdates?: () => void;
+	currentVersion?: string;
+	updateStatus?: string;
 }
 
 const Utils: React.FC<UtilsProps> = ({
@@ -21,6 +24,9 @@ const Utils: React.FC<UtilsProps> = ({
 	onToggleObtainedDuringLeague,
 	onToggleFoil,
 	onEdit,
+	onCheckForUpdates,
+	currentVersion,
+	updateStatus,
 }) => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const searchResults = searchItems(allItems, searchQuery);
@@ -37,6 +43,36 @@ const Utils: React.FC<UtilsProps> = ({
 					<div className={styles.section}>
 						<h2>Add New Item</h2>
 						<ItemForm allItems={allItems} onSubmit={handleAddItem} />
+					</div>
+
+					{/* Update Section */}
+					<div className={styles.section}>
+						<h2>App Updates</h2>
+						<div className={styles.updateSection}>
+							<p>
+								Current Version: <strong>v{currentVersion}</strong>
+							</p>
+							<button
+								className="form-button"
+								onClick={onCheckForUpdates}
+								disabled={updateStatus === "checking"}
+							>
+								{updateStatus === "checking"
+									? "Checking..."
+									: "Check for Updates"}
+							</button>
+							{updateStatus === "up-to-date" && (
+								<p className={styles.updateMessage}>
+									✅ You're running the latest version!
+								</p>
+							)}
+							{updateStatus === "error" && (
+								<p className={styles.updateError}>
+									❌ Failed to check for updates. Please check your internet
+									connection.
+								</p>
+							)}
+						</div>
 					</div>
 				</div>
 
