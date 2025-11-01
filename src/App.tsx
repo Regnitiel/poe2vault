@@ -34,6 +34,7 @@ const App: React.FC = () => {
 		declineUpdate,
 		openUpdateModal,
 		isDownloading,
+		updateError,
 	} = useUpdateManager();
 
 	const [currentTab, setCurrentTab] = useState<TabType>("home");
@@ -96,6 +97,7 @@ const App: React.FC = () => {
 						onCheckForUpdates={checkForUpdates}
 						currentVersion={currentVersion}
 						updateStatus={updateStatus}
+						updateError={updateError}
 					/>
 				);
 			default:

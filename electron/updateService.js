@@ -8,6 +8,10 @@ const { app } = require("electron");
 
 const execAsync = promisify(exec);
 
+// Optional GitHub token to avoid rate limits
+const GH_TOKEN = process.env.GH_TOKEN || process.env.GITHUB_TOKEN || "";
+const authHeader = GH_TOKEN ? { Authorization: `token ${GH_TOKEN}` } : {};
+
 class UpdateService {
 	constructor(mainWindow) {
 		this.mainWindow = mainWindow;
@@ -95,6 +99,7 @@ class UpdateService {
 
 			// Try multiple fallback methods for maximum Windows compatibility
 			let latestRelease;
+			let lastError = null;
 			const methods = [
 				{ name: "Electron net", method: () => this.getLatestRelease() },
 				{ name: "Node.js HTTPS", method: () => this.getLatestReleaseNodejs() },
@@ -113,13 +118,15 @@ class UpdateService {
 					console.log(`✅ ${name} method succeeded!`);
 					break;
 				} catch (error) {
+					lastError = error;
 					console.log(`❌ ${name} method failed:`, error.message);
 					continue;
 				}
 			}
 
 			if (!latestRelease) {
-				throw new Error(
+				// Surface the most informative error to the UI
+				throw lastError || new Error(
 					"All connection methods failed. Please check your network settings, DNS configuration, and firewall rules."
 				);
 			}
@@ -155,7 +162,7 @@ class UpdateService {
 			}
 		} catch (error) {
 			console.error("Error checking for updates:", error);
-			// For manual checks, show the error to the user
+			// For manual checks, show the exact error to the user
 			this.mainWindow.webContents.send("update-error", error.message);
 			return false;
 		}
@@ -174,6 +181,7 @@ class UpdateService {
 					"User-Agent": "VaultApp/1.0.2 (Electron)",
 					Accept: "application/vnd.github.v3+json",
 					"Cache-Control": "no-cache",
+					...authHeader,
 				},
 			});
 
@@ -291,6 +299,7 @@ class UpdateService {
 					"User-Agent": "VaultApp/1.0.2 (Electron)",
 					Accept: "application/vnd.github.v3+json",
 					"Cache-Control": "no-cache",
+					...authHeader,
 				},
 				timeout: 15000,
 			};
@@ -376,6 +385,7 @@ class UpdateService {
 
 			if (isWindows) {
 				// Enhanced PowerShell command with DNS and SSL troubleshooting
+				const auth = GH_TOKEN ? "-Headers @{ 'Authorization'='token " + GH_TOKEN + "' }" : "";
 				command = `powershell -Command "
 					try { 
 						# First try to resolve DNS
@@ -386,7 +396,7 @@ class UpdateService {
 						$response = Invoke-RestMethod -Uri '${url}' -Headers @{
 							'User-Agent'='VaultApp/1.0.2'; 
 							'Accept'='application/vnd.github.v3+json'
-						} -TimeoutSec 20
+						} ${auth} -TimeoutSec 20
 						$response | ConvertTo-Json -Depth 10 
 					} catch { 
 						Write-Host 'ERROR:' $_.Exception.Message
@@ -398,7 +408,7 @@ class UpdateService {
 								'User-Agent'='VaultApp/1.0.2'; 
 								'Accept'='application/vnd.github.v3+json';
 								'Host'='api.github.com'
-							} -TimeoutSec 20
+							} ${auth} -TimeoutSec 20
 							$response | ConvertTo-Json -Depth 10
 						} catch {
 							Write-Host 'IP_ERROR:' $_.Exception.Message
@@ -407,7 +417,8 @@ class UpdateService {
 					}"`;
 			} else {
 				// Enhanced curl command with DNS troubleshooting
-				command = `curl -s -H "User-Agent: VaultApp/1.0.2" -H "Accept: application/vnd.github.v3+json" --connect-timeout 20 --dns-servers 8.8.8.8,1.1.1.1 "${url}" || curl -s -H "User-Agent: VaultApp/1.0.2" -H "Accept: application/vnd.github.v3+json" -H "Host: api.github.com" --connect-timeout 20 "https://140.82.112.5/repos/${this.githubRepo}/releases/latest"`;
+				const auth = GH_TOKEN ? `-H \"Authorization: token ${GH_TOKEN}\"` : "";
+				command = `curl -s -H \"User-Agent: VaultApp/1.0.2\" -H \"Accept: application/vnd.github.v3+json\" ${auth} --connect-timeout 20 --dns-servers 8.8.8.8,1.1.1.1 \"${url}\" || curl -s -H \"User-Agent: VaultApp/1.0.2\" -H \"Accept: application/vnd.github.v3+json\" -H \"Host: api.github.com\" ${auth} --connect-timeout 20 \"https://140.82.112.5/repos/${this.githubRepo}/releases/latest\"`;
 			}
 
 			exec(command, { timeout: 25000 }, (error, stdout, stderr) => {
@@ -533,6 +544,7 @@ class UpdateService {
 					"User-Agent": "VaultApp/1.0.2 (Electron)",
 					Accept: "application/vnd.github.v3+json",
 					"Cache-Control": "no-cache",
+					...authHeader,
 				},
 				timeout: 15000,
 				// Explicitly disable cert verification
@@ -625,6 +637,7 @@ class UpdateService {
 						Accept: "application/vnd.github.v3+json",
 						"Cache-Control": "no-cache",
 						Host: "api.github.com", // Important: tell server what domain we're requesting
+						...authHeader,
 					},
 					timeout: 15000,
 				};
@@ -726,7 +739,10 @@ class UpdateService {
 
 		const asset = release.assets.find((asset) => asset.name === assetName);
 		if (!asset) {
-			throw new Error(`No asset found for platform: ${platform}`);
+			const available = (release.assets || []).map((a) => a.name).join(", ");
+			throw new Error(
+				`No asset found for platform: ${platform}. Expected '${assetName}' in the latest GitHub release assets. Available assets: [${available}]`
+			);
 		}
 
 		return asset.download_url;

@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 const fs = require("fs");
 
-// Try to load AutoUpdaterService, else fall back to manual UpdateService
+// Try to load AutoUpdaterService and ManualUpdateService
 let AutoUpdaterService;
 let ManualUpdateService;
 try {
@@ -27,7 +27,8 @@ const vaultFilePath =
 		  )
 		: path.join("G:", "My Drive", "POE", "vaultData.json");
 
-let autoUpdaterService; // may be auto or manual under the hood
+let autoUpdaterService; // electron-updater driven
+let manualUpdateService; // custom GitHub API driven
 
 function createWindow() {
 	const win = new BrowserWindow({
@@ -79,12 +80,12 @@ function createWindow() {
 		win.webContents.openDevTools();
 	}
 
-	// Initialize update service (prefer auto-updater, else manual fallback)
+	// Initialize update services
 	if (AutoUpdaterService) {
 		autoUpdaterService = new AutoUpdaterService(win);
-	} else if (ManualUpdateService) {
-		console.log("Using manual UpdateService fallback");
-		autoUpdaterService = new ManualUpdateService(win);
+	}
+	if (ManualUpdateService) {
+		manualUpdateService = new ManualUpdateService(win);
 	}
 
 	return win;
@@ -117,6 +118,10 @@ ipcMain.handle("open-external", async (event, url) => {
 
 // Update-related IPC handlers
 ipcMain.handle("check-for-updates", async () => {
+	// Prefer manual service for manual checks (more resilient, no latest.yml dependency)
+	if (manualUpdateService && manualUpdateService.checkForUpdatesManual) {
+		return await manualUpdateService.checkForUpdatesManual();
+	}
 	if (autoUpdaterService && autoUpdaterService.checkForUpdatesManual) {
 		return await autoUpdaterService.checkForUpdatesManual();
 	}
@@ -132,18 +137,23 @@ ipcMain.handle("check-for-updates", async () => {
 });
 
 ipcMain.handle("check-for-updates-silent", async () => {
+	// Prefer auto service for background startup checks
 	if (autoUpdaterService && autoUpdaterService.checkForUpdates) {
 		return await autoUpdaterService.checkForUpdates();
+	}
+	if (manualUpdateService && manualUpdateService.checkForUpdates) {
+		return await manualUpdateService.checkForUpdates();
 	}
 	return false;
 });
 
 ipcMain.handle("download-update", async () => {
-	if (
-		autoUpdaterService &&
-		autoUpdaterService.updateInfo &&
-		autoUpdaterService.downloadAndInstallUpdate
-	) {
+	// Route download to the service that provided updateInfo
+	if (manualUpdateService && manualUpdateService.updateInfo && manualUpdateService.downloadAndInstallUpdate) {
+		await manualUpdateService.downloadAndInstallUpdate();
+		return;
+	}
+	if (autoUpdaterService && autoUpdaterService.updateInfo && autoUpdaterService.downloadAndInstallUpdate) {
 		await autoUpdaterService.downloadAndInstallUpdate();
 	}
 });
@@ -155,7 +165,7 @@ ipcMain.handle("get-current-version", async () => {
 app.whenReady().then(() => {
 	createWindow();
 
-	// Start checking for updates after window is ready
+	// Start checking for updates after window is ready (background)
 	if (autoUpdaterService && autoUpdaterService.startUpdateCheck) {
 		autoUpdaterService.startUpdateCheck();
 	}

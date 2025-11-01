@@ -15,6 +15,7 @@ interface UtilsProps {
 	onCheckForUpdates?: () => void;
 	currentVersion?: string;
 	updateStatus?: string;
+	updateError?: string;
 }
 
 const Utils: React.FC<UtilsProps> = ({
@@ -27,6 +28,7 @@ const Utils: React.FC<UtilsProps> = ({
 	onCheckForUpdates,
 	currentVersion,
 	updateStatus,
+	updateError,
 }) => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const searchResults = searchItems(allItems, searchQuery);
@@ -68,8 +70,7 @@ const Utils: React.FC<UtilsProps> = ({
 							)}
 							{updateStatus === "error" && (
 								<p className={styles.updateError}>
-									❌ Failed to check for updates. Please check your internet
-									connection.
+									 ❌ {updateError || "Failed to check for updates. Please check your internet connection."}
 								</p>
 							)}
 						</div>

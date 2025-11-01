@@ -7,6 +7,7 @@ export const useUpdateManager = () => {
 	const [downloadProgress, setDownloadProgress] = useState(0);
 	const [showUpdateModal, setShowUpdateModal] = useState(false);
 	const [currentVersion, setCurrentVersion] = useState<string>("");
+	const [updateError, setUpdateError] = useState<string>("");
 
 	useEffect(() => {
 		if (!window.electronAPI) return;
@@ -17,12 +18,16 @@ export const useUpdateManager = () => {
 		// Set up event listeners
 		window.electronAPI.onUpdateStatus((status: any) => {
 			setUpdateStatus(status.status);
+			if (status.status !== "error") {
+				setUpdateError("");
+			}
 		});
 
 		window.electronAPI.onUpdateAvailable((info: UpdateInfo) => {
 			setUpdateInfo(info);
 			setUpdateStatus("available");
 			setShowUpdateModal(true);
+			setUpdateError("");
 		});
 
 		window.electronAPI.onUpdateProgress((progress: any) => {
@@ -32,6 +37,7 @@ export const useUpdateManager = () => {
 		window.electronAPI.onUpdateError((error: string) => {
 			console.error("Update error:", error);
 			setUpdateStatus("error");
+			setUpdateError(error || "Unknown error");
 		});
 	}, []);
 
@@ -39,11 +45,13 @@ export const useUpdateManager = () => {
 		if (!window.electronAPI) return;
 
 		try {
+			setUpdateError("");
 			setUpdateStatus("checking");
 			await window.electronAPI.checkForUpdates();
 		} catch (error) {
 			console.error("Error checking for updates:", error);
 			setUpdateStatus("error");
+			setUpdateError("Unexpected error while checking for updates");
 		}
 	};
 
@@ -57,6 +65,7 @@ export const useUpdateManager = () => {
 		} catch (error) {
 			console.error("Error downloading update:", error);
 			setUpdateStatus("error");
+			setUpdateError("Failed to download update");
 		}
 	};
 
@@ -64,6 +73,7 @@ export const useUpdateManager = () => {
 		setShowUpdateModal(false);
 		setUpdateStatus("idle");
 		setUpdateInfo(null);
+		setUpdateError("");
 	};
 
 	const openUpdateModal = () => {
@@ -83,5 +93,6 @@ export const useUpdateManager = () => {
 		declineUpdate,
 		openUpdateModal,
 		isDownloading: updateStatus === "downloading",
+		updateError,
 	};
 };
