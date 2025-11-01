@@ -45,6 +45,17 @@ create_zip "builds/VaultApp-darwin-x64" "VaultApp-macOS.zip" "macOS"
 create_zip "builds/VaultApp-win32-x64" "VaultApp-Windows.zip" "Windows"
 
 echo ""
+echo "📝 Creating update manifest files for electron-updater..."
+echo ""
+
+# Run the manifest creation script
+if [ -f "scripts/create-update-manifest.sh" ]; then
+    ./scripts/create-update-manifest.sh
+else
+    echo "⚠️  Warning: create-update-manifest.sh not found. Skipping manifest creation."
+fi
+
+echo ""
 echo "🎉 Distribution packages created in 'releases/' directory:"
 echo ""
 ls -lah releases/ 2>/dev/null || echo "No releases created."
