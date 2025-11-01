@@ -4,23 +4,24 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background: rgba(0, 0, 0, 0.8);
+	background: rgba(10, 12, 15, 0.9);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	z-index: 10000;
-	backdrop-filter: blur(4px);
+	backdrop-filter: blur(6px);
 }
 
 .updateModal {
-	background: white;
-	border-radius: 12px;
+	background: var(--surface);
+	border-radius: var(--radius-lg);
 	padding: 0;
 	max-width: 500px;
 	width: 90%;
 	max-height: 80vh;
 	overflow: hidden;
-	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+	box-shadow: var(--shadow-vault), var(--glowGold);
+	border: 2px solid var(--gold);
 	animation: slideIn 0.3s ease-out;
 }
 
@@ -36,16 +37,29 @@
 }
 
 .updateModalHeader {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	color: white;
+	background: linear-gradient(135deg, var(--gold) 0%, var(--ember) 100%);
+	color: var(--background);
 	padding: 24px;
 	text-align: center;
+	position: relative;
+}
+
+.updateModalHeader::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 2px;
+	background: linear-gradient(90deg, transparent, var(--gold), transparent);
+	box-shadow: var(--glowGold);
 }
 
 .updateModalHeader h2 {
 	margin: 0 0 8px 0;
 	font-size: 24px;
 	font-weight: 600;
+	text-shadow: 0 2px 4px rgba(10, 12, 15, 0.3);
 }
 
 .updateVersion {
@@ -56,28 +70,30 @@
 
 .updateModalContent {
 	padding: 24px;
+	background-color: var(--surface);
 }
 
 .releaseNotesSection h3 {
 	margin: 0 0 12px 0;
-	color: #333;
+	color: var(--gold);
 	font-size: 16px;
 	font-weight: 600;
 }
 
 .releaseNotes {
-	background: #f8f9fa;
-	border: 1px solid #e9ecef;
-	border-radius: 6px;
+	background: var(--backgroundSecondary);
+	border: 1px solid var(--backgroundSecondary);
+	border-radius: var(--radius-md);
 	padding: 16px;
 	max-height: 200px;
 	overflow-y: auto;
 	margin-bottom: 20px;
+	box-shadow: inset 0 2px 4px rgba(10, 12, 15, 0.3);
 }
 
 .releaseNotes p {
 	margin: 0 0 8px 0;
-	color: #555;
+	color: var(--textPrimary);
 	font-size: 14px;
 	line-height: 1.5;
 }
@@ -92,7 +108,7 @@
 
 .progressLabel {
 	font-size: 14px;
-	color: #666;
+	color: var(--textSecondary);
 	margin-bottom: 8px;
 	text-align: center;
 }
@@ -100,16 +116,18 @@
 .progressBar {
 	width: 100%;
 	height: 8px;
-	background: #e9ecef;
-	border-radius: 4px;
+	background: var(--backgroundSecondary);
+	border-radius: var(--radius-sm);
 	overflow: hidden;
+	border: 1px solid var(--backgroundSecondary);
 }
 
 .progressFill {
 	height: 100%;
-	background: linear-gradient(90deg, #667eea, #764ba2);
-	border-radius: 4px;
-	transition: width 0.3s ease;
+	background: linear-gradient(90deg, var(--eldritch), var(--gold));
+	border-radius: var(--radius-sm);
+	transition: width var(--transition-slow);
+	box-shadow: var(--glowEldritch);
 }
 
 .updateModalActions {
@@ -117,43 +135,48 @@
 	display: flex;
 	gap: 12px;
 	justify-content: flex-end;
-	border-top: 1px solid #e9ecef;
+	border-top: 1px solid var(--backgroundSecondary);
+	background-color: var(--surface);
 }
 
 .updateButton {
 	padding: 10px 20px;
-	border: none;
-	border-radius: 6px;
+	border: 1px solid transparent;
+	border-radius: var(--radius-md);
 	font-size: 14px;
 	font-weight: 500;
 	cursor: pointer;
-	transition: all 0.2s ease;
+	transition: var(--transition-rune);
 	min-width: 100px;
 }
 
 .updateButton.decline {
-	background: #f8f9fa;
-	color: #666;
-	border: 1px solid #dee2e6;
+	background: var(--backgroundSecondary);
+	color: var(--textSecondary);
+	border-color: var(--backgroundSecondary);
 }
 
 .updateButton.decline:hover {
-	background: #e9ecef;
-	color: #555;
+	background: var(--ember);
+	color: var(--textPrimary);
+	border-color: var(--ember);
+	box-shadow: var(--glowEmber);
 }
 
 .updateButton.accept {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	color: white;
+	background: var(--eldritch);
+	color: var(--textPrimary);
+	border-color: var(--eldritch);
 }
 
 .updateButton.accept:hover {
+	background: #68b884;
 	transform: translateY(-1px);
-	box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+	box-shadow: var(--shadow-md), var(--glowEldritch);
 }
 
 .downloadingText {
-	color: #666;
+	color: var(--textSecondary);
 	font-size: 14px;
 	margin: 0;
 	text-align: center;

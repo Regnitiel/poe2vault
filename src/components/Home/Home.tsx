@@ -41,7 +41,7 @@ const Home: React.FC<HomeProps> = ({
 		<section id="home" className="active">
 			{/* Progress Bar */}
 			<div className={styles.metrics}>
-				<h2 style={{ color: "#f1f5f9" }}>🎯 Collection Progress 🎯</h2>
+				<h2>Collection Progress</h2>
 				<ProgressBar
 					owned={homeMetrics.ownedUniques}
 					total={homeMetrics.totalUniques}
@@ -82,7 +82,7 @@ const Home: React.FC<HomeProps> = ({
 
 			{/* Category Progress Bars */}
 			<div className={styles.metrics}>
-				<h2 style={{ color: "#f1f5f9" }}>📋 Progress by Category 📋</h2>
+				<h2>Progress by Category</h2>
 				<div className={styles.categoryGrid}>
 					{Object.entries(itemCategoryMetrics).map(([category, metrics]) => (
 						<ProgressBar

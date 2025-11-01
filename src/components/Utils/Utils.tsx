@@ -32,8 +32,6 @@ const Utils: React.FC<UtilsProps> = ({
 
 	return (
 		<section id="utils" className={styles.utils}>
-			<h1>Utils</h1>
-
 			<div className={styles.tableLayout}>
 				<div className={styles.leftColumn}>
 					<div className={styles.section}>

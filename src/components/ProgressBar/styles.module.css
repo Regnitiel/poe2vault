@@ -1,17 +1,18 @@
 .progressContainer {
 	cursor: pointer;
 	margin: 8px 0;
-	padding: 10px;
-	border-radius: 8px;
-	background: rgba(225, 6, 6, 0.05);
-	transition: all 0.2s ease;
-	border: 1px solid rgba(255, 255, 255, 0.1);
+	padding: var(--spacing-md);
+	border-radius: var(--radius-lg);
+	background: var(--surface);
+	transition: var(--transition-rune);
+	border: 1px solid var(--backgroundSecondary);
+	box-shadow: var(--shadow-md);
 }
 
 .progressContainer:hover {
-	background: rgba(255, 255, 255, 0.1);
-	border-color: rgba(255, 255, 255, 0.2);
-	transform: translateY(-1px);
+	border-color: var(--ember);
+	box-shadow: var(--shadow-lg), var(--glowEmber);
+	transform: translateY(-2px);
 }
 
 .progressLabel {
@@ -19,78 +20,90 @@
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 8px;
-	color: #f1f5f9;
+	color: var(--textPrimary);
 	font-weight: 500;
 }
 
 .labelText {
 	font-size: 14px;
+	color: var(--gold);
 }
 
 .stats {
 	font-size: 12px;
-	opacity: 0.8;
+	color: var(--textSecondary);
 }
 
 .progressBarBackground {
 	width: 100%;
 	height: 20px;
-	background-color: rgba(255, 255, 255, 0.1);
+	background-color: var(--backgroundSecondary);
 	border-radius: 10px;
 	overflow: hidden;
 	position: relative;
-	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: inset 0 2px 4px rgba(10, 12, 15, 0.5);
+	border: 1px solid var(--backgroundSecondary);
 }
 
 .progressBar {
 	height: 100%;
 	border-radius: 10px;
 	position: relative;
-	transition: width 0.3s ease;
+	transition: width var(--transition-slow);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	min-width: 0;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 8px rgba(87, 167, 115, 0.3);
 }
 
+/* Vault-themed progress colors */
 .red {
-	background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+	background: linear-gradient(90deg, #b84026 0%, #c85535 100%);
+	box-shadow: 0 0 8px rgba(184, 64, 38, 0.4);
 }
 
 .orange {
-	background: linear-gradient(90deg, #ea580c 0%, #f97316 100%);
+	background: linear-gradient(90deg, var(--ember) 0%, #c87a35 100%);
+	box-shadow: var(--glowEmber);
 }
 
 .yellow {
-	background: linear-gradient(90deg, #ca8a04 0%, #eab308 100%);
+	background: linear-gradient(90deg, var(--gold) 0%, #d4b574 100%);
+	box-shadow: var(--glowGold);
 }
 
 .green {
-	background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+	background: linear-gradient(90deg, var(--eldritch) 0%, #68b884 100%);
+	box-shadow: var(--glowEldritch);
 }
 
+/* Container backgrounds with vault theme */
 .redContainer {
-	background: linear-gradient(90deg, #dc262635 0%, #ef444435 100%);
+	background: rgba(184, 64, 38, 0.1);
+	border-color: rgba(184, 64, 38, 0.3);
 }
 
 .orangeContainer {
-	background: linear-gradient(90deg, #ea580c35 0%, #f9731635 100%);
+	background: rgba(184, 110, 38, 0.1);
+	border-color: rgba(184, 110, 38, 0.3);
 }
 
 .yellowContainer {
-	background: linear-gradient(90deg, #ca8b0435 0%, #eab30835 100%);
+	background: rgba(198, 166, 103, 0.1);
+	border-color: rgba(198, 166, 103, 0.3);
 }
 
 .greenContainer {
-	background: linear-gradient(90deg, #16a34a35 0%, #22c55e35 100%);
+	background: rgba(87, 167, 115, 0.1);
+	border-color: rgba(87, 167, 115, 0.3);
 }
 
 .percentage {
-	color: white;
+	color: var(--textPrimary);
 	font-size: 12px;
-	font-weight: bold;
-	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	font-weight: 600;
+	text-shadow: 0 1px 2px rgba(10, 12, 15, 0.8);
 	position: absolute;
 	white-space: nowrap;
 }

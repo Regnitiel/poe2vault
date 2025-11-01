@@ -1,5 +1,6 @@
 /* ======================
-   GLOBAL STYLES
+   ETERNAL VAULT GLOBAL STYLES
+   Dark relic vault aesthetic, arcane tone, subtle glow
 ====================== */
 @import "./theme.css";
 
@@ -10,18 +11,30 @@
 body {
 	margin: 0;
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-	background-color: var(--bg-primary);
-	color: var(--text-primary);
+	background-color: var(--background);
+	color: var(--textPrimary);
 	line-height: 1.5;
+	background-image: radial-gradient(
+			circle at 20% 50%,
+			rgba(43, 49, 56, 0.3) 0%,
+			transparent 50%
+		),
+		radial-gradient(
+			circle at 80% 20%,
+			rgba(21, 25, 30, 0.5) 0%,
+			transparent 50%
+		);
 }
 
 a {
-	color: var(--color-primary);
+	color: var(--gold);
 	text-decoration: none;
+	transition: var(--transition-normal);
 }
 
 a:hover {
-	text-decoration: underline;
+	color: var(--ember);
+	text-shadow: var(--glowEmber);
 }
 
 /* ======================
@@ -68,81 +81,142 @@ a:hover {
 }
 
 /* ======================
-   COMMON BUTTON STYLES
+   ETERNAL VAULT BUTTON STYLES
+   Base: surface color, hover: gold glow, click: ember flash
 ====================== */
 .btn {
 	padding: var(--spacing-sm) var(--spacing-md);
-	border: none;
+	border: 1px solid transparent;
 	border-radius: var(--radius-sm);
 	cursor: pointer;
-	font-weight: bold;
-	transition: var(--transition-normal);
+	font-weight: 500;
+	transition: var(--transition-rune);
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	background-color: var(--surface);
+	color: var(--textPrimary);
+	position: relative;
+	overflow: hidden;
 }
 
 .btn:hover {
-	transform: scale(1.05);
+	border-color: var(--gold);
+	box-shadow: var(--glowGold);
+	color: var(--gold);
+}
+
+.btn:active {
+	box-shadow: var(--glowEmber);
+	border-color: var(--ember);
 }
 
 .btn-primary {
-	background-color: var(--color-primary);
-	color: var(--bg-primary);
+	background-color: var(--gold);
+	color: var(--background);
+	border-color: var(--gold);
 }
 
 .btn-primary:hover {
-	background-color: var(--color-primary-hover);
+	background-color: #d4b574;
+	box-shadow: var(--glowGold);
 }
 
 .btn-secondary {
-	background-color: var(--color-secondary);
-	color: var(--text-primary);
+	background-color: var(--ember);
+	color: var(--textPrimary);
+	border-color: var(--ember);
 }
 
 .btn-secondary:hover {
-	background-color: var(--color-secondary-hover);
+	background-color: #c87a35;
+	box-shadow: var(--glowEmber);
 }
 
 .btn-success {
-	background-color: var(--color-success);
-	color: var(--text-primary);
+	background-color: var(--eldritch);
+	color: var(--textPrimary);
+	border-color: var(--eldritch);
 }
 
 .btn-success:hover {
-	background-color: var(--color-success-hover);
+	background-color: #68b884;
+	box-shadow: var(--glowEldritch);
 }
 
 .btn-danger {
-	background-color: var(--color-danger);
-	color: var(--text-primary);
+	background-color: #b84026;
+	color: var(--textPrimary);
+	border-color: #b84026;
 }
 
 .btn-danger:hover {
-	background-color: var(--color-danger-hover);
+	background-color: #c85535;
+	box-shadow: 0 0 8px rgba(184, 64, 38, 0.5);
 }
 
 /* ======================
-   FORM ELEMENTS
+   ETERNAL VAULT FORM ELEMENTS
 ====================== */
 .form-input {
 	padding: var(--spacing-sm);
 	border-radius: var(--radius-sm);
-	border: 1px solid var(--bg-tertiary);
-	background-color: var(--bg-secondary);
-	color: var(--text-primary);
-	transition: var(--transition-fast);
+	border: 1px solid var(--backgroundSecondary);
+	background-color: var(--surface);
+	color: var(--textPrimary);
+	transition: var(--transition-normal);
 }
 
 .form-input:focus {
 	outline: none;
-	border-color: var(--color-primary);
+	border-color: var(--ember);
+	box-shadow: var(--glowEmber);
 }
 
 .form-label {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: var(--spacing-sm);
-	color: var(--text-primary);
+	color: var(--textPrimary);
 	font-weight: 500;
+}
+
+/* ======================
+   VAULT ATMOSPHERE ENHANCEMENTS
+====================== */
+.vault-panel {
+	background-color: var(--surface);
+	border: 1px solid var(--backgroundSecondary);
+	border-radius: var(--radius-md);
+	box-shadow: var(--shadow-vault);
+	transition: var(--transition-rune);
+}
+
+.vault-panel:hover {
+	border-color: var(--ember);
+	box-shadow: var(--shadow-vault), var(--glowEmber);
+}
+
+.vault-text-gold {
+	color: var(--gold);
+}
+
+.vault-text-ember {
+	color: var(--ember);
+}
+
+.vault-text-eldritch {
+	color: var(--eldritch);
+}
+
+.vault-glow-gold {
+	box-shadow: var(--glowGold);
+}
+
+.vault-glow-ember {
+	box-shadow: var(--glowEmber);
+}
+
+.vault-glow-eldritch {
+	box-shadow: var(--glowEldritch);
 }

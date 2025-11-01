@@ -3,28 +3,43 @@
 	align-items: flex-start;
 	gap: var(--spacing-md);
 	width: 100%;
-	padding: var(--spacing-xs);
+	padding: var(--spacing-md);
 	border-radius: var(--radius-lg);
 	flex-wrap: wrap;
-	background-color: var(--item-not-owned);
-	transition: var(--transition-normal);
+	background-color: var(--surface);
+	border: 1px solid var(--backgroundSecondary);
+	transition: var(--transition-rune);
+	box-shadow: var(--shadow-md);
+	position: relative;
+}
+
+.card:hover {
+	border-color: var(--ember);
+	box-shadow: var(--shadow-lg), var(--glowEmber);
 }
 
 .card.owned {
-	background-color: var(--item-owned);
+	border-color: var(--eldritch);
+	background-color: var(--item-catalogued);
+	box-shadow: var(--shadow-md), var(--glowEldritch);
 }
 
 .card.obtainedDuringLeague {
-	background-color: var(--item-obtained);
+	border-color: var(--ember);
+	background-color: var(--item-unearthed);
+	box-shadow: var(--shadow-md), var(--glowEmber);
 }
 
 .card.foil {
-	background-color: var(--item-foil);
+	border-color: var(--gold);
+	background-color: var(--item-prestige);
+	box-shadow: var(--shadow-md), var(--glowGold);
 }
 
 .card.disabled {
 	position: relative;
-	opacity: 0.6;
+	opacity: 0.4;
+	filter: grayscale(0.8);
 }
 
 .card.disabled::before {
@@ -36,13 +51,14 @@
 	bottom: 0;
 	background: repeating-linear-gradient(
 		45deg,
-		rgba(0, 0, 0, 0.1),
-		rgba(0, 0, 0, 0.1) 10px,
-		rgba(0, 0, 0, 0.2) 10px,
-		rgba(0, 0, 0, 0.2) 20px
+		rgba(139, 138, 134, 0.1),
+		rgba(139, 138, 134, 0.1) 10px,
+		rgba(139, 138, 134, 0.2) 10px,
+		rgba(139, 138, 134, 0.2) 20px
 	);
 	z-index: 10;
 	pointer-events: none;
+	border-radius: var(--radius-lg);
 }
 
 .card.disabled::after {
@@ -52,11 +68,11 @@
 	left: 50%;
 	transform: translate(-50%, -50%);
 	font-size: 150px;
-	color: rgba(239, 68, 68, 0.8);
+	color: rgba(184, 64, 38, 0.6);
 	z-index: 11;
 	pointer-events: none;
 	font-weight: bold;
-	text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+	text-shadow: 0 0 4px rgba(10, 12, 15, 0.8);
 }
 
 .info {
@@ -69,17 +85,21 @@
 .name {
 	margin: 0 0 var(--spacing-xs) 0;
 	cursor: pointer;
-	text-decoration: underline;
-	color: var(--color-primary);
-	transition: var(--transition-fast);
+	text-decoration: none;
+	color: var(--gold);
+	transition: var(--transition-normal);
+	font-weight: 600;
+	text-shadow: 0 0 2px rgba(198, 166, 103, 0.3);
 }
 
 .name:hover {
-	color: var(--color-primary-hover);
+	color: var(--ember);
+	text-shadow: var(--glowEmber);
 }
 
 .details {
 	margin: var(--spacing-xs) 0;
+	color: var(--textSecondary);
 }
 
 .buttons {
@@ -101,6 +121,13 @@
 	object-fit: contain;
 	object-position: center;
 	border-radius: var(--radius-md);
+	border: 1px solid var(--backgroundSecondary);
+	transition: var(--transition-normal);
+}
+
+.image img:hover {
+	border-color: var(--ember);
+	box-shadow: var(--glowEmber);
 }
 
 /* Responsive adjustments */

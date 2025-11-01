@@ -1,15 +1,35 @@
 .section {
 	width: 100%;
 	margin-bottom: var(--spacing-xl);
+	background-color: var(--surface);
+	border: 1px solid var(--backgroundSecondary);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-lg);
+	box-shadow: var(--shadow-vault);
 }
 
 .title {
-	color: var(--color-primary);
+	color: var(--gold);
 	font-size: 1.5rem;
 	margin: 0 0 var(--spacing-md) 0;
 	padding-bottom: var(--spacing-sm);
-	border-bottom: 2px solid var(--bg-tertiary);
+	border-bottom: 2px solid var(--ember);
 	text-align: center;
+	font-weight: 600;
+	text-shadow: var(--glowGold);
+	position: relative;
+}
+
+.title::after {
+	content: "";
+	position: absolute;
+	bottom: -2px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 60px;
+	height: 2px;
+	background: linear-gradient(90deg, transparent, var(--gold), transparent);
+	box-shadow: var(--glowGold);
 }
 
 .grid {

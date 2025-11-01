@@ -3,6 +3,9 @@
 	display: flex;
 	justify-content: center;
 	padding: var(--spacing-sm);
+	background-color: var(--backgroundSecondary);
+	border-radius: var(--radius-md);
+	border: 1px solid var(--surface);
 }
 
 .checkboxLabel {
@@ -10,17 +13,24 @@
 	align-items: center;
 	gap: var(--spacing-sm);
 	font-size: 1.1rem;
-	font-weight: bold;
-	color: var(--text-primary);
+	font-weight: 500;
+	color: var(--textPrimary);
 	cursor: pointer;
 	user-select: none;
+	transition: var(--transition-normal);
+}
+
+.checkboxLabel:hover {
+	color: var(--ember);
 }
 
 .checkboxLabel input[type="checkbox"] {
 	width: 20px;
 	height: 20px;
 	cursor: pointer;
-	accent-color: var(--color-primary);
+	accent-color: var(--gold);
+	border: 1px solid var(--ember);
+	border-radius: var(--radius-sm);
 }
 
 .container {
@@ -34,23 +44,37 @@
 	flex-direction: column;
 	gap: var(--spacing-sm);
 	min-width: 140px;
+	background-color: var(--surface);
+	padding: var(--spacing-md);
+	border-radius: var(--radius-md);
+	border: 1px solid var(--backgroundSecondary);
+	box-shadow: var(--shadow-md);
 }
 
 .sidebarButton {
-	background-color: var(--bg-secondary);
-	color: var(--text-primary);
-	border: none;
+	background-color: var(--backgroundSecondary);
+	color: var(--textPrimary);
+	border: 1px solid var(--backgroundSecondary);
 	padding: 0.4rem 0.8rem;
 	cursor: pointer;
 	border-radius: var(--radius-sm);
-	font-weight: bold;
+	font-weight: 500;
 	font-size: 20px;
-	transition: var(--transition-normal);
+	transition: var(--transition-rune);
 }
 
-.sidebarButton.active,
 .sidebarButton:hover {
-	background-color: var(--bg-tertiary);
+	border-color: var(--ember);
+	color: var(--ember);
+	box-shadow: var(--glowEmber);
+}
+
+.sidebarButton.active {
+	background-color: var(--gold);
+	color: var(--background);
+	border-color: var(--gold);
+	box-shadow: var(--glowGold);
+	font-weight: 600;
 }
 
 .items {
@@ -65,5 +89,17 @@
 @media (max-width: 700px) {
 	.container {
 		flex-direction: column;
+	}
+
+	.sidebar {
+		min-width: auto;
+		flex-direction: row;
+		overflow-x: auto;
+		padding: var(--spacing-sm);
+	}
+
+	.sidebarButton {
+		white-space: nowrap;
+		font-size: 16px;
 	}
 }

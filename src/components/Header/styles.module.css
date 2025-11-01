@@ -1,27 +1,39 @@
 .header {
 	display: flex;
 	justify-content: center;
-	background-color: var(--bg-secondary);
+	background-color: var(--backgroundSecondary);
 	padding: var(--spacing-md);
 	gap: var(--spacing-md);
 	position: sticky;
 	top: 0;
 	z-index: var(--z-sticky);
+	border-bottom: 1px solid var(--surface);
+	box-shadow: var(--shadow-vault);
 }
 
 .tabButton {
-	background: none;
-	border: none;
-	color: var(--text-primary);
+	background: var(--surface);
+	border: 1px solid var(--backgroundSecondary);
+	color: var(--textPrimary);
 	padding: 0.6rem 1.2rem;
 	cursor: pointer;
-	font-weight: bold;
+	font-weight: 500;
 	font-size: 1.2rem;
 	border-radius: var(--radius-md);
-	transition: var(--transition-normal);
+	transition: var(--transition-rune);
+	position: relative;
 }
 
-.tabButton.active,
 .tabButton:hover {
-	background-color: var(--bg-tertiary);
+	border-color: var(--ember);
+	color: var(--ember);
+	box-shadow: var(--glowEmber);
+}
+
+.tabButton.active {
+	background-color: var(--gold);
+	color: var(--background);
+	border-color: var(--gold);
+	box-shadow: var(--glowGold);
+	font-weight: 600;
 }

@@ -1,32 +1,50 @@
 /* ======================
-   CSS CUSTOM PROPERTIES (VARIABLES)
+   ETERNAL VAULT THEME TOKENS
+   Dark relic vault aesthetic, arcane tone, subtle glow
 ====================== */
 :root {
-	/* Colors */
-	--color-primary: #fbbf24;
-	--color-primary-hover: #fcd34d;
-	--color-secondary: #3b82f6;
-	--color-secondary-hover: #60a5fa;
-	--color-success: #10b981;
-	--color-success-hover: #34d399;
-	--color-danger: #ef4444;
-	--color-danger-hover: #f87171;
+	/* Eternal Vault Core Colors */
+	--background: #0a0c0f; /* Abyss Black — vault darkness */
+	--backgroundSecondary: #15191e; /* Crypt Slate — stone depth */
+	--surface: #2b3138; /* Obsidian Steel — panel blocks */
+	--textPrimary: #d9d7d1; /* Tarnished Silver — main text */
+	--textSecondary: #8b8a86; /* Ash Grey — labels, muted text */
+	--gold: #c6a667; /* Ancient Gold — prestige highlights */
+	--ember: #b86e26; /* Arcane Ember — interactive, alert, rare */
+	--eldritch: #57a773; /* Eldritch Green — completion/owned/arcane energy */
 
-	/* Background Colors */
-	--bg-primary: #0f172a;
-	--bg-secondary: #1e293b;
-	--bg-tertiary: #334155;
+	/* Legacy compatibility aliases */
+	--bg-primary: var(--background);
+	--bg-secondary: var(--backgroundSecondary);
+	--bg-tertiary: var(--surface);
+	--text-primary: var(--textPrimary);
+	--text-secondary: var(--textSecondary);
+	--text-muted: var(--textSecondary);
+	--color-primary: var(--gold);
+	--color-primary-hover: #d4b574;
+	--color-secondary: var(--ember);
+	--color-secondary-hover: #c87a35;
+	--color-success: var(--eldritch);
+	--color-success-hover: #68b884;
+	--color-danger: #b84026;
+	--color-danger-hover: #c85535;
 
-	/* Item Status Colors */
-	--item-owned: rgba(21, 128, 61, 0.25);
-	--item-obtained: rgba(59, 130, 246, 0.25);
-	--item-foil: rgba(251, 191, 36, 0.25);
-	--item-not-owned: rgba(205, 18, 18, 0.25);
+	/* Vault Status Colors - using theme vocabulary */
+	--item-catalogued: rgba(87, 167, 115, 0.15); /* Eldritch - owned/restored */
+	--item-unearthed: rgba(184, 110, 38, 0.15); /* Ember - recently found */
+	--item-prestige: rgba(198, 166, 103, 0.15); /* Gold - foil/special */
+	--item-lost: rgba(139, 138, 134, 0.08); /* Ash Grey - missing/unclaimed */
 
-	/* Text Colors */
-	--text-primary: #f1f5f9;
-	--text-secondary: #cbd5e1;
-	--text-muted: #94a3b8;
+	/* Legacy item status aliases */
+	--item-owned: var(--item-catalogued);
+	--item-obtained: var(--item-unearthed);
+	--item-foil: var(--item-prestige);
+	--item-not-owned: var(--item-lost);
+
+	/* Eternal Vault Glows */
+	--glowGold: 0 0 8px rgba(198, 166, 103, 0.5);
+	--glowEmber: 0 0 8px rgba(184, 110, 38, 0.5);
+	--glowEldritch: 0 0 8px rgba(87, 167, 115, 0.5);
 
 	/* Spacing */
 	--spacing-xs: 0.25rem;
@@ -40,15 +58,17 @@
 	--radius-md: 6px;
 	--radius-lg: 8px;
 
-	/* Shadows */
-	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+	/* Shadows - deeper vault atmosphere */
+	--shadow-sm: 0 2px 4px rgba(10, 12, 15, 0.3);
+	--shadow-md: 0 4px 8px rgba(10, 12, 15, 0.4);
+	--shadow-lg: 0 8px 16px rgba(10, 12, 15, 0.5);
+	--shadow-vault: 0 0 16px rgba(10, 12, 15, 0.8);
 
-	/* Transitions */
-	--transition-fast: 0.15s ease;
-	--transition-normal: 0.2s ease;
-	--transition-slow: 0.3s ease;
+	/* Transitions - ancient power waking slowly */
+	--transition-fast: 0.2s ease;
+	--transition-normal: 0.3s ease;
+	--transition-slow: 0.5s ease;
+	--transition-rune: 0.4s ease-in-out;
 
 	/* Z-index layers */
 	--z-sticky: 100;

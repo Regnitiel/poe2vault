@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles.css";
+import styles from "./styles.module.css";
 
 interface UpdateModalProps {
 	isOpen: boolean;
@@ -26,19 +26,19 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
 	}
 
 	return (
-		<div className="updateModalOverlay">
-			<div className="updateModal">
-				<div className="updateModalHeader">
+		<div className={styles.updateModalOverlay}>
+			<div className={styles.updateModal}>
+				<div className={styles.updateModalHeader}>
 					<h2>🎉 Update Available!</h2>
-					<p className="updateVersion">
+					<p className={styles.updateVersion}>
 						Version {updateInfo.version} is ready to install
 					</p>
 				</div>
 
-				<div className="updateModalContent">
-					<div className="releaseNotesSection">
+				<div className={styles.updateModalContent}>
+					<div className={styles.releaseNotesSection}>
 						<h3>What's New:</h3>
-						<div className="releaseNotes">
+						<div className={styles.releaseNotes}>
 							{updateInfo.releaseNotes.split("\n").map((line, index) => (
 								<p key={index}>{line}</p>
 							))}
@@ -46,13 +46,13 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
 					</div>
 
 					{isDownloading && (
-						<div className="downloadProgress">
-							<div className="progressLabel">
+						<div className={styles.downloadProgress}>
+							<div className={styles.progressLabel}>
 								Downloading update... {downloadProgress}%
 							</div>
-							<div className="progressBar">
+							<div className={styles.progressBar}>
 								<div
-									className="progressFill"
+									className={styles.progressFill}
 									style={{ width: `${downloadProgress}%` }}
 								></div>
 							</div>
@@ -61,19 +61,25 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
 				</div>
 
 				{!isDownloading && (
-					<div className="updateModalActions">
-						<button className="updateButton decline" onClick={onDecline}>
+					<div className={styles.updateModalActions}>
+						<button
+							className={`${styles.updateButton} ${styles.decline}`}
+							onClick={onDecline}
+						>
 							Not Now
 						</button>
-						<button className="updateButton accept" onClick={onAccept}>
+						<button
+							className={`${styles.updateButton} ${styles.accept}`}
+							onClick={onAccept}
+						>
 							Update Now
 						</button>
 					</div>
 				)}
 
 				{isDownloading && (
-					<div className="updateModalActions">
-						<p className="downloadingText">
+					<div className={styles.updateModalActions}>
+						<p className={styles.downloadingText}>
 							Please wait while the update is being downloaded...
 						</p>
 					</div>

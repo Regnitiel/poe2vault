@@ -3,6 +3,16 @@
 	flex-direction: column;
 	align-items: center;
 	padding: var(--spacing-md);
+	background-image: radial-gradient(
+			circle at 30% 20%,
+			rgba(43, 49, 56, 0.2) 0%,
+			transparent 50%
+		),
+		radial-gradient(
+			circle at 70% 80%,
+			rgba(21, 25, 30, 0.3) 0%,
+			transparent 50%
+		);
 }
 
 .tableLayout {
@@ -25,16 +35,27 @@
 
 .section {
 	margin-top: var(--spacing-md);
-	padding: var(--spacing-sm);
-	border: 1px solid var(--bg-tertiary);
+	padding: var(--spacing-lg);
+	border: 1px solid var(--backgroundSecondary);
 	border-radius: var(--radius-lg);
 	width: 100%;
 	text-align: left;
+	background-color: var(--surface);
+	box-shadow: var(--shadow-vault);
+	transition: var(--transition-normal);
+}
+
+.section:hover {
+	border-color: var(--ember);
+	box-shadow: var(--shadow-vault), var(--glowEmber);
 }
 
 .section h2 {
 	margin-top: 0;
 	text-align: center;
+	color: var(--gold);
+	font-weight: 600;
+	text-shadow: var(--glowGold);
 }
 
 .searchResults {

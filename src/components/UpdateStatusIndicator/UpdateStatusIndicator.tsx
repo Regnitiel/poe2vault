@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles.css";
+import styles from "./styles.module.css";
 
 interface UpdateStatusIndicatorProps {
 	status:
@@ -56,15 +56,19 @@ const UpdateStatusIndicator: React.FC<UpdateStatusIndicatorProps> = ({
 
 	return (
 		<div
-			className={`updateStatusIndicator ${
-				status === "available" ? "clickable" : ""
+			className={`${styles.updateStatusIndicator} ${
+				status === "available" ? styles.clickable : ""
 			}`}
 			onClick={status === "available" ? onUpdateClick : undefined}
 		>
-			<span className={`updateIcon ${status === "checking" ? "spinning" : ""}`}>
+			<span
+				className={`${styles.updateIcon} ${
+					status === "checking" ? styles.spinning : ""
+				}`}
+			>
 				{getStatusIcon()}
 			</span>
-			<span className="updateText">{getStatusText()}</span>
+			<span className={styles.updateText}>{getStatusText()}</span>
 		</div>
 	);
 };

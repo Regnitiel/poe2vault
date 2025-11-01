@@ -2,31 +2,34 @@
 	position: fixed;
 	bottom: 16px;
 	left: 16px;
-	background: rgba(0, 0, 0, 0.8);
-	color: white;
+	background: var(--surface);
+	color: var(--textPrimary);
 	padding: 8px 12px;
-	border-radius: 6px;
+	border-radius: var(--radius-md);
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	font-size: 12px;
 	font-weight: 500;
 	z-index: 1000;
-	border: 1px solid rgba(255, 255, 255, 0.1);
+	border: 1px solid var(--backgroundSecondary);
 	backdrop-filter: blur(10px);
-	transition: all 0.3s ease;
+	transition: var(--transition-rune);
+	box-shadow: var(--shadow-md);
 }
 
 .updateStatusIndicator.clickable {
 	cursor: pointer;
-	background: rgba(34, 197, 94, 0.9);
-	border-color: rgba(34, 197, 94, 0.3);
+	background: var(--eldritch);
+	border-color: var(--eldritch);
+	color: var(--textPrimary);
+	box-shadow: var(--glowEldritch);
 }
 
 .updateStatusIndicator.clickable:hover {
-	background: rgba(34, 197, 94, 1);
+	background: #68b884;
 	transform: translateY(-2px);
-	box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+	box-shadow: var(--shadow-lg), var(--glowEldritch);
 }
 
 .updateIcon {
@@ -36,6 +39,10 @@
 
 .updateText {
 	white-space: nowrap;
+}
+
+.spinning {
+	animation: spin 1s linear infinite;
 }
 
 @keyframes pulse {
