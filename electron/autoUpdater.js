@@ -40,7 +40,7 @@ class AutoUpdaterService {
 		// Configure auto updater settings
 		autoUpdater.autoDownload = false; // Don't auto-download, ask user first
 		autoUpdater.autoInstallOnAppQuit = true;
-		
+
 		// Enable logging for debugging
 		autoUpdater.logger = require("electron-log");
 		autoUpdater.logger.transports.file.level = "info";
@@ -53,13 +53,13 @@ class AutoUpdaterService {
 	setupEventListeners() {
 		// When checking for updates
 		autoUpdater.on("checking-for-update", () => {
-			console.log("Checking for updates...");
+			console.log("📡 Event: checking-for-update");
 			this.mainWindow.webContents.send("update-status", { status: "checking" });
 		});
 
 		// When update available
 		autoUpdater.on("update-available", (info) => {
-			console.log("Update available:", info.version);
+			console.log("✅ Event: update-available - Version:", info.version);
 			this.isChecking = false;
 			if (this.checkTimeout) {
 				clearTimeout(this.checkTimeout);
@@ -75,7 +75,7 @@ class AutoUpdaterService {
 
 		// When no update available
 		autoUpdater.on("update-not-available", (info) => {
-			console.log("App is up to date");
+			console.log("✅ Event: update-not-available - App is up to date");
 			this.isChecking = false;
 			if (this.checkTimeout) {
 				clearTimeout(this.checkTimeout);
@@ -89,13 +89,13 @@ class AutoUpdaterService {
 		// Download progress
 		autoUpdater.on("download-progress", (progressObj) => {
 			const progress = Math.round(progressObj.percent);
-			console.log(`Download progress: ${progress}%`);
+			console.log(`⬇️  Download progress: ${progress}%`);
 			this.mainWindow.webContents.send("update-progress", { progress });
 		});
 
 		// When update downloaded
 		autoUpdater.on("update-downloaded", (info) => {
-			console.log("Update downloaded:", info.version);
+			console.log("✅ Event: update-downloaded - Version:", info.version);
 			this.isChecking = false;
 			if (this.checkTimeout) {
 				clearTimeout(this.checkTimeout);
@@ -111,8 +111,12 @@ class AutoUpdaterService {
 
 		// Error handling
 		autoUpdater.on("error", (error) => {
+			console.error("❌ Event: error");
 			console.error("AutoUpdater error:", error);
-			console.error("Error details:", error.message, error.stack);
+			console.error("Error details:", error.message);
+			if (error.stack) {
+				console.error("Error stack:", error.stack);
+			}
 			this.isChecking = false;
 			if (this.checkTimeout) {
 				clearTimeout(this.checkTimeout);
@@ -121,14 +125,21 @@ class AutoUpdaterService {
 
 			// For automatic checks, just log the error silently
 			if (!this.isManualCheck) {
+				console.log("Auto check failed, setting status to up-to-date");
 				this.mainWindow.webContents.send("update-status", {
 					status: "up-to-date",
 				});
 			} else {
 				// For manual checks, show the error to user
 				const errorMessage = error.message || "Unknown error occurred";
-				this.mainWindow.webContents.send("update-error", 
-					`Failed to check for updates: ${errorMessage}`);
+				console.log(
+					"Manual check failed, sending error to renderer:",
+					errorMessage
+				);
+				this.mainWindow.webContents.send(
+					"update-error",
+					`Failed to check for updates: ${errorMessage}`
+				);
 			}
 		});
 	}
@@ -137,7 +148,9 @@ class AutoUpdaterService {
 		try {
 			// Skip if not packaged (development mode)
 			if (!app.isPackaged) {
-				console.log("Skipping update check - app is not packaged (development mode)");
+				console.log(
+					"Skipping update check - app is not packaged (development mode)"
+				);
 				this.mainWindow.webContents.send("update-status", {
 					status: "up-to-date",
 				});
@@ -152,19 +165,28 @@ class AutoUpdaterService {
 
 			this.isChecking = true;
 			this.isManualCheck = false; // This is an automatic check
-			
+			console.log("🔄 Auto update check started");
+			console.log("Current app version:", app.getVersion());
+
 			// Set a timeout to prevent hanging (30 seconds)
 			this.checkTimeout = setTimeout(() => {
-				console.log("Update check timed out after 30 seconds");
+				console.log("⚠️ TIMEOUT: Auto update check timed out after 30 seconds");
 				this.isChecking = false;
+				if (this.checkTimeout) {
+					clearTimeout(this.checkTimeout);
+					this.checkTimeout = null;
+				}
 				this.mainWindow.webContents.send("update-status", {
 					status: "up-to-date",
 				});
 			}, 30000);
 
-			await autoUpdater.checkForUpdates();
+			console.log("Calling autoUpdater.checkForUpdates()...");
+			const result = await autoUpdater.checkForUpdates();
+			console.log("Auto checkForUpdates() result:", result);
 		} catch (error) {
-			console.error("Error checking for updates:", error);
+			console.error("❌ Error in checkForUpdates:", error);
+			console.error("Error stack:", error.stack);
 			this.isChecking = false;
 			if (this.checkTimeout) {
 				clearTimeout(this.checkTimeout);
@@ -181,8 +203,10 @@ class AutoUpdaterService {
 			// Allow manual checks even in dev mode for testing
 			if (!app.isPackaged) {
 				console.log("Manual update check in development mode");
-				this.mainWindow.webContents.send("update-error", 
-					"Updates are only available for packaged applications. You're running in development mode.");
+				this.mainWindow.webContents.send(
+					"update-error",
+					"Updates are only available for packaged applications. You're running in development mode."
+				);
 				return;
 			}
 
@@ -195,19 +219,44 @@ class AutoUpdaterService {
 			this.isChecking = true;
 			this.isManualCheck = true; // This is a manual check
 			console.log("Manual update check requested...");
-			
+			console.log("Current app version:", app.getVersion());
+			console.log("Feed URL:", {
+				provider: "github",
+				owner: "Regnitiel",
+				repo: "poe2vault",
+			});
+
 			// Set a timeout to prevent hanging (45 seconds for manual checks)
 			this.checkTimeout = setTimeout(() => {
-				console.log("Manual update check timed out after 45 seconds");
+				console.log(
+					"⚠️ TIMEOUT: Manual update check timed out after 45 seconds"
+				);
 				this.isChecking = false;
-				this.mainWindow.webContents.send("update-error", 
-					"Update check timed out. Please check your internet connection and try again.");
+				if (this.checkTimeout) {
+					clearTimeout(this.checkTimeout);
+					this.checkTimeout = null;
+				}
+				this.mainWindow.webContents.send(
+					"update-error",
+					"Update check timed out. Please check your internet connection and try again."
+				);
 			}, 45000);
 
-			await autoUpdater.checkForUpdates();
+			console.log("Calling autoUpdater.checkForUpdates()...");
+			const result = await autoUpdater.checkForUpdates();
+			console.log("checkForUpdates() result:", result);
 		} catch (error) {
-			console.error("Error checking for updates:", error);
-			this.mainWindow.webContents.send("update-error", error.message);
+			console.error("❌ Error in checkForUpdatesManual:", error);
+			console.error("Error stack:", error.stack);
+			this.isChecking = false;
+			if (this.checkTimeout) {
+				clearTimeout(this.checkTimeout);
+				this.checkTimeout = null;
+			}
+			this.mainWindow.webContents.send(
+				"update-error",
+				error.message || "Unknown error occurred while checking for updates"
+			);
 		}
 	}
 
