@@ -2,12 +2,12 @@ const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 const fs = require("fs");
 
-// Try to load UpdateService, but don't fail if it doesn't exist
-let UpdateService;
+// Try to load AutoUpdaterService, but don't fail if it doesn't exist
+let AutoUpdaterService;
 try {
-	UpdateService = require("./electron/updateService");
+	AutoUpdaterService = require("./electron/autoUpdater");
 } catch (error) {
-	console.warn("UpdateService not available:", error.message);
+	console.warn("AutoUpdaterService not available:", error.message);
 }
 
 const vaultFilePath =
@@ -21,7 +21,7 @@ const vaultFilePath =
 		  )
 		: path.join("G:", "My Drive", "POE", "vaultData.json");
 
-let updateService;
+let autoUpdaterService;
 
 function createWindow() {
 	const win = new BrowserWindow({
@@ -73,9 +73,9 @@ function createWindow() {
 		win.webContents.openDevTools();
 	}
 
-	// Initialize update service
-	if (UpdateService) {
-		updateService = new UpdateService(win);
+	// Initialize auto-updater service
+	if (AutoUpdaterService) {
+		autoUpdaterService = new AutoUpdaterService(win);
 	}
 
 	return win;
@@ -108,22 +108,22 @@ ipcMain.handle("open-external", async (event, url) => {
 
 // Update-related IPC handlers
 ipcMain.handle("check-for-updates", async () => {
-	if (updateService) {
-		return await updateService.checkForUpdatesManual();
+	if (autoUpdaterService) {
+		return await autoUpdaterService.checkForUpdatesManual();
 	}
 	return false;
 });
 
 ipcMain.handle("check-for-updates-silent", async () => {
-	if (updateService) {
-		return await updateService.checkForUpdates();
+	if (autoUpdaterService) {
+		return await autoUpdaterService.checkForUpdates();
 	}
 	return false;
 });
 
 ipcMain.handle("download-update", async () => {
-	if (updateService && updateService.updateInfo) {
-		await updateService.downloadAndInstallUpdate();
+	if (autoUpdaterService && autoUpdaterService.updateInfo) {
+		await autoUpdaterService.downloadAndInstallUpdate();
 	}
 });
 
@@ -135,8 +135,8 @@ app.whenReady().then(() => {
 	createWindow();
 
 	// Start checking for updates after window is ready
-	if (updateService) {
-		updateService.startUpdateCheck();
+	if (autoUpdaterService) {
+		autoUpdaterService.startUpdateCheck();
 	}
 
 	app.on("activate", () => {
