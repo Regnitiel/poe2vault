@@ -85,7 +85,7 @@
 	margin: 0;
 }
 
-.formButton {
+/* .formButton {
 	flex: 1;
 	padding: 0.6rem 1rem;
 	border-radius: var(--radius-sm);
@@ -100,7 +100,7 @@
 .formButton:hover {
 	background-color: #68b884;
 	box-shadow: var(--glowEldritch);
-}
+} */
 
 /* Responsive design for smaller screens */
 @media (max-width: 1200px) {
