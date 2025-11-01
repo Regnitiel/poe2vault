@@ -85,6 +85,23 @@
 	margin: 0;
 }
 
+.formButton {
+	flex: 1;
+	padding: 0.6rem 1rem;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--eldritch);
+	background-color: var(--eldritch);
+	color: var(--textPrimary);
+	font-weight: 500;
+	cursor: pointer;
+	transition: var(--transition-rune);
+}
+
+.formButton:hover {
+	background-color: #68b884;
+	box-shadow: var(--glowEldritch);
+}
+
 /* Responsive design for smaller screens */
 @media (max-width: 1200px) {
 	.tableLayout {

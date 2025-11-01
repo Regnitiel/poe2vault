@@ -53,7 +53,7 @@ const Utils: React.FC<UtilsProps> = ({
 								Current Version: <strong>v{currentVersion}</strong>
 							</p>
 							<button
-								className="form-button"
+								className={styles.formButton}
 								onClick={onCheckForUpdates}
 								disabled={updateStatus === "checking"}
 							>
