@@ -41,7 +41,7 @@ const Home: React.FC<HomeProps> = ({
 		<section id="home" className="active">
 			{/* Progress Bar */}
 			<div className={styles.metrics}>
-				<h2>Collection Progress</h2>
+				<h2>Collection Progress test update</h2>
 				<ProgressBar
 					owned={homeMetrics.ownedUniques}
 					total={homeMetrics.totalUniques}
