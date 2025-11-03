@@ -1,6 +1,6 @@
 {
 	"name": "vault-app",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"description": "Offline Vault App with Google Drive JSON sync",
 	"main": "main.js",
 	"homepage": "./",
@@ -26,16 +26,7 @@
 		"url": "https://github.com/Regnitiel/poe2vault.git"
 	},
 	"author": "Regnitiel",
-	"build": {
-		"publish": {
-			"provider": "github",
-			"owner": "Regnitiel",
-			"repo": "poe2vault"
-		}
-	},
 	"dependencies": {
-		"electron-log": "^5.4.3",
-		"electron-updater": "^6.1.4",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
 	},

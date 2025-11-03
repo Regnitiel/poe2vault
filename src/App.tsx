@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { TabType, FilterType, VaultItem } from "./types";
 import { useVaultData } from "./hooks/useVaultData";
-import { useUpdateManager } from "./hooks/useUpdateManager";
 import Header from "./components/Header/Header";
 import Home from "./components/Home/Home";
 import Vault from "./components/Vault/Vault";
 import Utils from "./components/Utils/Utils";
 import { EditModal } from "./components/Modal/Modal";
-import UpdateStatusIndicator from "./components/UpdateStatusIndicator/UpdateStatusIndicator";
 import UpdateModal from "./components/UpdateModal/UpdateModal";
 import "./styles/globals.css";
 
@@ -23,25 +21,18 @@ const App: React.FC = () => {
 		toggleFoil,
 	} = useVaultData();
 
-	const {
-		updateStatus,
-		updateInfo,
-		downloadProgress,
-		showUpdateModal,
-		currentVersion,
-		checkForUpdates,
-		acceptUpdate,
-		declineUpdate,
-		openUpdateModal,
-		isDownloading,
-		updateError,
-	} = useUpdateManager();
-
 	const [currentTab, setCurrentTab] = useState<TabType>("home");
 	const [currentFilter, setCurrentFilter] = useState<FilterType>("all");
 	const [hideOwnedItems, setHideOwnedItems] = useState(false);
 	const [editingItem, setEditingItem] = useState<VaultItem | null>(null);
 	const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+	const [updateModalOpen, setUpdateModalOpen] = useState(false);
+	const [updateInfo, setUpdateInfo] = useState<{
+		version: string;
+		releaseNotes: string;
+		url?: string;
+	} | null>(null);
 
 	const handleEdit = (index: number) => {
 		setEditingItem(allItems[index]);
@@ -59,6 +50,26 @@ const App: React.FC = () => {
 
 	const handleDeleteItem = (index: number) => {
 		deleteItem(index);
+	};
+
+	const handleUpdateAvailable = (info: {
+		version: string;
+		releaseNotes: string;
+		url?: string;
+	}) => {
+		setUpdateInfo(info);
+		setUpdateModalOpen(true);
+	};
+
+	const handleAcceptUpdate = () => {
+		if (updateInfo?.url) {
+			window.electronAPI?.openExternal(updateInfo.url);
+		}
+		setUpdateModalOpen(false);
+	};
+
+	const handleDeclineUpdate = () => {
+		setUpdateModalOpen(false);
 	};
 
 	const renderCurrentTab = () => {
@@ -94,10 +105,6 @@ const App: React.FC = () => {
 						onToggleObtainedDuringLeague={toggleObtainedDuringLeague}
 						onToggleFoil={toggleFoil}
 						onEdit={handleEdit}
-						onCheckForUpdates={checkForUpdates}
-						currentVersion={currentVersion}
-						updateStatus={updateStatus}
-						updateError={updateError}
 					/>
 				);
 			default:
@@ -111,7 +118,11 @@ const App: React.FC = () => {
 
 	return (
 		<div className="App">
-			<Header currentTab={currentTab} onTabChange={setCurrentTab} />
+			<Header
+				currentTab={currentTab}
+				onTabChange={setCurrentTab}
+				onUpdateAvailable={handleUpdateAvailable}
+			/>
 			<main>{renderCurrentTab()}</main>{" "}
 			{editingItem && (
 				<EditModal
@@ -130,19 +141,12 @@ const App: React.FC = () => {
 					}}
 				/>
 			)}
-			{/* Update Status Indicator */}
-			<UpdateStatusIndicator
-				status={updateStatus}
-				onUpdateClick={openUpdateModal}
-			/>
-			{/* Update Modal */}
 			<UpdateModal
-				isOpen={showUpdateModal}
-				updateInfo={updateInfo}
-				isDownloading={isDownloading}
-				downloadProgress={downloadProgress}
-				onAccept={acceptUpdate}
-				onDecline={declineUpdate}
+				isOpen={updateModalOpen}
+				version={updateInfo?.version || ""}
+				releaseNotes={updateInfo?.releaseNotes || ""}
+				onAccept={handleAcceptUpdate}
+				onDecline={handleDeclineUpdate}
 			/>
 		</div>
 	);

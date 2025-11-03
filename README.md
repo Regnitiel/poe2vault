@@ -1,4 +1,8 @@
-# POE2 Vault - Unique Items Collection Tracker
+# Vault App
+
+This application manages a local JSON vault for PoE2 uniques.
+
+Note: The automatic/manual update system has been fully removed from this codebase per cleanup step 1. Packaging and releases still function, but no in-app update checks are present.
 
 **🎮 A comprehensive Path of Exile 2 unique items collection tracker for serious collectors**
 

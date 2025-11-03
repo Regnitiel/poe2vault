@@ -9,16 +9,15 @@ declare global {
 			saveVaultData: (data: VaultItem[]) => Promise<void>;
 			openExternal: (url: string) => void;
 
-			// Update APIs
-			checkForUpdates: () => Promise<boolean>;
-			downloadUpdate: () => Promise<void>;
+			// Update (manual only)
 			getCurrentVersion: () => Promise<string>;
-
-			// Update event listeners
-			onUpdateStatus: (callback: (status: any) => void) => void;
-			onUpdateAvailable: (callback: (updateInfo: any) => void) => void;
-			onUpdateProgress: (callback: (progress: any) => void) => void;
-			onUpdateError: (callback: (error: string) => void) => void;
+			checkForUpdates: () => Promise<{
+				status: "available" | "up-to-date" | "error";
+				version?: string;
+				url?: string;
+				releaseNotes?: string;
+				error?: string;
+			}>;
 		};
 	}
 }

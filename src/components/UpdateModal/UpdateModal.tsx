@@ -3,87 +3,54 @@ import styles from "./styles.module.css";
 
 interface UpdateModalProps {
 	isOpen: boolean;
-	updateInfo: {
-		version: string;
-		releaseNotes: string;
-	} | null;
-	isDownloading: boolean;
-	downloadProgress: number;
+	version: string;
+	releaseNotes: string;
 	onAccept: () => void;
 	onDecline: () => void;
 }
 
 const UpdateModal: React.FC<UpdateModalProps> = ({
 	isOpen,
-	updateInfo,
-	isDownloading,
-	downloadProgress,
+	version,
+	releaseNotes,
 	onAccept,
 	onDecline,
 }) => {
-	if (!isOpen || !updateInfo) {
-		return null;
-	}
+	if (!isOpen) return null;
+
+	const lines = (releaseNotes || "").split("\n").filter(Boolean);
 
 	return (
-		<div className={styles.updateModalOverlay}>
-			<div className={styles.updateModal}>
-				<div className={styles.updateModalHeader}>
-					<h2>🎉 Update Available!</h2>
-					<p className={styles.updateVersion}>
-						Version {updateInfo.version} is ready to install
-					</p>
+		<div className={styles.overlay}>
+			<div className={styles.modal}>
+				<div className={styles.header}>
+					<h2>Update Available</h2>
+					<p className={styles.version}>Version {version}</p>
 				</div>
-
-				<div className={styles.updateModalContent}>
-					<div className={styles.releaseNotesSection}>
-						<h3>What's New:</h3>
-						<div className={styles.releaseNotes}>
-							{updateInfo.releaseNotes.split("\n").map((line, index) => (
-								<p key={index}>{line}</p>
-							))}
-						</div>
+				<div className={styles.content}>
+					<h3>Release notes</h3>
+					<div className={styles.notes}>
+						{lines.length === 0 ? (
+							<p>No release notes provided.</p>
+						) : (
+							lines.map((l, i) => <p key={i}>{l}</p>)
+						)}
 					</div>
-
-					{isDownloading && (
-						<div className={styles.downloadProgress}>
-							<div className={styles.progressLabel}>
-								Downloading update... {downloadProgress}%
-							</div>
-							<div className={styles.progressBar}>
-								<div
-									className={styles.progressFill}
-									style={{ width: `${downloadProgress}%` }}
-								></div>
-							</div>
-						</div>
-					)}
 				</div>
-
-				{!isDownloading && (
-					<div className={styles.updateModalActions}>
-						<button
-							className={`${styles.updateButton} ${styles.decline}`}
-							onClick={onDecline}
-						>
-							Not Now
-						</button>
-						<button
-							className={`${styles.updateButton} ${styles.accept}`}
-							onClick={onAccept}
-						>
-							Update Now
-						</button>
-					</div>
-				)}
-
-				{isDownloading && (
-					<div className={styles.updateModalActions}>
-						<p className={styles.downloadingText}>
-							Please wait while the update is being downloaded...
-						</p>
-					</div>
-				)}
+				<div className={styles.actions}>
+					<button
+						className={`${styles.btn} ${styles.secondary}`}
+						onClick={onDecline}
+					>
+						Not now
+					</button>
+					<button
+						className={`${styles.btn} ${styles.primary}`}
+						onClick={onAccept}
+					>
+						Update
+					</button>
+				</div>
 			</div>
 		</div>
 	);

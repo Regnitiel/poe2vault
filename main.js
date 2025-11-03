@@ -1,20 +1,7 @@
 const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 const fs = require("fs");
-
-// Try to load AutoUpdaterService and ManualUpdateService
-let AutoUpdaterService;
-let ManualUpdateService;
-try {
-	AutoUpdaterService = require("./electron/autoUpdater");
-} catch (error) {
-	console.warn("AutoUpdaterService not available:", error.message);
-}
-try {
-	ManualUpdateService = require("./electron/updateService");
-} catch (error) {
-	console.warn("Manual UpdateService not available:", error.message);
-}
+const https = require("https");
 
 const vaultFilePath =
 	process.platform === "darwin"
@@ -26,9 +13,6 @@ const vaultFilePath =
 				"vaultData.json"
 		  )
 		: path.join("G:", "My Drive", "POE", "vaultData.json");
-
-let autoUpdaterService; // electron-updater driven
-let manualUpdateService; // custom GitHub API driven
 
 function createWindow() {
 	const win = new BrowserWindow({
@@ -80,14 +64,6 @@ function createWindow() {
 		win.webContents.openDevTools();
 	}
 
-	// Initialize update services
-	if (AutoUpdaterService) {
-		autoUpdaterService = new AutoUpdaterService(win);
-	}
-	if (ManualUpdateService) {
-		manualUpdateService = new ManualUpdateService(win);
-	}
-
 	return win;
 }
 
@@ -116,45 +92,78 @@ ipcMain.handle("open-external", async (event, url) => {
 	shell.openExternal(url);
 });
 
-// Update-related IPC handlers
+// Minimal manual update check via GitHub Releases API
 ipcMain.handle("check-for-updates", async () => {
-	// Prefer manual service for manual checks (more resilient, no latest.yml dependency)
-	if (manualUpdateService && manualUpdateService.checkForUpdatesManual) {
-		return await manualUpdateService.checkForUpdatesManual();
-	}
-	if (autoUpdaterService && autoUpdaterService.checkForUpdatesManual) {
-		return await autoUpdaterService.checkForUpdatesManual();
-	}
-	// Proactively notify renderer to avoid stuck "Checking..."
-	const win = BrowserWindow.getAllWindows()[0];
-	if (win) {
-		win.webContents.send(
-			"update-error",
-			"Update service is not available in this build. Ensure dependencies are included."
-		);
-	}
-	return false;
-});
+	const repo = "Regnitiel/poe2vault";
+	const options = {
+		hostname: "api.github.com",
+		path: `/repos/${repo}/releases/latest`,
+		method: "GET",
+		headers: {
+			"User-Agent": `VaultApp/${app.getVersion()} (Electron)`,
+			Accept: "application/vnd.github.v3+json",
+			"Cache-Control": "no-cache",
+		},
+		timeout: 15000,
+	};
 
-ipcMain.handle("check-for-updates-silent", async () => {
-	// Prefer auto service for background startup checks
-	if (autoUpdaterService && autoUpdaterService.checkForUpdates) {
-		return await autoUpdaterService.checkForUpdates();
-	}
-	if (manualUpdateService && manualUpdateService.checkForUpdates) {
-		return await manualUpdateService.checkForUpdates();
-	}
-	return false;
-});
+	const fetchLatest = () =>
+		new Promise((resolve, reject) => {
+			const req = https.request(options, (res) => {
+				let data = "";
+				if (res.statusCode !== 200) {
+					return reject(new Error(`HTTP ${res.statusCode}`));
+				}
+				res.on("data", (c) => (data += c));
+				res.on("end", () => {
+					try {
+						resolve(JSON.parse(data));
+					} catch (e) {
+						reject(e);
+					}
+				});
+			});
+			req.on("error", reject);
+			req.on("timeout", () => {
+				req.destroy();
+				reject(new Error("timeout"));
+			});
+			req.end();
+		});
 
-ipcMain.handle("download-update", async () => {
-	// Route download to the service that provided updateInfo
-	if (manualUpdateService && manualUpdateService.updateInfo && manualUpdateService.downloadAndInstallUpdate) {
-		await manualUpdateService.downloadAndInstallUpdate();
-		return;
-	}
-	if (autoUpdaterService && autoUpdaterService.updateInfo && autoUpdaterService.downloadAndInstallUpdate) {
-		await autoUpdaterService.downloadAndInstallUpdate();
+	try {
+		const release = await fetchLatest();
+		const latestTag = (release.tag_name || "").replace(/^v/, "");
+		const current = (require("./package.json").version || "").replace(/^v/, "");
+		const cmp = (a, b) => {
+			const pa = a.split(".").map((n) => parseInt(n, 10));
+			const pb = b.split(".").map((n) => parseInt(n, 10));
+			for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+				const x = pa[i] || 0;
+				const y = pb[i] || 0;
+				if (x > y) return 1;
+				if (x < y) return -1;
+			}
+			return 0;
+		};
+		const newer = cmp(latestTag, current) > 0;
+		if (newer) {
+			// Find platform asset
+			const platform =
+				process.platform === "darwin"
+					? "VaultApp-macOS.zip"
+					: "VaultApp-Windows.zip";
+			const asset = (release.assets || []).find((a) => a.name === platform);
+			return {
+				status: "available",
+				version: release.tag_name,
+				url: asset ? asset.browser_download_url : release.html_url,
+				releaseNotes: release.body || "",
+			};
+		}
+		return { status: "up-to-date", version: release.tag_name };
+	} catch (err) {
+		return { status: "error", error: err.message };
 	}
 });
 
@@ -164,11 +173,6 @@ ipcMain.handle("get-current-version", async () => {
 
 app.whenReady().then(() => {
 	createWindow();
-
-	// Start checking for updates after window is ready (background)
-	if (autoUpdaterService && autoUpdaterService.startUpdateCheck) {
-		autoUpdaterService.startUpdateCheck();
-	}
 
 	app.on("activate", () => {
 		if (BrowserWindow.getAllWindows().length === 0) createWindow();
