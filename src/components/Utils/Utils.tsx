@@ -23,12 +23,49 @@ const Utils: React.FC<UtilsProps> = ({
 	onEdit,
 }) => {
 	const [searchQuery, setSearchQuery] = useState("");
+	const [vaultDir, setVaultDir] = useState<string | null>(null);
+	const [vaultFile, setVaultFile] = useState<string | null>(null);
+	const [changingPath, setChangingPath] = useState(false);
 	const searchResults = searchItems(allItems, searchQuery);
 
 	const handleAddItem = (item: VaultItem) => {
 		onAddItem(item);
 		alert("Item added successfully!");
 	};
+
+	const refreshDir = async () => {
+		try {
+			const api = window.electronAPI;
+			if (!api) return;
+			const info = await api.getVaultDirectory();
+			setVaultDir(info.dir);
+			setVaultFile(info.file);
+		} catch {}
+	};
+
+	const handleChooseDir = async () => {
+		try {
+			setChangingPath(true);
+			const api = window.electronAPI;
+			if (!api) return;
+			const res = await api.chooseVaultDirectory();
+			setVaultDir(res.dir);
+			setVaultFile(res.file);
+			alert("Vault path updated.");
+			// Optional: reload data so UI reflects any merge
+			location.reload();
+		} catch (e) {
+			alert("Directory selection canceled.");
+		} finally {
+			setChangingPath(false);
+		}
+	};
+
+	// Initialize current directory when component mounts
+	React.useEffect(() => {
+		refreshDir();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<section id="utils" className={styles.utils}>
@@ -64,6 +101,25 @@ const Utils: React.FC<UtilsProps> = ({
 								onEdit={onEdit}
 							></ItemCard>
 						))}
+					</div>
+
+					{/* New: Vault data path management */}
+					<div className={styles.section}>
+						<h2>Vault Data Location</h2>
+						<p className={styles.locationText}>
+							Current folder: <strong>{vaultDir || "Not set"}</strong>
+							<br />
+							Current file: <strong>{vaultFile || "Not set"}</strong>
+						</p>
+						<div className={styles.buttonRow}>
+							<button
+								className="btn btn-primary"
+								onClick={handleChooseDir}
+								disabled={changingPath}
+							>
+								{changingPath ? "Changing..." : "Change Vault Data Folder"}
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>

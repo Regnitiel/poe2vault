@@ -102,6 +102,18 @@
 	box-shadow: var(--glowEldritch);
 }
 
+.buttonRow {
+	display: flex;
+	gap: var(--spacing-sm);
+	flex-wrap: wrap;
+}
+
+.locationText {
+	margin: 0 0 var(--spacing-sm) 0;
+	color: var(--textSecondary);
+	font-size: 0.95rem;
+}
+
 /* Responsive design for smaller screens */
 @media (max-width: 1200px) {
 	.tableLayout {

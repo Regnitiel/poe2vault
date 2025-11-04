@@ -34,4 +34,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
 		releaseNotes?: string;
 		error?: string;
 	}> => ipcRenderer.invoke("check-for-updates"),
+
+	// New: vault directory management
+	getVaultDirectory: (): Promise<{ dir: string | null; file: string | null }> =>
+		ipcRenderer.invoke("get-vault-directory"),
+	chooseVaultDirectory: (): Promise<{ dir: string; file: string }> =>
+		ipcRenderer.invoke("choose-vault-directory"),
+	setVaultDirectory: (dir: string): Promise<{ dir: string; file: string }> =>
+		ipcRenderer.invoke("set-vault-directory", dir),
 });

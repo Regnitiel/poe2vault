@@ -18,6 +18,16 @@ declare global {
 				releaseNotes?: string;
 				error?: string;
 			}>;
+
+			// New: vault directory management
+			getVaultDirectory: () => Promise<{
+				dir: string | null;
+				file: string | null;
+			}>;
+			chooseVaultDirectory: () => Promise<{ dir: string; file: string }>;
+			setVaultDirectory: (
+				dir: string
+			) => Promise<{ dir: string; file: string }>;
 		};
 	}
 }
