@@ -1,82 +1,61 @@
 # Vault App
 
-This application manages a local JSON vault for PoE2 uniques.
+A desktop app for tracking Path of Exile 2 unique items. Built with Electron, React, and TypeScript. Data is stored locally in JSON for fast, offline use.
 
-Note: The automatic/manual update system has been fully removed from this codebase per cleanup step 1. Packaging and releases still function, but no in-app update checks are present.
+> Note: The in-app update system was removed. Packaging and releases still work; there are no automatic update checks.
 
-**🎮 A comprehensive Path of Exile 2 unique items collection tracker for serious collectors**
+## Download
 
-An offline desktop application built with Electron that helps you track your unique item collection progress in Path of Exile 2. Never lose track of which items you've found, which ones you're still hunting, and monitor your collection completion across different leagues and content categories.
+Always points to the latest release builds:
 
-![POE2 Vault Home Page](./public/Images/Home%20Page.png)
+- Windows (latest): [VaultApp-Windows.zip](https://github.com/Regnitiel/poe2vault/releases/latest/download/VaultApp-Windows.zip)
+- macOS (latest): [VaultApp-macOS.zip](https://github.com/Regnitiel/poe2vault/releases/latest/download/VaultApp-macOS.zip)
 
-## 🚀 Download & Installation
+## Features
 
-**Ready-to-use builds available for both platforms:**
+- Collection tracking with progress by category and league
+- Powerful filtering and search in the vault
+- One-click toggles: Owned, Obtained During League, Foil
+- Local JSON storage with import/export options
 
-- **[Download for Windows](./releases/VaultApp-Windows.zip)**
+## Screenshots
 
-## ✨ Key Features
+### Home Dashboard
 
-### 📈 **Comprehensive Progress Tracking**
-
-- **Interactive Progress Bars**: Visual collection progress with color-coded completion rates (red/orange/yellow/green)
-- **Click-to-Navigate**: Click any progress bar to jump directly to filtered vault view
-- **Collection Dashboard**: Real-time completion statistics with category-specific breakdowns
-- **League-Specific Tracking**: Monitor progress across POE2 leagues (0.1, 0.2, 0.3) separately
-- **Category Organization**: Items organized by type (Amulets, Belts, Boots, etc.) with individual progress tracking
-- **Advanced Metrics**: Track total uniques, owned items, league-specific finds, and remaining targets
-
-### 🔍 **Powerful Search & Filtering**
-
-- **Multi-Filter Search**: Filter by league, boss drops, special conditions, or ownership status
-- **Smart Search**: Find items instantly by name, category, or obtain method
-- **Hide Completed**: Toggle to hide owned items and focus on what you're still hunting
-- **Boss & Special Content**: Dedicated filters for boss-specific and special condition drops
-
-### 🎯 **Item Management**
-
-- **Complete Item Database**: Full catalog of POE2 unique items with detailed information
-- **Easy Status Updates**: One-click toggles for owned, obtained during league, and foil variants
-- **Rich Item Details**: Each item includes base type, obtain method, wiki links, and high-quality images
-- **Add Custom Items**: Create entries for newly discovered or upcoming unique items
-- **Side-by-Side Interface**: Efficient item creation and search layout for power users
-
-### 💾 **Data Management**
-
-- **Offline Storage**: All data stored locally in JSON format - no internet required
-- **Google Drive Sync**: Optional cloud backup and sync capability
-- **Import/Export**: Easy data portability and backup options
-- **Persistent Storage**: Your progress is automatically saved and restored
-
-## 📱 Screenshots & Interface
-
-The app features three main sections:
-
-### 📊 **Dashboard (Home)**:
-
-Visual progress tracking with interactive progress bars and collection metrics
 ![Home Dashboard](./public/Images/Home%20Page.png)
 
-### 🗃️ **Vault**:
+### Vault
 
-Complete item database with advanced filtering and search capabilities
-![Vault Page](./public/Images/Vault%20Page.png)
+![Vault](./public/Images/Vault%20Page.png)
 
-**Hide Owned Items** - Focus on what you're still hunting:
-![Vault Page - Hide Owned](./public/Images/Vault%20Page%20Hide%20Owned.png)
+### Item States
 
-### ⚙️ **Utils**:
+- Not Owned
 
-Data management tools with side-by-side item creation and search
-![Utils Page](./public/Images/Utils%20Page.png)
+  ![Item Card - Not Owned](./public/Images/Not_Owned_Item.png)
 
-## 🎮 Perfect For
+- Owned
 
-- **Completionist Players** who want to collect every unique item
-- **League Players** tracking progress across different PoE2 seasons
-- **Content Creators** showcasing collection progress to audiences
+  ![Item Card - Owned](./public/Images/Owned_Item.png)
+
+- Obtained During League
+
+  ![Item Card - Obtained During League](./public/Images/Obtained_During_League_Item.png)
+
+- Foiled
+
+  ![Item Card - Foiled](./public/Images/Foiled_Item.png)
+
+- Disabled (display-only)
+
+  ![Item Card - Disabled](./public/Images/Disabled_Item.png)
+
+## Perfect for
+
+- Completionists tracking every unique
+- League players monitoring progress per season
+- Offline-first users who want simple JSON-based data
 
 ---
 
-**Ready to track your POE2 collection like a pro?** Download the app and never lose track of your unique items again! 🎮✨
+Ready to start tracking your POE2 uniques? Download and run the app above.

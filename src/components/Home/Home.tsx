@@ -41,7 +41,13 @@ const Home: React.FC<HomeProps> = ({
 		<section id="home" className="active">
 			{/* Progress Bar */}
 			<div className={styles.metrics}>
-				<h2>Collection Progress test update</h2>
+				<h2>Collection Progress</h2>
+				{/* Centered league info above all progress bars (hidden when 0) */}
+				{homeMetrics.collectedCurrentLeague > 0 && (
+					<p className={styles.leagueText}>
+						Obtained during league: {homeMetrics.collectedCurrentLeague}
+					</p>
+				)}
 				<ProgressBar
 					owned={homeMetrics.ownedUniques}
 					total={homeMetrics.totalUniques}

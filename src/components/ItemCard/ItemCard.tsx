@@ -27,10 +27,9 @@ const ItemCard: React.FC<ItemCardProps> = ({
 	const getCardClasses = () => {
 		let classes = styles.card;
 		if (item.disabled) classes += ` ${styles.disabled}`;
-		if (item.foil) classes += ` ${styles.foil}`;
-		else if (item.obtainedDuringLeague)
-			classes += ` ${styles.obtainedDuringLeague}`;
+		if (item.obtainedDuringLeague) classes += ` ${styles.obtainedDuringLeague}`;
 		else if (item.owned) classes += ` ${styles.owned}`;
+		if (item.foil) classes += ` ${styles.foil}`;
 		return classes;
 	};
 
@@ -57,13 +56,15 @@ const ItemCard: React.FC<ItemCardProps> = ({
 						className="btn btn-primary"
 						onClick={() => onToggleOwned(index)}
 					>
-						{item.owned ? "Owned" : "Not owned"}
+						{item.owned ? "Owned ✓" : "Owned"}
 					</button>
 					<button
 						className="btn btn-primary"
 						onClick={() => onToggleObtainedDuringLeague(index)}
 					>
-						Obtained During League
+						{item.obtainedDuringLeague
+							? "Obtained during league ✓"
+							: "Obtained during league"}
 					</button>
 					<button
 						className="btn btn-primary"

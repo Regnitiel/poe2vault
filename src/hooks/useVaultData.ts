@@ -10,7 +10,11 @@ export const useVaultData = () => {
 		const loadData = async () => {
 			try {
 				const data = await loadVaultData();
-				setAllItems(data);
+				// Sort alphabetically by name (case-insensitive) after loading from JSON
+				const sorted = [...data].sort((a, b) =>
+					a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
+				);
+				setAllItems(sorted);
 			} catch (error) {
 				console.error("Error loading vault data:", error);
 			} finally {
@@ -58,10 +62,14 @@ export const useVaultData = () => {
 	const toggleOwned = useCallback(
 		async (index: number) => {
 			const newItems = [...allItems];
+			const current = newItems[index];
+			const nextOwned = !current.owned;
 			newItems[index] = {
-				...newItems[index],
-				owned: !newItems[index].owned,
-				obtainedDuringLeague: false,
+				...current,
+				owned: nextOwned,
+				// If disabling owned, also disable during league and foil
+				obtainedDuringLeague: nextOwned ? current.obtainedDuringLeague : false,
+				foil: nextOwned ? current.foil : false,
 			};
 			await saveData(newItems);
 		},
@@ -71,10 +79,13 @@ export const useVaultData = () => {
 	const toggleObtainedDuringLeague = useCallback(
 		async (index: number) => {
 			const newItems = [...allItems];
+			const current = newItems[index];
+			const nextObtained = !current.obtainedDuringLeague;
 			newItems[index] = {
-				...newItems[index],
-				owned: true,
-				obtainedDuringLeague: true,
+				...current,
+				obtainedDuringLeague: nextObtained,
+				// When marking during league, also mark owned. Turning off keeps owned as-is.
+				owned: nextObtained ? true : current.owned,
 			};
 			await saveData(newItems);
 		},
@@ -83,10 +94,17 @@ export const useVaultData = () => {
 
 	const toggleFoil = useCallback(
 		async (index: number) => {
+			const current = allItems[index];
+			// If item is disabled, do nothing to keep disabled state intact
+			if (!current || current.disabled) return;
+
 			const newItems = [...allItems];
+			const nextFoil = !current.foil;
 			newItems[index] = {
-				...newItems[index],
-				foil: !newItems[index].foil,
+				...current,
+				foil: nextFoil,
+				// When marking foil, also mark owned. Turning off keeps owned as-is.
+				owned: nextFoil ? true : current.owned,
 			};
 			await saveData(newItems);
 		},

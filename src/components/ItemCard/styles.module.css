@@ -18,6 +18,7 @@
 	box-shadow: var(--shadow-lg), var(--glowEmber);
 }
 
+/* Base states keep their background colors */
 .card.owned {
 	border-color: var(--eldritch);
 	background-color: var(--item-catalogued);
@@ -30,10 +31,91 @@
 	box-shadow: var(--shadow-md), var(--glowEmber);
 }
 
+/* Foil now purely an overlay on top of base state, slightly stronger */
 .card.foil {
-	border-color: var(--gold);
-	background-color: var(--item-prestige);
-	box-shadow: var(--shadow-md), var(--glowGold);
+	/* keep whatever background came from base state */
+	border-color: rgba(198, 166, 103, 0.75);
+	box-shadow: var(--shadow-md), 0 0 10px rgba(198, 166, 103, 0.4);
+	position: relative;
+}
+
+/* Iridescent foil overlay inspired by PoE item frames */
+.card.foil::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border-radius: var(--radius-lg);
+	pointer-events: none;
+	z-index: 0;
+	background: radial-gradient(
+			120% 80% at 15% 0%,
+			rgba(255, 255, 255, 0.12),
+			transparent 60%
+		),
+		radial-gradient(
+			120% 80% at 85% 100%,
+			rgba(255, 255, 255, 0.08),
+			transparent 60%
+		),
+		linear-gradient(
+			135deg,
+			rgba(198, 166, 103, 0.2) 0%,
+			rgba(87, 167, 115, 0.16) 35%,
+			rgba(46, 179, 255, 0.14) 65%,
+			rgba(198, 166, 103, 0.2) 100%
+		);
+	mix-blend-mode: screen;
+	/* make overlay slightly more visible */
+	opacity: 0.95;
+}
+
+/* Thin inner border glow to sell the foil edge */
+.card.foil::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: var(--radius-lg);
+	pointer-events: none;
+	box-shadow: inset 0 0 16px rgba(198, 166, 103, 0.35),
+		inset 0 0 10px rgba(46, 179, 255, 0.25);
+}
+
+/* Optional: subtle animated sheen to emphasize foil */
+@keyframes foilSheen {
+	0% {
+		transform: translateX(-150%);
+		opacity: 0;
+	}
+	20% {
+		opacity: 1;
+	}
+	80% {
+		opacity: 1;
+	}
+	100% {
+		transform: translateX(150%);
+		opacity: 0;
+	}
+}
+
+.card.foil:hover::before {
+	/* gentle movement on hover to sell the iridescence */
+	background-image: linear-gradient(
+			115deg,
+			rgba(255, 255, 255, 0) 30%,
+			rgba(255, 255, 255, 0.15) 45%,
+			rgba(255, 255, 255, 0) 60%
+		),
+		linear-gradient(
+			135deg,
+			rgba(198, 166, 103, 0.2) 0%,
+			rgba(87, 167, 115, 0.16) 35%,
+			rgba(46, 179, 255, 0.14) 65%,
+			rgba(198, 166, 103, 0.2) 100%
+		);
 }
 
 .card.disabled {
@@ -73,6 +155,16 @@
 	pointer-events: none;
 	font-weight: bold;
 	text-shadow: 0 0 4px rgba(10, 12, 15, 0.8);
+}
+
+/* When item is disabled, suppress foil effects so the X overlay remains clean */
+.card.disabled.foil {
+	border-color: var(--backgroundSecondary) !important;
+	box-shadow: var(--shadow-md) !important;
+}
+.card.disabled.foil::before,
+.card.disabled.foil::after {
+	display: none !important;
 }
 
 .info {
