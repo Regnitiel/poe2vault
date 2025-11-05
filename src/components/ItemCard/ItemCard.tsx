@@ -72,9 +72,10 @@ const ItemCard: React.FC<ItemCardProps> = ({
 					>
 						{item.foil ? "Foil ✓" : "Foil"}
 					</button>
-					<button className="btn btn-secondary" onClick={() => onEdit(index)}>
+					{/* Disabled for now in v1.0.0 */}
+					{/* <button className="btn btn-secondary" onClick={() => onEdit(index)}>
 						Edit
-					</button>
+					</button> */}
 				</div>
 			</div>
 			<div className={styles.image}>

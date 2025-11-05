@@ -71,10 +71,11 @@ const Utils: React.FC<UtilsProps> = ({
 		<section id="utils" className={styles.utils}>
 			<div className={styles.tableLayout}>
 				<div className={styles.leftColumn}>
-					<div className={styles.section}>
+					{/* Disabled for now in v1.0.0 */}
+					{/* <div className={styles.section}>
 						<h2>Add New Item</h2>
 						<ItemForm allItems={allItems} onSubmit={handleAddItem} />
-					</div>
+					</div> */}
 				</div>
 
 				<div className={styles.rightColumn}>
