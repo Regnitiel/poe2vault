@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TabType } from "../../types";
 import styles from "./styles.module.css";
+import { openExternalLink } from "../../utils/data";
 
 interface HeaderProps {
 	currentTab: TabType;
@@ -59,6 +60,12 @@ const Header: React.FC<HeaderProps> = ({
 		}
 	};
 
+	const handleFeedback = () => {
+		openExternalLink(
+			"https://github.com/Regnitiel/poe2vault/issues/new/choose"
+		);
+	};
+
 	return (
 		<header className={styles.header}>
 			<div className={styles.centerTabs}>
@@ -76,14 +83,19 @@ const Header: React.FC<HeaderProps> = ({
 			</div>
 			<div className={styles.updateArea}>
 				<span className={styles.versionText}>v{version}</span>
-				<button
-					className={styles.updateButton}
-					onClick={handleCheck}
-					disabled={checking}
-				>
-					{checking ? "Checking..." : "Check for updates"}
-				</button>
-				{upToDate && <div className={styles.upToDateText}>Up to date</div>}
+				<div className={styles.updateActions}>
+					<button
+						className={styles.updateButton}
+						onClick={handleCheck}
+						disabled={checking}
+					>
+						{checking ? "Checking..." : "Check for updates"}
+					</button>
+					{upToDate && <div className={styles.upToDateText}>Up to date</div>}
+					<button className={styles.feedbackButton} onClick={handleFeedback}>
+						Report a Bug / Send Feedback
+					</button>
+				</div>
 			</div>
 		</header>
 	);

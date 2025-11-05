@@ -49,13 +49,20 @@
 .updateArea {
 	justify-self: end;
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	gap: 8px;
 }
 
 .versionText {
 	font-size: 0.95rem;
 	color: var(--textSecondary);
+}
+
+.updateActions {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	align-items: stretch;
 }
 
 .updateButton {
@@ -81,4 +88,21 @@
 .upToDateText {
 	font-size: 0.85rem;
 	color: var(--textSecondary);
+}
+
+.feedbackButton {
+	background: var(--surface);
+	color: var(--gold);
+	border: 1px solid var(--gold);
+	border-radius: var(--radius-md);
+	padding: 6px 10px;
+	cursor: pointer;
+	font-weight: 600;
+	transition: var(--transition-rune);
+}
+
+.feedbackButton:hover {
+	border-color: var(--ember);
+	color: var(--ember);
+	box-shadow: var(--glowEmber);
 }

@@ -1,6 +1,6 @@
 {
 	"name": "vault-app",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"description": "Offline Vault App with Google Drive JSON sync",
 	"main": "main.js",
 	"homepage": "./",
