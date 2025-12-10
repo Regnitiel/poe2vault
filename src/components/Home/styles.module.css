@@ -1,3 +1,9 @@
+.homeSection {
+	height: 100%;
+	overflow-y: auto;
+	padding: var(--spacing-md);
+}
+
 .metrics {
 	margin: var(--spacing-md) auto;
 	max-width: 800px;

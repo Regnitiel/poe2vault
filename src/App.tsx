@@ -7,6 +7,7 @@ import Vault from "./components/Vault/Vault";
 import Utils from "./components/Utils/Utils";
 import { EditModal } from "./components/Modal/Modal";
 import UpdateModal from "./components/UpdateModal/UpdateModal";
+import VaultControls from "./components/Vault/VaultControls";
 import "./styles/globals.css";
 
 const App: React.FC = () => {
@@ -23,6 +24,8 @@ const App: React.FC = () => {
 
 	const [currentTab, setCurrentTab] = useState<TabType>("home");
 	const [currentFilter, setCurrentFilter] = useState<FilterType>("all");
+	const [categoryFilter, setCategoryFilter] = useState<FilterType | null>(null);
+	const [searchQuery, setSearchQuery] = useState("");
 	const [filters, setFilters] = useState({
 		onlyOwned: false,
 		onlyUnowned: false,
@@ -85,6 +88,7 @@ const App: React.FC = () => {
 						allItems={allItems}
 						onTabChange={setCurrentTab}
 						onFilterChange={setCurrentFilter}
+						onCategoryFilterChange={setCategoryFilter}
 					/>
 				);
 			case "vault":
@@ -92,8 +96,11 @@ const App: React.FC = () => {
 					<Vault
 						allItems={allItems}
 						currentFilter={currentFilter}
+						categoryFilter={categoryFilter}
 						filters={filters}
+						searchQuery={searchQuery}
 						onFilterChange={setCurrentFilter}
+						onCategoryFilterChange={setCategoryFilter}
 						onFiltersChange={setFilters}
 						onToggleOwned={toggleOwned}
 						onToggleObtainedDuringLeague={toggleObtainedDuringLeague}
@@ -113,13 +120,35 @@ const App: React.FC = () => {
 	}
 
 	return (
-		<div className="App">
+		<div
+			className="App"
+			style={{ display: "flex", flexDirection: "column", height: "100%" }}
+		>
 			<Header
 				currentTab={currentTab}
 				onTabChange={setCurrentTab}
 				onUpdateAvailable={handleUpdateAvailable}
+				vaultControls={
+					currentTab === "vault" ? (
+						<VaultControls
+							searchQuery={searchQuery}
+							onSearchChange={setSearchQuery}
+							filters={filters}
+							onFiltersChange={setFilters}
+						/>
+					) : undefined
+				}
 			/>
-			<main>{renderCurrentTab()}</main>{" "}
+			<main
+				style={{
+					flex: 1,
+					overflow: "hidden",
+					display: "flex",
+					flexDirection: "column",
+				}}
+			>
+				{renderCurrentTab()}
+			</main>
 			{editingItem && (
 				<EditModal
 					isOpen={editingItem !== null}

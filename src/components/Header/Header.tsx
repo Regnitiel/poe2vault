@@ -11,12 +11,14 @@ interface HeaderProps {
 		releaseNotes: string;
 		url?: string;
 	}) => void;
+	vaultControls?: React.ReactNode;
 }
 
 const Header: React.FC<HeaderProps> = ({
 	currentTab,
 	onTabChange,
 	onUpdateAvailable,
+	vaultControls,
 }) => {
 	const tabs: { key: TabType; label: string }[] = [
 		{ key: "home", label: "Home" },
@@ -81,6 +83,9 @@ const Header: React.FC<HeaderProps> = ({
 					</button>
 				))}
 			</div>
+			{vaultControls && (
+				<div className={styles.vaultControls}>{vaultControls}</div>
+			)}
 			<div className={styles.updateArea}>
 				<span className={styles.versionText}>v{version}</span>
 				<div className={styles.updateActions}>

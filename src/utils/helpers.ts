@@ -61,6 +61,7 @@ export const searchAndFilterItems = (
 export const groupItemsByCategory = (
 	items: VaultItem[],
 	filter: FilterType,
+	categoryFilter: FilterType | null,
 	filters: {
 		onlyOwned: boolean;
 		onlyUnowned: boolean;
@@ -71,6 +72,11 @@ export const groupItemsByCategory = (
 ): GroupedItems => {
 	// Apply both filter and search
 	let filtered = searchAndFilterItems(items, filter, searchQuery);
+
+	// Apply category filter if set (this allows combining league + category)
+	if (categoryFilter) {
+		filtered = filtered.filter((item) => item.category === categoryFilter);
+	}
 
 	// Apply additional filters
 	if (filters.onlyOwned) {

@@ -1,13 +1,18 @@
 .controls {
-	margin-bottom: var(--spacing-md);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	gap: var(--spacing-sm);
+	padding: var(--spacing-sm);
+	width: 100%;
+}
+
+.vaultSection {
+	display: flex;
+	gap: var(--spacing-md);
 	padding: var(--spacing-md);
-	background-color: var(--backgroundSecondary);
-	border-radius: var(--radius-md);
-	border: 1px solid var(--surface);
+	height: 100%;
+	overflow: hidden;
 }
 
 .searchInput {
@@ -35,9 +40,9 @@
 
 .separator {
 	width: 80%;
-	height: 1px;
+	height: 2px;
 	background-color: var(--ember);
-	opacity: 0.3;
+	opacity: 0.8;
 }
 
 .filterGroup {
@@ -75,33 +80,29 @@
 	border-radius: var(--radius-sm);
 }
 
-.container {
-	display: flex;
-	gap: var(--spacing-md);
-	flex-wrap: wrap;
-}
-
 .sidebar {
 	display: flex;
 	flex-direction: column;
-	gap: var(--spacing-sm);
+	gap: 0.4rem;
 	min-width: 140px;
+	max-width: 200px;
 	background-color: var(--surface);
-	padding: var(--spacing-md);
+	padding: 0.75rem;
 	border-radius: var(--radius-md);
 	border: 1px solid var(--backgroundSecondary);
 	box-shadow: var(--shadow-md);
+	flex-shrink: 0;
 }
 
 .sidebarButton {
 	background-color: var(--backgroundSecondary);
 	color: var(--textPrimary);
 	border: 1px solid var(--backgroundSecondary);
-	padding: 0.4rem 0.8rem;
+	padding: 0.3rem 0.6rem;
 	cursor: pointer;
 	border-radius: var(--radius-sm);
 	font-weight: 500;
-	font-size: 20px;
+	font-size: 14px;
 	transition: var(--transition-rune);
 }
 
@@ -119,22 +120,57 @@
 	font-weight: 600;
 }
 
-.items {
-	display: flex;
-	flex-direction: column;
-	gap: var(--spacing-md);
+.sidebarSeparator {
+	height: 2px;
+	background: var(--ember);
+	margin: var(--spacing-md) 0;
+	opacity: 0.8;
+	box-shadow: 0 0 4px var(--ember);
+}
+
+.categoryDropdown {
+	padding: 0.5rem;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--textPrimary);
+	background-color: var(--backgroundSecondary);
+	border: 1px solid var(--backgroundSecondary);
+	border-radius: var(--radius-sm);
+	cursor: pointer;
+	transition: var(--transition-rune);
+}
+
+.categoryDropdown:hover {
+	border-color: var(--ember);
+	box-shadow: var(--glowEmber);
+}
+
+.categoryDropdown:focus {
+	outline: none;
+	border-color: var(--gold);
+	box-shadow: var(--glowGold);
+}
+
+.categoryDropdown option {
+	background-color: var(--surface);
+	color: var(--textPrimary);
+}
+
+.itemsWrapper {
 	flex: 1;
-	align-items: center;
+	overflow-y: auto;
+	padding-right: var(--spacing-sm);
 }
 
 /* Responsive */
 @media (max-width: 700px) {
-	.container {
+	.vaultSection {
 		flex-direction: column;
+		height: auto;
 	}
 
 	.sidebar {
-		min-width: auto;
+		max-width: none;
 		flex-direction: row;
 		overflow-x: auto;
 		padding: var(--spacing-sm);
@@ -143,5 +179,9 @@
 	.sidebarButton {
 		white-space: nowrap;
 		font-size: 16px;
+	}
+
+	.itemsWrapper {
+		overflow-y: visible;
 	}
 }

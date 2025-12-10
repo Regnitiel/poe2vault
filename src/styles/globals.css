@@ -8,8 +8,17 @@
 	box-sizing: border-box;
 }
 
-body {
+html,
+body,
+#root,
+.App {
+	height: 100%;
 	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+body {
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 	background-color: var(--background);
 	color: var(--textPrimary);
