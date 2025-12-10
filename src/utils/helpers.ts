@@ -61,11 +61,31 @@ export const searchAndFilterItems = (
 export const groupItemsByCategory = (
 	items: VaultItem[],
 	filter: FilterType,
-	hideOwned: boolean,
+	filters: {
+		onlyOwned: boolean;
+		onlyUnowned: boolean;
+		onlyLeague: boolean;
+		canBeChanced: boolean;
+	},
 	searchQuery: string = ""
 ): GroupedItems => {
 	// Apply both filter and search
-	const filtered = searchAndFilterItems(items, filter, searchQuery);
+	let filtered = searchAndFilterItems(items, filter, searchQuery);
+
+	// Apply additional filters
+	if (filters.onlyOwned) {
+		filtered = filtered.filter((item) => item.owned);
+	}
+	if (filters.onlyUnowned) {
+		filtered = filtered.filter((item) => !item.owned);
+	}
+	if (filters.onlyLeague) {
+		filtered = filtered.filter((item) => item.obtainedDuringLeague);
+	}
+	if (filters.canBeChanced) {
+		filtered = filtered.filter((item) => item.chance);
+	}
+
 	const grouped: GroupedItems = {};
 
 	filtered.forEach((item) => {
@@ -81,9 +101,7 @@ export const groupItemsByCategory = (
 		}
 
 		grouped[groupKey].all.push(item);
-		if (!hideOwned || !item.owned) {
-			grouped[groupKey].display.push(item);
-		}
+		grouped[groupKey].display.push(item);
 	});
 
 	return grouped;

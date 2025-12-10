@@ -23,7 +23,12 @@ const App: React.FC = () => {
 
 	const [currentTab, setCurrentTab] = useState<TabType>("home");
 	const [currentFilter, setCurrentFilter] = useState<FilterType>("all");
-	const [hideOwnedItems, setHideOwnedItems] = useState(false);
+	const [filters, setFilters] = useState({
+		onlyOwned: false,
+		onlyUnowned: false,
+		onlyLeague: false,
+		canBeChanced: false,
+	});
 	const [editingItem, setEditingItem] = useState<VaultItem | null>(null);
 	const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
@@ -87,9 +92,9 @@ const App: React.FC = () => {
 					<Vault
 						allItems={allItems}
 						currentFilter={currentFilter}
-						hideOwnedItems={hideOwnedItems}
+						filters={filters}
 						onFilterChange={setCurrentFilter}
-						onHideOwnedChange={setHideOwnedItems}
+						onFiltersChange={setFilters}
 						onToggleOwned={toggleOwned}
 						onToggleObtainedDuringLeague={toggleObtainedDuringLeague}
 						onToggleFoil={toggleFoil}

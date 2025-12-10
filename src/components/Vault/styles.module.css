@@ -40,6 +40,16 @@
 	opacity: 0.3;
 }
 
+.filterGroup {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--spacing-md);
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	max-width: 800px;
+}
+
 .checkboxLabel {
 	display: flex;
 	align-items: center;

@@ -8,9 +8,19 @@ import categoryStyles from "../../styles/CategorySection.module.css";
 interface VaultProps {
 	allItems: VaultItem[];
 	currentFilter: FilterType;
-	hideOwnedItems: boolean;
+	filters: {
+		onlyOwned: boolean;
+		onlyUnowned: boolean;
+		onlyLeague: boolean;
+		canBeChanced: boolean;
+	};
 	onFilterChange: (filter: FilterType) => void;
-	onHideOwnedChange: (hide: boolean) => void;
+	onFiltersChange: (filters: {
+		onlyOwned: boolean;
+		onlyUnowned: boolean;
+		onlyLeague: boolean;
+		canBeChanced: boolean;
+	}) => void;
 	onToggleOwned: (index: number) => void;
 	onToggleObtainedDuringLeague: (index: number) => void;
 	onToggleFoil: (index: number) => void;
@@ -20,9 +30,9 @@ interface VaultProps {
 const Vault: React.FC<VaultProps> = ({
 	allItems,
 	currentFilter,
-	hideOwnedItems,
+	filters,
 	onFilterChange,
-	onHideOwnedChange,
+	onFiltersChange,
 	onToggleOwned,
 	onToggleObtainedDuringLeague,
 	onToggleFoil,
@@ -33,12 +43,12 @@ const Vault: React.FC<VaultProps> = ({
 	const groupedItems = groupItemsByCategory(
 		allItems,
 		currentFilter,
-		hideOwnedItems,
+		filters,
 		searchQuery
 	);
 	const sortedGroups = Object.keys(groupedItems).sort();
 
-	const filters: { key: FilterType; label: string }[] = [
+	const leagueFilters: { key: FilterType; label: string }[] = [
 		{ key: "all", label: "All" },
 		{ key: "0.1", label: "0.1" },
 		{ key: "0.2", label: "0.2" },
@@ -58,18 +68,52 @@ const Vault: React.FC<VaultProps> = ({
 					placeholder="Search by name, boss, category..."
 				/>
 				<div className={styles.separator}></div>
-				<label className={styles.checkboxLabel}>
-					<input
-						type="checkbox"
-						checked={hideOwnedItems}
-						onChange={(e) => onHideOwnedChange(e.target.checked)}
-					/>
-					Hide Owned Items
-				</label>
+				<div className={styles.filterGroup}>
+					<label className={styles.checkboxLabel}>
+						<input
+							type="checkbox"
+							checked={filters.onlyOwned}
+							onChange={(e) =>
+								onFiltersChange({ ...filters, onlyOwned: e.target.checked })
+							}
+						/>
+						Only Owned
+					</label>
+					<label className={styles.checkboxLabel}>
+						<input
+							type="checkbox"
+							checked={filters.onlyUnowned}
+							onChange={(e) =>
+								onFiltersChange({ ...filters, onlyUnowned: e.target.checked })
+							}
+						/>
+						Only Unowned
+					</label>
+					<label className={styles.checkboxLabel}>
+						<input
+							type="checkbox"
+							checked={filters.onlyLeague}
+							onChange={(e) =>
+								onFiltersChange({ ...filters, onlyLeague: e.target.checked })
+							}
+						/>
+						Only Obtained in League
+					</label>
+					<label className={styles.checkboxLabel}>
+						<input
+							type="checkbox"
+							checked={filters.canBeChanced}
+							onChange={(e) =>
+								onFiltersChange({ ...filters, canBeChanced: e.target.checked })
+							}
+						/>
+						Can be Chanced
+					</label>
+				</div>
 			</div>{" "}
 			<div className={styles.container}>
 				<aside className={styles.sidebar}>
-					{filters.map((filter) => (
+					{leagueFilters.map((filter) => (
 						<button
 							key={filter.key}
 							className={`${styles.sidebarButton} ${
