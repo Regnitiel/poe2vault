@@ -27,6 +27,12 @@ const saveConfig = (cfg) => {
 const getDefaultDataPath = () =>
 	path.join(app.getAppPath(), "defaultVaultData.json");
 
+// Dev mode: get path to test vault data (always reset from defaults)
+const getDevVaultFilePath = () =>
+	path.join(app.getAppPath(), "testVaultData.json");
+
+const isDevMode = () => process.env.NODE_ENV === "development";
+
 const readDefaultVaultData = () => {
 	try {
 		const p = getDefaultDataPath();
@@ -100,10 +106,17 @@ const mergeWithDefaults = (currentItems, defaultItems) => {
 	return Array.from(byName.values());
 };
 
-const ensureVaultFile = (vaultFilePath) => {
+const ensureVaultFile = (vaultFilePath, forceReset = false) => {
 	const defaults = readDefaultVaultData();
 	if (!fs.existsSync(path.dirname(vaultFilePath))) {
 		fs.mkdirSync(path.dirname(vaultFilePath), { recursive: true });
+	}
+
+	// Force reset: always write fresh defaults (for dev mode)
+	if (forceReset) {
+		fs.writeFileSync(vaultFilePath, JSON.stringify(defaults, null, 2));
+		console.log("DEV MODE: Created fresh testVaultData.json from defaults");
+		return defaults;
 	}
 
 	if (!fs.existsSync(vaultFilePath)) {
@@ -183,6 +196,15 @@ function createWindow() {
 // IPC handlers for vault data operations
 ipcMain.handle("load-vault-data", async (event) => {
 	try {
+		// Dev mode: use test vault with fresh data
+		if (isDevMode()) {
+			const filePath = getDevVaultFilePath();
+			const data = ensureVaultFile(filePath, true); // Force reset
+			console.log("DEV MODE: Using testVaultData.json at", filePath);
+			return data;
+		}
+
+		// Production mode: normal flow
 		const win = BrowserWindow.fromWebContents(event.sender);
 		const dir = await ensureVaultDirSelection(win);
 		const filePath = getVaultFilePath(dir);
@@ -196,6 +218,15 @@ ipcMain.handle("load-vault-data", async (event) => {
 
 ipcMain.handle("save-vault-data", async (event, data) => {
 	try {
+		// Dev mode: save to test vault
+		if (isDevMode()) {
+			const filePath = getDevVaultFilePath();
+			fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+			console.log("DEV MODE: Saved to testVaultData.json");
+			return true;
+		}
+
+		// Production mode: normal flow
 		const win = BrowserWindow.fromWebContents(event.sender);
 		const dir = await ensureVaultDirSelection(win);
 		const filePath = getVaultFilePath(dir);

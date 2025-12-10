@@ -1,11 +1,43 @@
 .controls {
 	margin-bottom: var(--spacing-md);
 	display: flex;
-	justify-content: center;
-	padding: var(--spacing-sm);
+	flex-direction: column;
+	align-items: center;
+	gap: var(--spacing-sm);
+	padding: var(--spacing-md);
 	background-color: var(--backgroundSecondary);
 	border-radius: var(--radius-md);
 	border: 1px solid var(--surface);
+}
+
+.searchInput {
+	width: 100%;
+	max-width: 500px;
+	padding: 0.6rem 1rem;
+	font-size: 1rem;
+	color: var(--textPrimary);
+	background-color: var(--surface);
+	border: 1px solid var(--backgroundSecondary);
+	border-radius: var(--radius-sm);
+	transition: var(--transition-normal);
+}
+
+.searchInput:focus {
+	outline: none;
+	border-color: var(--ember);
+	box-shadow: var(--glowEmber);
+}
+
+.searchInput::placeholder {
+	color: var(--textSecondary);
+	opacity: 0.7;
+}
+
+.separator {
+	width: 80%;
+	height: 1px;
+	background-color: var(--ember);
+	opacity: 0.3;
 }
 
 .checkboxLabel {

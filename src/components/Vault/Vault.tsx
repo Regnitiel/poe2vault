@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { VaultItem, FilterType } from "../../types";
 import { groupItemsByCategory } from "../../utils/helpers";
 import ItemCard from "../ItemCard/ItemCard";
@@ -28,10 +28,13 @@ const Vault: React.FC<VaultProps> = ({
 	onToggleFoil,
 	onEdit,
 }) => {
+	const [searchQuery, setSearchQuery] = useState("");
+
 	const groupedItems = groupItemsByCategory(
 		allItems,
 		currentFilter,
-		hideOwnedItems
+		hideOwnedItems,
+		searchQuery
 	);
 	const sortedGroups = Object.keys(groupedItems).sort();
 
@@ -47,6 +50,14 @@ const Vault: React.FC<VaultProps> = ({
 	return (
 		<section id="vault">
 			<div className={styles.controls}>
+				<input
+					className={styles.searchInput}
+					type="text"
+					value={searchQuery}
+					onChange={(e) => setSearchQuery(e.target.value)}
+					placeholder="Search by name, boss, category..."
+				/>
+				<div className={styles.separator}></div>
 				<label className={styles.checkboxLabel}>
 					<input
 						type="checkbox"
@@ -55,8 +66,7 @@ const Vault: React.FC<VaultProps> = ({
 					/>
 					Hide Owned Items
 				</label>
-			</div>
-
+			</div>{" "}
 			<div className={styles.container}>
 				<aside className={styles.sidebar}>
 					{filters.map((filter) => (

@@ -97,16 +97,7 @@ const App: React.FC = () => {
 					/>
 				);
 			case "utils":
-				return (
-					<Utils
-						allItems={allItems}
-						onAddItem={addItem}
-						onToggleOwned={toggleOwned}
-						onToggleObtainedDuringLeague={toggleObtainedDuringLeague}
-						onToggleFoil={toggleFoil}
-						onEdit={handleEdit}
-					/>
-				);
+				return <Utils allItems={allItems} onAddItem={addItem} />;
 			default:
 				return <Home allItems={allItems} />;
 		}

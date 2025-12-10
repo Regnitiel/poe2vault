@@ -24,12 +24,48 @@ export const filterItems = (
 	return items.filter((item) => item.category === filter);
 };
 
+export const searchAndFilterItems = (
+	items: VaultItem[],
+	filter: FilterType,
+	searchQuery: string
+): VaultItem[] => {
+	// First apply the filter (league, bosses, special, category, or all)
+	let filtered = filterItems(items, filter);
+
+	// Then apply search if query exists
+	if (searchQuery.trim()) {
+		const lowerQuery = searchQuery.toLowerCase().trim();
+		filtered = filtered.filter((item) => {
+			const searchableProperties = [
+				item.name,
+				item.league,
+				item.base,
+				item.category,
+				item.obtainMethod,
+			].map((prop) => (prop || "").toLowerCase());
+
+			const basicMatch = searchableProperties.some((prop) =>
+				prop.includes(lowerQuery)
+			);
+
+			const isDisabledSearch = lowerQuery === "disabled";
+			const matchesDisabled = isDisabledSearch && item.disabled;
+
+			return basicMatch || matchesDisabled;
+		});
+	}
+
+	return filtered;
+};
+
 export const groupItemsByCategory = (
 	items: VaultItem[],
 	filter: FilterType,
-	hideOwned: boolean
+	hideOwned: boolean,
+	searchQuery: string = ""
 ): GroupedItems => {
-	const filtered = filterItems(items, filter);
+	// Apply both filter and search
+	const filtered = searchAndFilterItems(items, filter, searchQuery);
 	const grouped: GroupedItems = {};
 
 	filtered.forEach((item) => {
