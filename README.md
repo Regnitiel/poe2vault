@@ -2,8 +2,6 @@
 
 A desktop app for tracking Path of Exile 2 unique items. Built with Electron, React, and TypeScript. Data is stored locally in JSON for fast, offline use.
 
-> Note: The in-app update system was removed. Packaging and releases still work; there are no automatic update checks.
-
 ## Download
 
 Always points to the latest release builds:
