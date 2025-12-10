@@ -9,6 +9,7 @@ export interface VaultItem {
 	bosses: boolean;
 	special: boolean;
 	foil: boolean;
+	chance: boolean;
 	disabled?: boolean; // Made optional since it might not exist in all data
 	imageLink: string;
 	wikiLink: string;

@@ -49,6 +49,9 @@ const ItemCard: React.FC<ItemCardProps> = ({
 					<strong>League:</strong> {item.league}
 				</p>
 				<p className={styles.details}>
+					<strong>Can be chanced:</strong> {item.chance ? "Yes" : "No"}
+				</p>
+				<p className={styles.details}>
 					<strong>Obtain:</strong> {item.obtainMethod}
 				</p>
 				<div className={styles.buttons}>
