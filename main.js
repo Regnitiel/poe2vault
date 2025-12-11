@@ -141,9 +141,16 @@ const ensureVaultFile = (vaultFilePath, forceReset = false) => {
 };
 
 function createWindow() {
+	// Use platform-specific icon format
+	const iconPath =
+		process.platform === "darwin"
+			? path.join(__dirname, "public", "Images", "icon.icns")
+			: path.join(__dirname, "public", "Images", "icon.ico");
+
 	const win = new BrowserWindow({
 		width: 1200,
 		height: 800,
+		icon: iconPath,
 		webPreferences: {
 			nodeIntegration: false,
 			contextIsolation: true,

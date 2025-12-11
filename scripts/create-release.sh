@@ -41,8 +41,8 @@ create_zip() {
 }
 
 # Create platform-specific zips
-create_zip "builds/VaultApp-darwin-x64" "VaultApp-macOS.zip" "macOS"
-create_zip "builds/VaultApp-win32-x64" "VaultApp-Windows.zip" "Windows"
+create_zip "builds/EternalVault-darwin-x64" "EternalVault-macOS.zip" "macOS"
+create_zip "builds/EternalVault-win32-x64" "EternalVault-Windows.zip" "Windows"
 
 echo ""
 echo "🎉 Distribution packages created in 'releases/' directory:"
