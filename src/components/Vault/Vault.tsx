@@ -16,6 +16,7 @@ interface VaultProps {
 		canBeChanced: boolean;
 	};
 	searchQuery: string;
+	excludeDisabledFromTotal?: boolean;
 	onFilterChange: (filter: FilterType) => void;
 	onCategoryFilterChange: (filter: FilterType | null) => void;
 	onFiltersChange: (filters: {
@@ -36,6 +37,7 @@ const Vault: React.FC<VaultProps> = ({
 	categoryFilter,
 	filters,
 	searchQuery,
+	excludeDisabledFromTotal = false,
 	onFilterChange,
 	onCategoryFilterChange,
 	onFiltersChange,
@@ -44,8 +46,12 @@ const Vault: React.FC<VaultProps> = ({
 	onToggleFoil,
 	onEdit,
 }) => {
+	const filteredItems = excludeDisabledFromTotal
+		? allItems.filter((item) => !item.disabled)
+		: allItems;
+
 	const groupedItems = groupItemsByCategory(
-		allItems,
+		filteredItems,
 		currentFilter,
 		categoryFilter,
 		filters,

@@ -77,7 +77,7 @@ export type FilterType =
 	| "Two Hand Mace"
 	| "Wand";
 
-export type TabType = "home" | "vault" | "utils";
+export type TabType = "home" | "vault" | "utils" | "settings";
 
 export interface AppState {
 	allItems: VaultItem[];

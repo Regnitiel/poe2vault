@@ -13,6 +13,7 @@ interface HomeProps {
 	onTabChange?: (tab: TabType) => void;
 	onFilterChange?: (filter: FilterType) => void;
 	onCategoryFilterChange?: (filter: FilterType | null) => void;
+	excludeDisabledFromTotal?: boolean;
 }
 
 const Home: React.FC<HomeProps> = ({
@@ -20,10 +21,17 @@ const Home: React.FC<HomeProps> = ({
 	onTabChange,
 	onFilterChange,
 	onCategoryFilterChange,
+	excludeDisabledFromTotal = false,
 }) => {
-	const homeMetrics = calculateHomeMetrics(allItems);
-	const categoryMetrics = calculateCategoryMetrics(allItems);
-	const itemCategoryMetrics = calculateItemCategoryMetrics(allItems);
+	const homeMetrics = calculateHomeMetrics(allItems, excludeDisabledFromTotal);
+	const categoryMetrics = calculateCategoryMetrics(
+		allItems,
+		excludeDisabledFromTotal
+	);
+	const itemCategoryMetrics = calculateItemCategoryMetrics(
+		allItems,
+		excludeDisabledFromTotal
+	);
 
 	const handleProgressBarClick = (tab: TabType, filter: FilterType) => {
 		if (onTabChange && onFilterChange) {

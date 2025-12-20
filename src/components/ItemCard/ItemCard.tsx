@@ -75,10 +75,11 @@ const ItemCard: React.FC<ItemCardProps> = ({
 					>
 						{item.foil ? "Foil ✓" : "Foil"}
 					</button>
-					{/* Disabled for now in v1.0.0 */}
-					{/* <button className="btn btn-secondary" onClick={() => onEdit(index)}>
-						Edit
-					</button> */}
+					{process.env.NODE_ENV === "development" && (
+						<button className="btn btn-secondary" onClick={() => onEdit(index)}>
+							Edit
+						</button>
+					)}
 				</div>
 			</div>
 			<div className={styles.image}>

@@ -5,6 +5,7 @@ import Header from "./components/Header/Header";
 import Home from "./components/Home/Home";
 import Vault from "./components/Vault/Vault";
 import Utils from "./components/Utils/Utils";
+import Settings from "./components/Settings/Settings";
 import { EditModal } from "./components/Modal/Modal";
 import UpdateModal from "./components/UpdateModal/UpdateModal";
 import VaultControls from "./components/Vault/VaultControls";
@@ -34,6 +35,10 @@ const App: React.FC = () => {
 	});
 	const [editingItem, setEditingItem] = useState<VaultItem | null>(null);
 	const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+	const [excludeDisabledFromTotal, setExcludeDisabledFromTotal] =
+		useState(true);
+	const [jsonPath, setJsonPath] = useState<string | undefined>(undefined);
 
 	const [updateModalOpen, setUpdateModalOpen] = useState(false);
 	const [updateInfo, setUpdateInfo] = useState<{
@@ -80,6 +85,11 @@ const App: React.FC = () => {
 		setUpdateModalOpen(false);
 	};
 
+	const handleSelectJsonPath = () => {
+		// TODO: Implement file dialog via Electron API
+		console.log("Select JSON path");
+	};
+
 	const renderCurrentTab = () => {
 		switch (currentTab) {
 			case "home":
@@ -89,6 +99,7 @@ const App: React.FC = () => {
 						onTabChange={setCurrentTab}
 						onFilterChange={setCurrentFilter}
 						onCategoryFilterChange={setCategoryFilter}
+						excludeDisabledFromTotal={excludeDisabledFromTotal}
 					/>
 				);
 			case "vault":
@@ -99,6 +110,7 @@ const App: React.FC = () => {
 						categoryFilter={categoryFilter}
 						filters={filters}
 						searchQuery={searchQuery}
+						excludeDisabledFromTotal={excludeDisabledFromTotal}
 						onFilterChange={setCurrentFilter}
 						onCategoryFilterChange={setCategoryFilter}
 						onFiltersChange={setFilters}
@@ -110,6 +122,16 @@ const App: React.FC = () => {
 				);
 			case "utils":
 				return <Utils allItems={allItems} onAddItem={addItem} />;
+			case "settings":
+				return (
+					<Settings
+						excludeDisabledFromTotal={excludeDisabledFromTotal}
+						onExcludeDisabledChange={setExcludeDisabledFromTotal}
+						onSelectJsonPath={handleSelectJsonPath}
+						jsonPath={jsonPath}
+						onUpdateAvailable={handleUpdateAvailable}
+					/>
+				);
 			default:
 				return <Home allItems={allItems} />;
 		}
@@ -127,7 +149,6 @@ const App: React.FC = () => {
 			<Header
 				currentTab={currentTab}
 				onTabChange={setCurrentTab}
-				onUpdateAvailable={handleUpdateAvailable}
 				vaultControls={
 					currentTab === "vault" ? (
 						<VaultControls
