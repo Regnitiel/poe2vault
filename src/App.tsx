@@ -145,6 +145,14 @@ const App: React.FC = () => {
 					overflow: "hidden",
 					display: "flex",
 					flexDirection: "column",
+					backgroundImage:
+						currentTab === "home"
+							? `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('/Images/eternal-vault.jpg')`
+							: undefined,
+					backgroundSize: "cover",
+					backgroundPosition: "center 40px",
+					backgroundRepeat: "no-repeat",
+					backgroundAttachment: "fixed",
 				}}
 			>
 				{renderCurrentTab()}

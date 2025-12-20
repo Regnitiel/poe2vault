@@ -1,7 +1,9 @@
 .homeSection {
-	height: 100%;
+	min-height: 100vh;
 	overflow-y: auto;
 	padding: var(--spacing-md);
+	padding-top: 10%;
+	padding-bottom: 10%;
 }
 
 .metrics {
@@ -52,4 +54,12 @@
 	font-weight: 600;
 	margin: 0 0 var(--spacing-sm) 0;
 	text-shadow: var(--glowEmber);
+}
+
+/* Background image for Home page */
+.homeBackground {
+	background-size: cover;
+	background-position: center top;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
 }
