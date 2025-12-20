@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TabType, FilterType, VaultItem } from "./types";
 import { useVaultData } from "./hooks/useVaultData";
 import Header from "./components/Header/Header";
@@ -21,6 +21,7 @@ const App: React.FC = () => {
 		toggleOwned,
 		toggleObtainedDuringLeague,
 		toggleFoil,
+		reloadData,
 	} = useVaultData();
 
 	const [currentTab, setCurrentTab] = useState<TabType>("home");
@@ -46,6 +47,24 @@ const App: React.FC = () => {
 		releaseNotes: string;
 		url?: string;
 	} | null>(null);
+
+	// Load current vault directory on mount
+	useEffect(() => {
+		const loadVaultDir = async () => {
+			try {
+				const api = window.electronAPI;
+				if (api && typeof api.getVaultDirectory === "function") {
+					const result = await api.getVaultDirectory();
+					if (result.file) {
+						setJsonPath(result.file);
+					}
+				}
+			} catch (err) {
+				console.error("Failed to load vault directory:", err);
+			}
+		};
+		loadVaultDir();
+	}, []);
 
 	const handleEdit = (index: number) => {
 		setEditingItem(allItems[index]);
@@ -85,9 +104,21 @@ const App: React.FC = () => {
 		setUpdateModalOpen(false);
 	};
 
-	const handleSelectJsonPath = () => {
-		// TODO: Implement file dialog via Electron API
-		console.log("Select JSON path");
+	const handleSelectJsonPath = async () => {
+		try {
+			const api = window.electronAPI;
+			if (api && typeof api.chooseVaultDirectory === "function") {
+				const result = await api.chooseVaultDirectory();
+				setJsonPath(result.file);
+				// Reload vault data after changing location
+				if (reloadData) {
+					await reloadData();
+				}
+			}
+		} catch (err) {
+			// User cancelled or error occurred
+			console.error("Failed to change vault directory:", err);
+		}
 	};
 
 	const renderCurrentTab = () => {
@@ -168,7 +199,7 @@ const App: React.FC = () => {
 					flexDirection: "column",
 					backgroundImage:
 						currentTab === "home"
-							? `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('/Images/eternal-vault.jpg')`
+							? `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('./Images/eternal-vault.jpg')`
 							: undefined,
 					backgroundSize: "cover",
 					backgroundPosition: "center 40px",
