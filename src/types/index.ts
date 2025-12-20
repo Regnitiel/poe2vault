@@ -9,6 +9,7 @@ export interface VaultItem {
 	bosses: boolean;
 	special: boolean;
 	foil: boolean;
+	chance: boolean;
 	disabled?: boolean; // Made optional since it might not exist in all data
 	imageLink: string;
 	wikiLink: string;
@@ -76,7 +77,7 @@ export type FilterType =
 	| "Two Hand Mace"
 	| "Wand";
 
-export type TabType = "home" | "vault" | "utils";
+export type TabType = "home" | "vault" | "utils" | "settings";
 
 export interface AppState {
 	allItems: VaultItem[];

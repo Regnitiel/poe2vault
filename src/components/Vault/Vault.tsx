@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { VaultItem, FilterType } from "../../types";
 import { groupItemsByCategory } from "../../utils/helpers";
 import ItemCard from "../ItemCard/ItemCard";
@@ -8,9 +8,23 @@ import categoryStyles from "../../styles/CategorySection.module.css";
 interface VaultProps {
 	allItems: VaultItem[];
 	currentFilter: FilterType;
-	hideOwnedItems: boolean;
+	categoryFilter: FilterType | null;
+	filters: {
+		onlyOwned: boolean;
+		onlyUnowned: boolean;
+		onlyLeague: boolean;
+		canBeChanced: boolean;
+	};
+	searchQuery: string;
+	excludeDisabledFromTotal?: boolean;
 	onFilterChange: (filter: FilterType) => void;
-	onHideOwnedChange: (hide: boolean) => void;
+	onCategoryFilterChange: (filter: FilterType | null) => void;
+	onFiltersChange: (filters: {
+		onlyOwned: boolean;
+		onlyUnowned: boolean;
+		onlyLeague: boolean;
+		canBeChanced: boolean;
+	}) => void;
 	onToggleOwned: (index: number) => void;
 	onToggleObtainedDuringLeague: (index: number) => void;
 	onToggleFoil: (index: number) => void;
@@ -20,22 +34,32 @@ interface VaultProps {
 const Vault: React.FC<VaultProps> = ({
 	allItems,
 	currentFilter,
-	hideOwnedItems,
+	categoryFilter,
+	filters,
+	searchQuery,
+	excludeDisabledFromTotal = false,
 	onFilterChange,
-	onHideOwnedChange,
+	onCategoryFilterChange,
+	onFiltersChange,
 	onToggleOwned,
 	onToggleObtainedDuringLeague,
 	onToggleFoil,
 	onEdit,
 }) => {
+	const filteredItems = excludeDisabledFromTotal
+		? allItems.filter((item) => !item.disabled)
+		: allItems;
+
 	const groupedItems = groupItemsByCategory(
-		allItems,
+		filteredItems,
 		currentFilter,
-		hideOwnedItems
+		categoryFilter,
+		filters,
+		searchQuery
 	);
 	const sortedGroups = Object.keys(groupedItems).sort();
 
-	const filters: { key: FilterType; label: string }[] = [
+	const leagueFilters: { key: FilterType; label: string }[] = [
 		{ key: "all", label: "All" },
 		{ key: "0.1", label: "0.1" },
 		{ key: "0.2", label: "0.2" },
@@ -44,76 +68,106 @@ const Vault: React.FC<VaultProps> = ({
 		{ key: "Special", label: "Special Condition" },
 	];
 
+	const categoryFilters: { key: FilterType; label: string }[] = [
+		{ key: "Amulet", label: "Amulet" },
+		{ key: "Belt", label: "Belt" },
+		{ key: "Body", label: "Body Armour" },
+		{ key: "Boots", label: "Boots" },
+		{ key: "Bow", label: "Bow" },
+		{ key: "Buckler", label: "Buckler" },
+		{ key: "Charm", label: "Charm" },
+		{ key: "Crossbow", label: "Crossbow" },
+		{ key: "Flask", label: "Flask" },
+		{ key: "Focus", label: "Focus" },
+		{ key: "Gloves", label: "Gloves" },
+		{ key: "Helm", label: "Helm" },
+		{ key: "Jewel", label: "Jewel" },
+		{ key: "One Hand Mace", label: "One Hand Mace" },
+		{ key: "Quartertaff", label: "Quarterstaff" },
+		{ key: "Quiver", label: "Quiver" },
+		{ key: "Relic", label: "Relic" },
+		{ key: "Ring", label: "Ring" },
+		{ key: "Sceptre", label: "Sceptre" },
+		{ key: "Shield", label: "Shield" },
+		{ key: "Spear", label: "Spear" },
+		{ key: "Staff", label: "Staff" },
+		{ key: "Tablet", label: "Tablet" },
+		{ key: "Two Hand Mace", label: "Two Hand Mace" },
+		{ key: "Wand", label: "Wand" },
+	];
+
 	return (
-		<section id="vault">
-			<div className={styles.controls}>
-				<label className={styles.checkboxLabel}>
-					<input
-						type="checkbox"
-						checked={hideOwnedItems}
-						onChange={(e) => onHideOwnedChange(e.target.checked)}
-					/>
-					Hide Owned Items
-				</label>
-			</div>
-
-			<div className={styles.container}>
-				<aside className={styles.sidebar}>
-					{filters.map((filter) => (
-						<button
-							key={filter.key}
-							className={`${styles.sidebarButton} ${
-								currentFilter === filter.key ? styles.active : ""
-							}`}
-							onClick={() => onFilterChange(filter.key)}
-						>
+		<section id="vault" className={styles.vaultSection}>
+			<aside className={styles.sidebar}>
+				{leagueFilters.map((filter) => (
+					<button
+						key={filter.key}
+						className={`${styles.sidebarButton} ${
+							currentFilter === filter.key ? styles.active : ""
+						}`}
+						onClick={() => onFilterChange(filter.key)}
+					>
+						{filter.label}
+					</button>
+				))}
+				<div className={styles.sidebarSeparator}></div>
+				<select
+					className={styles.categoryDropdown}
+					value={categoryFilter || ""}
+					onChange={(e) => {
+						onCategoryFilterChange(
+							e.target.value ? (e.target.value as FilterType) : null
+						);
+					}}
+				>
+					<option value="">Filter by Category</option>
+					{categoryFilters.map((filter) => (
+						<option key={filter.key} value={filter.key}>
 							{filter.label}
-						</button>
+						</option>
 					))}
-				</aside>
+				</select>
+			</aside>
 
-				<div className={styles.items}>
-					{sortedGroups.map((group) => {
-						const groupData = groupedItems[group];
-						const totalInGroup = groupData.all.length;
-						const ownedInGroup = groupData.all.filter(
-							(item) => item.owned
-						).length;
-						const completionPercentage = Math.round(
-							(ownedInGroup / totalInGroup) * 100
-						);
+			<div className={styles.itemsWrapper}>
+				{sortedGroups.map((group) => {
+					const groupData = groupedItems[group];
+					const totalInGroup = groupData.all.length;
+					const ownedInGroup = groupData.all.filter(
+						(item) => item.owned
+					).length;
+					const completionPercentage = Math.round(
+						(ownedInGroup / totalInGroup) * 100
+					);
 
-						return (
-							<div key={group} className={categoryStyles.section}>
-								<h3 className={categoryStyles.title}>
-									{group} {ownedInGroup}/{totalInGroup} - {completionPercentage}
-									%
-								</h3>
-								<div className={categoryStyles.grid}>
-									{groupData.display.map((item) => {
-										const itemIndex = allItems.indexOf(item);
-										return (
-											<ItemCard
-												key={`${item.name}-${itemIndex}`}
-												item={item}
-												index={itemIndex}
-												onToggleOwned={onToggleOwned}
-												onToggleObtainedDuringLeague={
-													onToggleObtainedDuringLeague
-												}
-												onToggleFoil={onToggleFoil}
-												onEdit={onEdit}
-											/>
-										);
-									})}
-								</div>
+					return (
+						<div key={group} className={categoryStyles.section}>
+							<h3 className={categoryStyles.title}>
+								{group} {ownedInGroup}/{totalInGroup} - {completionPercentage}%
+							</h3>
+							<div className={categoryStyles.grid}>
+								{groupData.display.map((item) => {
+									const itemIndex = allItems.indexOf(item);
+									return (
+										<ItemCard
+											key={`${item.name}-${itemIndex}`}
+											item={item}
+											index={itemIndex}
+											onToggleOwned={onToggleOwned}
+											onToggleObtainedDuringLeague={
+												onToggleObtainedDuringLeague
+											}
+											onToggleFoil={onToggleFoil}
+											onEdit={onEdit}
+										/>
+									);
+								})}
 							</div>
-						);
-					})}
-				</div>
+						</div>
+					);
+				})}
 			</div>
 		</section>
 	);
 };
-
 export default Vault;

@@ -93,6 +93,16 @@ const itemFormFields: FormField[] = [
 		],
 	},
 	{
+		name: "chance",
+		label: "Can be Chanced",
+		type: "select",
+		required: true,
+		options: [
+			{ value: "false", label: "No" },
+			{ value: "true", label: "Yes" },
+		],
+	},
+	{
 		name: "disabled",
 		label: "Disabled",
 		type: "select",
@@ -142,6 +152,7 @@ const ItemForm: React.FC<ItemFormProps> = ({
 		bosses: false,
 		special: false,
 		foil: false,
+		chance: false,
 		disabled: false,
 		imageLink: "",
 		wikiLink: "",
@@ -217,6 +228,7 @@ const ItemForm: React.FC<ItemFormProps> = ({
 				bosses: false,
 				special: false,
 				foil: false,
+				chance: false,
 				disabled: false,
 				imageLink: "",
 				wikiLink: "",

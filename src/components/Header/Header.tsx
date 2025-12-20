@@ -1,70 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { TabType } from "../../types";
 import styles from "./styles.module.css";
-import { openExternalLink } from "../../utils/data";
 
 interface HeaderProps {
 	currentTab: TabType;
 	onTabChange: (tab: TabType) => void;
-	onUpdateAvailable?: (info: {
-		version: string;
-		releaseNotes: string;
-		url?: string;
-	}) => void;
+	vaultControls?: React.ReactNode;
 }
 
 const Header: React.FC<HeaderProps> = ({
 	currentTab,
 	onTabChange,
-	onUpdateAvailable,
+	vaultControls,
 }) => {
+	const isDev = process.env.NODE_ENV === "development";
+
 	const tabs: { key: TabType; label: string }[] = [
 		{ key: "home", label: "Home" },
 		{ key: "vault", label: "Vault" },
-		{ key: "utils", label: "Utils" },
+		{ key: "settings", label: "Settings" },
+		...(isDev ? [{ key: "utils" as TabType, label: "Utils" }] : []),
 	];
-
-	const [version, setVersion] = useState<string>("");
-	const [checking, setChecking] = useState(false);
-	const [upToDate, setUpToDate] = useState(false);
-
-	useEffect(() => {
-		const api = window.electronAPI;
-		if (api && typeof api.getCurrentVersion === "function") {
-			api
-				.getCurrentVersion()
-				.then((v) => setVersion(v))
-				.catch(() => {});
-		}
-	}, []);
-
-	const handleCheck = async () => {
-		const api = window.electronAPI;
-		if (!api || typeof api.checkForUpdates !== "function" || checking) return;
-		setChecking(true);
-		setUpToDate(false);
-		try {
-			const res = await api.checkForUpdates();
-			if (res.status === "available") {
-				onUpdateAvailable?.({
-					version: res.version || "",
-					releaseNotes: res.releaseNotes || "",
-					url: res.url,
-				});
-				setUpToDate(false);
-			} else if (res.status === "up-to-date") {
-				setUpToDate(true);
-			}
-		} finally {
-			setChecking(false);
-		}
-	};
-
-	const handleFeedback = () => {
-		openExternalLink(
-			"https://github.com/Regnitiel/poe2vault/issues/new/choose"
-		);
-	};
 
 	return (
 		<header className={styles.header}>
@@ -81,22 +37,9 @@ const Header: React.FC<HeaderProps> = ({
 					</button>
 				))}
 			</div>
-			<div className={styles.updateArea}>
-				<span className={styles.versionText}>v{version}</span>
-				<div className={styles.updateActions}>
-					<button
-						className={styles.updateButton}
-						onClick={handleCheck}
-						disabled={checking}
-					>
-						{checking ? "Checking..." : "Check for updates"}
-					</button>
-					{upToDate && <div className={styles.upToDateText}>Up to date</div>}
-					<button className={styles.feedbackButton} onClick={handleFeedback}>
-						Report a Bug / Send Feedback
-					</button>
-				</div>
-			</div>
+			{vaultControls && (
+				<div className={styles.vaultControls}>{vaultControls}</div>
+			)}
 		</header>
 	);
 };

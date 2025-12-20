@@ -12,16 +12,26 @@ interface HomeProps {
 	allItems: VaultItem[];
 	onTabChange?: (tab: TabType) => void;
 	onFilterChange?: (filter: FilterType) => void;
+	onCategoryFilterChange?: (filter: FilterType | null) => void;
+	excludeDisabledFromTotal?: boolean;
 }
 
 const Home: React.FC<HomeProps> = ({
 	allItems,
 	onTabChange,
 	onFilterChange,
+	onCategoryFilterChange,
+	excludeDisabledFromTotal = false,
 }) => {
-	const homeMetrics = calculateHomeMetrics(allItems);
-	const categoryMetrics = calculateCategoryMetrics(allItems);
-	const itemCategoryMetrics = calculateItemCategoryMetrics(allItems);
+	const homeMetrics = calculateHomeMetrics(allItems, excludeDisabledFromTotal);
+	const categoryMetrics = calculateCategoryMetrics(
+		allItems,
+		excludeDisabledFromTotal
+	);
+	const itemCategoryMetrics = calculateItemCategoryMetrics(
+		allItems,
+		excludeDisabledFromTotal
+	);
 
 	const handleProgressBarClick = (tab: TabType, filter: FilterType) => {
 		if (onTabChange && onFilterChange) {
@@ -31,14 +41,15 @@ const Home: React.FC<HomeProps> = ({
 	};
 
 	const handleCategoryClick = (category: string) => {
-		if (onTabChange && onFilterChange) {
+		if (onTabChange && onFilterChange && onCategoryFilterChange) {
 			onTabChange("vault");
-			onFilterChange(category as FilterType);
+			onFilterChange("all"); // Reset main filter to "all"
+			onCategoryFilterChange(category as FilterType); // Set category filter
 		}
 	};
 
 	return (
-		<section id="home" className="active">
+		<section id="home" className={styles.homeSection}>
 			{/* Progress Bar */}
 			<div className={styles.metrics}>
 				<h2>Collection Progress</h2>

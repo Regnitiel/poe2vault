@@ -24,12 +24,74 @@ export const filterItems = (
 	return items.filter((item) => item.category === filter);
 };
 
+export const searchAndFilterItems = (
+	items: VaultItem[],
+	filter: FilterType,
+	searchQuery: string
+): VaultItem[] => {
+	// First apply the filter (league, bosses, special, category, or all)
+	let filtered = filterItems(items, filter);
+
+	// Then apply search if query exists
+	if (searchQuery.trim()) {
+		const lowerQuery = searchQuery.toLowerCase().trim();
+		filtered = filtered.filter((item) => {
+			const searchableProperties = [
+				item.name,
+				item.league,
+				item.base,
+				item.category,
+				item.obtainMethod,
+			].map((prop) => (prop || "").toLowerCase());
+
+			const basicMatch = searchableProperties.some((prop) =>
+				prop.includes(lowerQuery)
+			);
+
+			const isDisabledSearch = lowerQuery === "disabled";
+			const matchesDisabled = isDisabledSearch && item.disabled;
+
+			return basicMatch || matchesDisabled;
+		});
+	}
+
+	return filtered;
+};
+
 export const groupItemsByCategory = (
 	items: VaultItem[],
 	filter: FilterType,
-	hideOwned: boolean
+	categoryFilter: FilterType | null,
+	filters: {
+		onlyOwned: boolean;
+		onlyUnowned: boolean;
+		onlyLeague: boolean;
+		canBeChanced: boolean;
+	},
+	searchQuery: string = ""
 ): GroupedItems => {
-	const filtered = filterItems(items, filter);
+	// Apply both filter and search
+	let filtered = searchAndFilterItems(items, filter, searchQuery);
+
+	// Apply category filter if set (this allows combining league + category)
+	if (categoryFilter) {
+		filtered = filtered.filter((item) => item.category === categoryFilter);
+	}
+
+	// Apply additional filters
+	if (filters.onlyOwned) {
+		filtered = filtered.filter((item) => item.owned);
+	}
+	if (filters.onlyUnowned) {
+		filtered = filtered.filter((item) => !item.owned);
+	}
+	if (filters.onlyLeague) {
+		filtered = filtered.filter((item) => item.obtainedDuringLeague);
+	}
+	if (filters.canBeChanced) {
+		filtered = filtered.filter((item) => item.chance);
+	}
+
 	const grouped: GroupedItems = {};
 
 	filtered.forEach((item) => {
@@ -45,18 +107,22 @@ export const groupItemsByCategory = (
 		}
 
 		grouped[groupKey].all.push(item);
-		if (!hideOwned || !item.owned) {
-			grouped[groupKey].display.push(item);
-		}
+		grouped[groupKey].display.push(item);
 	});
 
 	return grouped;
 };
 
-export const calculateHomeMetrics = (items: VaultItem[]): HomeMetrics => {
-	const totalUniques = items.length;
-	const ownedUniques = items.filter((item) => item.owned).length;
-	const collectedCurrentLeague = items.filter(
+export const calculateHomeMetrics = (
+	items: VaultItem[],
+	excludeDisabled: boolean = false
+): HomeMetrics => {
+	const activeItems = excludeDisabled
+		? items.filter((item) => !item.disabled)
+		: items;
+	const totalUniques = activeItems.length;
+	const ownedUniques = activeItems.filter((item) => item.owned).length;
+	const collectedCurrentLeague = activeItems.filter(
 		(item) => item.obtainedDuringLeague
 	).length;
 	const remainingUniques = totalUniques - ownedUniques;
@@ -70,8 +136,12 @@ export const calculateHomeMetrics = (items: VaultItem[]): HomeMetrics => {
 };
 
 export const calculateCategoryMetrics = (
-	items: VaultItem[]
+	items: VaultItem[],
+	excludeDisabled: boolean = false
 ): CategoryMetrics => {
+	const activeItems = excludeDisabled
+		? items.filter((item) => !item.disabled)
+		: items;
 	const leagues = ["0.1", "0.2", "0.3"] as const;
 	const result: CategoryMetrics = {
 		"0.1": { total: 0, owned: 0, league: 0, remaining: 0 },
@@ -82,7 +152,7 @@ export const calculateCategoryMetrics = (
 	};
 
 	leagues.forEach((league) => {
-		const leagueItems = items.filter(
+		const leagueItems = activeItems.filter(
 			(item) => item.league === league && !item.bosses && !item.special
 		);
 		const total = leagueItems.length;
@@ -96,7 +166,7 @@ export const calculateCategoryMetrics = (
 	});
 
 	// Calculate boss metrics
-	const bossItems = items.filter((item) => item.bosses);
+	const bossItems = activeItems.filter((item) => item.bosses);
 	const totalBosses = bossItems.length;
 	const ownedBosses = bossItems.filter((item) => item.owned).length;
 	const obtainedDuringLeagueBosses = bossItems.filter(
@@ -110,11 +180,11 @@ export const calculateCategoryMetrics = (
 	};
 
 	// Calculate special metrics
-	const specialItems = items.filter((item) => item.special);
+	const specialItems = activeItems.filter((item) => item.special);
 	const totalSpecial = specialItems.length;
 	const ownedSpecial = specialItems.filter((item) => item.owned).length;
 	const obtainedDuringLeagueSpecial = specialItems.filter(
-		(item) => item.obtainedDuringLeague
+		(item) => item.special && item.obtainedDuringLeague
 	).length;
 	result.Special = {
 		total: totalSpecial,
@@ -127,11 +197,15 @@ export const calculateCategoryMetrics = (
 };
 
 export const calculateItemCategoryMetrics = (
-	items: VaultItem[]
+	items: VaultItem[],
+	excludeDisabled: boolean = false
 ): Record<string, { total: number; owned: number }> => {
+	const activeItems = excludeDisabled
+		? items.filter((item) => !item.disabled)
+		: items;
 	const categoryMetrics: Record<string, { total: number; owned: number }> = {};
 
-	items.forEach((item) => {
+	activeItems.forEach((item) => {
 		const category = item.category;
 		if (!categoryMetrics[category]) {
 			categoryMetrics[category] = { total: 0, owned: 0 };

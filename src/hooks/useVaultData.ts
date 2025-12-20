@@ -6,24 +6,25 @@ export const useVaultData = () => {
 	const [allItems, setAllItems] = useState<VaultItem[]>([]);
 	const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
-		const loadData = async () => {
-			try {
-				const data = await loadVaultData();
-				// Sort alphabetically by name (case-insensitive) after loading from JSON
-				const sorted = [...data].sort((a, b) =>
-					a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
-				);
-				setAllItems(sorted);
-			} catch (error) {
-				console.error("Error loading vault data:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		loadData();
+	const loadData = useCallback(async () => {
+		try {
+			setLoading(true);
+			const data = await loadVaultData();
+			// Sort alphabetically by name (case-insensitive) after loading from JSON
+			const sorted = [...data].sort((a, b) =>
+				a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
+			);
+			setAllItems(sorted);
+		} catch (error) {
+			console.error("Error loading vault data:", error);
+		} finally {
+			setLoading(false);
+		}
 	}, []);
+
+	useEffect(() => {
+		loadData();
+	}, [loadData]);
 
 	const saveData = useCallback(async (items: VaultItem[]) => {
 		try {
@@ -120,5 +121,6 @@ export const useVaultData = () => {
 		toggleOwned,
 		toggleObtainedDuringLeague,
 		toggleFoil,
+		reloadData: loadData,
 	};
 };
