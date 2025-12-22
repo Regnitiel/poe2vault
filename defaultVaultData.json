@@ -6628,7 +6628,7 @@
 		"base": "Familial Talisman",
 		"category": "Talisman",
 		"league": "0.4",
-		"obtainMethod": "",
+		"obtainMethod": "Global drop",
 		"owned": false,
 		"obtainedDuringLeague": false,
 		"bosses": false,
