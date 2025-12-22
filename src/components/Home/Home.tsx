@@ -84,6 +84,12 @@ const Home: React.FC<HomeProps> = ({
 					onClick={() => handleProgressBarClick("vault", "0.3")}
 				/>
 				<ProgressBar
+					owned={categoryMetrics["0.4"].owned}
+					total={categoryMetrics["0.4"].total}
+					label="0.4 Uniques"
+					onClick={() => handleProgressBarClick("vault", "0.4")}
+				/>
+				<ProgressBar
 					owned={categoryMetrics["Bosses"].owned}
 					total={categoryMetrics["Bosses"].total}
 					label="Bosses Uniques"

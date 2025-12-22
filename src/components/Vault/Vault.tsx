@@ -64,6 +64,7 @@ const Vault: React.FC<VaultProps> = ({
 		{ key: "0.1", label: "0.1" },
 		{ key: "0.2", label: "0.2" },
 		{ key: "0.3", label: "0.3" },
+		{ key: "0.4", label: "0.4" },
 		{ key: "Bosses", label: "Bosses" },
 		{ key: "Special", label: "Special Condition" },
 	];
@@ -92,6 +93,7 @@ const Vault: React.FC<VaultProps> = ({
 		{ key: "Spear", label: "Spear" },
 		{ key: "Staff", label: "Staff" },
 		{ key: "Tablet", label: "Tablet" },
+		{ key: "Talisman", label: "Talisman" },
 		{ key: "Two Hand Mace", label: "Two Hand Mace" },
 		{ key: "Wand", label: "Wand" },
 	];
@@ -120,7 +122,7 @@ const Vault: React.FC<VaultProps> = ({
 						);
 					}}
 				>
-					<option value="">Filter by Category</option>
+					<option value="">All Categories</option>
 					{categoryFilters.map((filter) => (
 						<option key={filter.key} value={filter.key}>
 							{filter.label}
