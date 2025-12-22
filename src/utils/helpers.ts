@@ -16,7 +16,12 @@ export const filterItems = (
 	if (filter === "Special") return items.filter((item) => item.special);
 
 	// Check if filter is a league
-	if (filter === "0.1" || filter === "0.2" || filter === "0.3") {
+	if (
+		filter === "0.1" ||
+		filter === "0.2" ||
+		filter === "0.3" ||
+		filter === "0.4"
+	) {
 		return items.filter((item) => item.league === filter);
 	}
 
@@ -142,19 +147,18 @@ export const calculateCategoryMetrics = (
 	const activeItems = excludeDisabled
 		? items.filter((item) => !item.disabled)
 		: items;
-	const leagues = ["0.1", "0.2", "0.3"] as const;
+	const leagues = ["0.1", "0.2", "0.3", "0.4"] as const;
 	const result: CategoryMetrics = {
 		"0.1": { total: 0, owned: 0, league: 0, remaining: 0 },
 		"0.2": { total: 0, owned: 0, league: 0, remaining: 0 },
 		"0.3": { total: 0, owned: 0, league: 0, remaining: 0 },
+		"0.4": { total: 0, owned: 0, league: 0, remaining: 0 },
 		Bosses: { total: 0, owned: 0, league: 0, remaining: 0 },
 		Special: { total: 0, owned: 0, league: 0, remaining: 0 },
 	};
 
 	leagues.forEach((league) => {
-		const leagueItems = activeItems.filter(
-			(item) => item.league === league && !item.bosses && !item.special
-		);
+		const leagueItems = activeItems.filter((item) => item.league === league);
 		const total = leagueItems.length;
 		const owned = leagueItems.filter((item) => item.owned).length;
 		const obtainedDuringLeague = leagueItems.filter(

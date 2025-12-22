@@ -40,6 +40,7 @@ export interface CategoryMetrics {
 	"0.1": LeagueMetrics;
 	"0.2": LeagueMetrics;
 	"0.3": LeagueMetrics;
+	"0.4": LeagueMetrics;
 	Bosses: LeagueMetrics;
 	Special: LeagueMetrics;
 }
@@ -49,6 +50,7 @@ export type FilterType =
 	| "0.1"
 	| "0.2"
 	| "0.3"
+	| "0.4"
 	| "Bosses"
 	| "Special"
 	| "Amulet"
@@ -74,6 +76,7 @@ export type FilterType =
 	| "Spear"
 	| "Staff"
 	| "Tablet"
+	| "Talisman"
 	| "Two Hand Mace"
 	| "Wand";
 
