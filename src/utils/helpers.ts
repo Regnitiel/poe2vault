@@ -16,7 +16,12 @@ export const filterItems = (
 	if (filter === "Special") return items.filter((item) => item.special);
 
 	// Check if filter is a league
-	if (filter === "0.1" || filter === "0.2" || filter === "0.3" || filter === "0.4") {
+	if (
+		filter === "0.1" ||
+		filter === "0.2" ||
+		filter === "0.3" ||
+		filter === "0.4"
+	) {
 		return items.filter((item) => item.league === filter);
 	}
 
@@ -153,9 +158,7 @@ export const calculateCategoryMetrics = (
 	};
 
 	leagues.forEach((league) => {
-		const leagueItems = activeItems.filter(
-			(item) => item.league === league && !item.bosses && !item.special
-		);
+		const leagueItems = activeItems.filter((item) => item.league === league);
 		const total = leagueItems.length;
 		const owned = leagueItems.filter((item) => item.owned).length;
 		const obtainedDuringLeague = leagueItems.filter(
